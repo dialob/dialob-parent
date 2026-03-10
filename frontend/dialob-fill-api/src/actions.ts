@@ -23,6 +23,7 @@ interface GenericItemAction<Type extends ItemType, Value, Props> {
     label?: string;
     description?: string;
     disabled?: boolean;
+    readOnly?: boolean;
     required?: boolean;
     className?: string[];
     value?: Value;

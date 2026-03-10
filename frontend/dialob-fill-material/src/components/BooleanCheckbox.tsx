@@ -26,6 +26,7 @@ export const BooleanCheckbox: React.FC<BooleanCheckboxProps> = ({ boolean, error
           control={
             <Checkbox
               checked={boolean.value || false}
+              disabled={boolean.readOnly ?? false}
               onChange={e => setAnswer(boolean.id, e.target.checked)}
             />
           }

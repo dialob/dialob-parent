@@ -55,23 +55,20 @@ export const Row: React.FC<RowProps> = ({ row, children }) => {
   columns = columns > 4 ? 4 : columns;
   const lg = columns > 1 ? Math.floor(12 / columns) : undefined;
 
-  responsiveProps = {
-    xs: 12,
-    lg
-  };
+  const itemSize = { xs: 12, lg };
 
   return (
     <>
       <Paper variant='outlined' sx={paperSx}>
         <Grid container spacing={1} justifyContent='center'>
           {children && itemIds.map(itemId => (
-            <Grid item {...responsiveProps} key={itemId}>
+            <Grid size={itemSize} key={itemId}>
               {children(itemId)}
             </Grid>
           ))}
         </Grid>
         <Grid container spacing={1} justifyContent='center'>
-          <Grid item xs={1} sx={{ mt: 1, textAlign: 'center' }} >
+          <Grid size={{ xs: 1 }} sx={{ mt: 1, textAlign: 'center' }} >
             <Button size='small' color='primary' variant='contained' startIcon={<Remove />} onClick={() => setConfirmationOpen(true)} disabled={!(row.allowedActions && row.allowedActions.includes('DELETE_ROW'))}><FormattedMessage id='row.remove.button' /></Button>
           </Grid>
         </Grid>

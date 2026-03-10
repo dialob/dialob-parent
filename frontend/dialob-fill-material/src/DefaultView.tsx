@@ -1,7 +1,7 @@
 import { useFillActions, useFillItem, useFillLocale, useFillSession } from '@dialob/fill-react';
 import { Session } from '@dialob/fill-api';
 import React, { useEffect, useState } from 'react';
-import { CircularProgress, Grid, Typography, Button, Paper, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import { CircularProgress, Typography, Grid, Button, Paper, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 
@@ -73,7 +73,7 @@ export const DefaultView: React.FC<DefaultViewProps> = ({ children, onComplete }
   } else if (!questionnaire) {
     return (
       <Grid container={true} justifyContent='center' alignItems='center' style={{ minHeight: '100vh' }}>
-        <Grid item>
+        <Grid>
           <CircularProgress size={50} />
         </Grid>
       </Grid>
@@ -89,9 +89,9 @@ export const DefaultView: React.FC<DefaultViewProps> = ({ children, onComplete }
   }
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDateFns} locale={localeMap[locale]}>
+    <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={localeMap[locale]}>
       <Grid container spacing={1}>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Typography variant='h1'>{questionnaire.label}</Typography>
         </Grid>
         {
@@ -105,14 +105,14 @@ export const DefaultView: React.FC<DefaultViewProps> = ({ children, onComplete }
 
       {questionnaire.allowedActions && (
         <Grid container justifyContent='space-between' spacing={3} style={{ marginTop: '1em', marginBottom: '1em' }}>
-          <Grid item >
+          <Grid>
             {questionnaire.allowedActions.includes('PREVIOUS') && (
               <Button variant='contained' onClick={() => { window.scrollTo(0, 0); fillActions.previous(); }} startIcon={<ChevronLeftIcon />}>
                 <FormattedMessage id='page.previous' />
               </Button>
             )}
           </Grid>
-          <Grid item>
+          <Grid>
             {!questionnaire.allowedActions.includes('NEXT') && (
               <Button variant='contained' color='primary'
                 disabled={!questionnaire.allowedActions.includes('COMPLETE')}
@@ -121,7 +121,7 @@ export const DefaultView: React.FC<DefaultViewProps> = ({ children, onComplete }
               </Button>
             )}
           </Grid>
-          <Grid item >
+          <Grid>
             {questionnaire.allowedActions.includes('NEXT') && (
               <Button variant='contained' onClick={() => { window.scrollTo(0, 0); fillActions.next(); }} endIcon={<ChevronRightIcon />}>
                 <FormattedMessage id='page.next' />

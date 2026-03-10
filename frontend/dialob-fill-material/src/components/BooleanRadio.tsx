@@ -42,12 +42,14 @@ export const BooleanRadio: React.FC<BooleanRadioProps> = ({ boolean, errors }) =
         <RadioGroup value={getValue(boolean.value)} onChange={e => { setAnswer(boolean.id, setValue(e.target.value)); }} row={true}>
           <FormControlLabel
             value='true'
+            disabled={boolean.readOnly ?? false}
             control={<Radio />}
             label={intl.formatMessage({ id: 'yes' })}
             labelPlacement='end'
           />
           <FormControlLabel
             value='false'
+            disabled={boolean.readOnly ?? false}
             control={<Radio />}
             label={intl.formatMessage({ id: 'no' })}
             labelPlacement='end'

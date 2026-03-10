@@ -51,9 +51,6 @@ export const altTheme = createTheme({
         root: {
           margin: 2,
         },
-        item: {
-          margin: 10,
-        }
       }
     },
 

@@ -9,13 +9,13 @@ export interface PageProps {
 export const Page: React.FC<PropsWithChildren<PageProps>> = ({ page, children }) => {
   return (
     <Grid container spacing={1}>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Typography variant='h2'>
           {page.label}
         </Typography>
       </Grid>
       {React.Children.map(children, i =>
-        <Grid item xs={12}>
+        <Grid size={12}>
           {i}
         </Grid>
       )}

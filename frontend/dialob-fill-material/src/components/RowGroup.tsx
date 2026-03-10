@@ -17,7 +17,7 @@ export const RowGroup: React.FC<PropsWithChildren<RowGroupProps>> = ({ rowGroup,
 
   return (
     <>
-      <Grid item xs={12} style={{ marginBottom: '5px' }}>
+      <Grid size={12} style={{ marginBottom: '5px' }}>
         <Typography variant='h3'>
           {rowGroup.label || <span>&nbsp;</span>}
           <Description title={rowGroup.label} text={rowGroup.description} />

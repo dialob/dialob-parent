@@ -17,7 +17,7 @@ export const Questionnaire: React.FC<PropsWithChildren<QuestionnaireProps>> = ({
   }, [questionnaire?.allowedActions]);
 
   return (
-    <Grid xs={12} item>
+    <Grid size={12}>
       {config.breadCrumbs(questionnaire?.availableItems ? questionnaire?.availableItems : [], canNavigate, questionnaire?.activeItem)}
       {children}
     </Grid>

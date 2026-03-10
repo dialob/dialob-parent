@@ -29,13 +29,13 @@ export const Group: React.FC<PropsWithChildren<GroupProps>> = ({ group, children
     ...(spacesBottom && { marginBottom: spacesBottom })
   }
 
-  const childItems = React.Children.map(children, i => <Grid item xs={12} lg={lg}>{i}</Grid>);
+  const childItems = React.Children.map(children, i => <Grid size={{ xs: 12, lg }}>{i}</Grid>);
 
   const groupContent: any = invisible ? (
     <Grid container spacing={2} sx={{ paddingLeft: indent }}>{childItems}</Grid>
   ) : (
     <Grid container spacing={2}>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Typography variant='h3' sx={{ mt: 2, mb: 3 }}>
           {label || <span>&nbsp;</span>}
         </Typography>

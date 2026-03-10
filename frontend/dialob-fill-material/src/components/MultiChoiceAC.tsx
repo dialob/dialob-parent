@@ -34,6 +34,7 @@ export const MultiChoiceAC: React.FC<MultiChoiceACProps> = ({ multichoice, error
           isOptionEqualToValue={(option, value) => option?.key === value?.key}
           fullWidth
           autoComplete
+          readOnly={multichoice.readOnly ?? false}
           onChange={(event: any, newValue: (ValueSetEntry | undefined)[]) => {
             setAnswer(multichoice.id, newValue?.map(c => c?.key));
           }}

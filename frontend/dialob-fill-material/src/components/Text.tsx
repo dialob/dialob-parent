@@ -22,6 +22,11 @@ export const Text: React.FC<TextProps> = ({ text, errors }) => {
           error={errors.length > 0}
           value={text.value || ''}
           onChange={e => setAnswer(text.id, e.currentTarget.value)}
+          slotProps={{
+            input: {
+              readOnly: text.readOnly ?? false
+            }
+          }}
           helperText={<RenderErrors errors={errors} />}
         />
       </Box>
