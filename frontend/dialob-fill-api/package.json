@@ -1,6 +1,6 @@
 {
   "name": "@dialob/fill-api",
-  "version": "1.4.9",
+  "version": "1.4.10",
   "description": "Dialob filling API",
   "private": false,
   "type": "module",

@@ -1,13 +1,13 @@
 {
   "name": "@dialob/dialob-fill-demo-material",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "private": true,
   "type": "module",
   "proxy": "http://localhost:8080",
   "license": "Apache-2.0",
   "dependencies": {
-    "@dialob/fill-api": "workspace:~1.4.9",
-    "@dialob/fill-material": "workspace:~1.5.5",
+    "@dialob/fill-api": "workspace:~1.4.10",
+    "@dialob/fill-material": "workspace:~1.6.0",
     "@dialob/fill-react": "workspace:~4.0.0",
     "@emotion/react": "^11.5.0",
     "@emotion/styled": "^11.3.0",
