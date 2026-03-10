@@ -1,3 +1,7 @@
+# 1.5.6
+
+* Material UI updated to version 7. Added implementation for ItemAction 'readOnly'.
+
 # 1.5.5
 
 * Removed "shrink" property from InputLabel for Choice item, this resolves the crossed label issue
