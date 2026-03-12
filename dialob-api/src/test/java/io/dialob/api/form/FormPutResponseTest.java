@@ -15,9 +15,12 @@
  */
 package io.dialob.api.form;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class FormPutResponseTest {
 
@@ -31,5 +34,21 @@ class FormPutResponseTest {
     assertNotNull(formPutResponse);
     assertEquals("form1", formPutResponse.getId());
     assertEquals("rev1", formPutResponse.getRev());
+  }
+
+  @Test
+  void jsonDeserialization() throws JsonProcessingException {
+    ObjectMapper objectMapper = new ObjectMapper();
+    var data = objectMapper.readValue("""
+      {
+        "id":"f1",
+        "rev":"1",
+        "reason":"test"
+      }
+      """, FormPutResponse.class);
+    assertEquals("f1", data.id());
+    assertEquals("1", data.rev());
+    assertEquals("test", data.reason());
+
   }
 }
