@@ -70,10 +70,23 @@ export const scrollToAddedItem = (item: DialobItem) => {
 export const scrollToChoiceItem = () => {
   const dialogContent = document.querySelector('.MuiDialogContent-root');
   if (dialogContent) {
-    setTimeout(() => dialogContent.scrollTo({
-      top: dialogContent.scrollHeight,
-      left: 0,
-      behavior: 'smooth'
-    }), 500);
+    // Use requestAnimationFrame to ensure DOM updates are complete,
+    // with a small delay to allow complex table layouts to finish rendering
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          // Find all choice item tables and get the last one
+          const choiceTables = dialogContent.querySelectorAll('table table');
+          const lastChoiceItem = choiceTables[choiceTables.length - 1];
+
+          // Scroll the last item into view
+          lastChoiceItem.scrollIntoView({
+            behavior: 'smooth',
+            block: 'nearest',
+            inline: 'nearest'
+          });
+        }, 100);
+      });
+    });
   }
 }
