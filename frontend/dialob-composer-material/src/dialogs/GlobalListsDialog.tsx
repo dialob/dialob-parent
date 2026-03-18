@@ -12,7 +12,7 @@ import ChoiceList from '../components/ChoiceList';
 import UploadValuesetDialog from './UploadValuesetDialog';
 import { useEditor } from '../editor';
 import { getErrorSeverity, getItemErrorColor } from '../utils/ErrorUtils';
-import { scrollToItem } from '../utils/ScrollUtils';
+import { scrollToItem, scrollToChoiceItem } from '../utils/ScrollUtils';
 import { downloadValueSet } from '../utils/ParseUtils';
 import { ErrorMessage } from '../components/ErrorComponents';
 import { BoldedMessage } from '../intl/BoldedMessage';
@@ -178,6 +178,7 @@ const GlobalListsDialogContent: React.FC = () => {
         }
         addValueSetEntry(currentValueSet.id, newEntry);
         setCurrentValueSet({ ...currentValueSet, entries: [newEntry] });
+        scrollToChoiceItem();
       } else {
         const newEntry = {
           id: 'choice' + (currentValueSet.entries?.length + 1),
@@ -185,6 +186,7 @@ const GlobalListsDialogContent: React.FC = () => {
         };
         addValueSetEntry(currentValueSet.id, newEntry);
         setCurrentValueSet({ ...currentValueSet, entries: [...currentValueSet.entries, newEntry] });
+        scrollToChoiceItem();
       }
     }
   }
