@@ -36,7 +36,7 @@ jobs:
           cache-dependency-path: dialob-docusaurus/package-lock.json
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --ignore-scripts
 
       - name: Build
         run: npm run build
