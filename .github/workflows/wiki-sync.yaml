@@ -1,0 +1,40 @@
+on:
+  gollum:
+  workflow_dispatch:
+
+name: Wiki - Sync to Docusaurus
+
+jobs:
+  sync:
+    name: Sync Wiki to Docusaurus Docs
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Clone wiki
+        run: git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.wiki.git wiki
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+
+      - name: Run sync script
+        run: node .github/scripts/sync-wiki.mjs
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add dialob-docusaurus/docs/
+          if git diff --staged --quiet; then
+            echo "No changes detected, skipping commit."
+          else
+            git commit -m "docs: sync wiki to Docusaurus"
+            git push
+          fi

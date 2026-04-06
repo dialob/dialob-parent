@@ -40,6 +40,15 @@ const config: Config = {
   onBrokenLinks: 'warn',
   onBrokenAnchors: 'ignore',
 
+  markdown: {
+    hooks: {
+      onBrokenMarkdownLinks: 'warn',
+      // Wiki pages may reference images using wiki-relative paths that don't
+      // exist in the Docusaurus static directory. Warn instead of failing the build.
+      onBrokenMarkdownImages: 'warn',
+    },
+  },
+
   i18n: {
     defaultLocale: 'en',
     locales: ['en'],
