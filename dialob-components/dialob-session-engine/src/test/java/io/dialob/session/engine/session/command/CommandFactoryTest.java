@@ -108,7 +108,7 @@ class CommandFactoryTest {
   void shouldNotTriggerItself() {
     ItemId itemId = IdUtils.toId("q1");
     Expression expression =
-      Operators.and(Operators.isActive(itemId), new NumberOperators().lt(Operators.var("q1", ValueType.INTEGER), Constant.builder().valueType(ValueType.INTEGER).value(0).build()));
+      Operators.and(Operators.isActive(itemId), new NumberOperators().lt(Operators.var(IdUtils.toId("q1"), ValueType.INTEGER), Constant.builder().valueType(ValueType.INTEGER).value(0).build()));
     //;
     var updateValidationCommand = CommandFactory.updateValidationCommand(new ErrorId(itemId, "err"), expression);
     Set<EventMatcher> eventMatchers = updateValidationCommand.eventMatchers();
