@@ -235,6 +235,74 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
     Mockito.verifyNoMoreInteractions(functionRegistry);
   }
 
+  @Test
+  void shouldCalculateExpressionVariablesInRowgroupsContextAndUpdateLabels() {
+    FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);
+    DialobSessionEvalContextFactory sessionContextFactory = new DialobSessionEvalContextFactory(functionRegistry, null);
+    DialobProgramFromFormCompiler compiler = new DialobProgramFromFormCompiler(functionRegistry);
+
+    DialobProgram dialobProgram = compiler.compileForm(new Form.Builder()
+      .id("123")
+      .name("123")
+      .putData("questionnaire", new FormItem.Builder()
+        .id("questionnaire")
+        .type("questionnaire")
+        .addItems("g")
+        .build())
+      .putData("g", new FormItem.Builder()
+        .id("g")
+        .type("group")
+        .addItems("rg")
+        .build())
+      .putData("rg", new FormItem.Builder()
+        .id("rg")
+        .type("rowgroup")
+        .addItems("q1","q2","info","summa")
+        .build())
+      .putData("q1", new FormItem.Builder()
+        .id("q1")
+        .type("number")
+        .build())
+      .putData("q2", new FormItem.Builder()
+        .id("q2")
+        .type("number")
+        .build())
+      .putData("info", new FormItem.Builder()
+        .id("info")
+        .type("note")
+        .label(Map.of("fi", "Summa on {summa}"))
+        .build())
+      .addVariables(new Variable.Builder()
+        .name("summa")
+        .context(false)
+        .expression("q1 + q2")
+        .build())
+      .metadata(new Form.Metadata.Builder()
+        .label("xxx")
+        .putAdditionalProperties("answersRequiredByDefault", true)
+        .build())
+      .build());
+
+    DialobSession session = dialobProgram.createSession(sessionContextFactory, null, null, "fi", null);
+    assertNotNull(session);
+    DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session, false);
+
+    dialobSessionUpdater.applyCommands(toCommands(addRow(toRef("rg"))));
+    assertVariableEquals(session, null, toRef("rg.0.summa"));
+    dialobSessionUpdater.applyCommands(toCommands(answer(toRef("rg.0.q1"), "1")));
+    assertActive(session, toRef("rg.0.info"));
+    assertLabel(session, toRef("rg.0.info"), "Summa on null");
+    dialobSessionUpdater.applyCommands(toCommands(answer(toRef("rg.0.q2"), "2")));
+//    assertActive(session, toRef("rg.0.q3"));
+    assertVariableEquals(session, BigInteger.valueOf(3), toRef("rg.0.summa"));
+    assertLabel(session, toRef("rg.0.info"), "Summa on 3");
+    dialobSessionUpdater.applyCommands(toCommands(answer(toRef("rg.0.q2"), null)));
+    dialobSessionUpdater.applyCommands(toCommands(answer(toRef("rg.0.q1"), null)));
+    assertVariableEquals(session, null, toRef("rg.0.summa"));
+
+    Mockito.verifyNoMoreInteractions(functionRegistry);
+  }
+
 
 
   @Test

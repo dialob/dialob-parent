@@ -22,7 +22,6 @@ import io.dialob.session.engine.program.ProgramBuilder;
 import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.program.model.Label;
 import io.dialob.session.engine.session.command.EventMatcher;
-import io.dialob.session.engine.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ValueSetId;
 import org.apache.commons.lang3.StringUtils;
@@ -62,7 +61,8 @@ public record LocalizedLabelOperator(
         if (matcher.group(1) == null) {
           expressions.add(Constant.builder().value(matcher.group(0)).valueType(ValueType.STRING).build());
         } else {
-          String itemId = matcher.group(1);
+          ItemId itemId = programBuilder.findItemBuilder(matcher.group(1))
+            .get().getId();
           var variableReference = Operators.var(itemId, ValueType.STRING);
           String format = matcher.group(2);
           if (StringUtils.isNotBlank(format)) {
@@ -73,16 +73,16 @@ public record LocalizedLabelOperator(
                 expressions.add(ToStringOperator.of(variableReference));
                 break;
               case "lowercase":
-                expressions.add(lowerCaseOf(toStringExpression(programBuilder, IdUtils.toId(itemId), variableReference)));
+                expressions.add(lowerCaseOf(toStringExpression(programBuilder, itemId, variableReference)));
                 break;
               case "uppercase":
-                expressions.add(upperCaseOf(toStringExpression(programBuilder, IdUtils.toId(itemId), variableReference)));
+                expressions.add(upperCaseOf(toStringExpression(programBuilder, itemId, variableReference)));
                 break;
               default:
                 expressions.add(FormatOperator.of(variableReference, format));
             }
           } else {
-            expressions.add(toStringExpression(programBuilder, IdUtils.toId(itemId), variableReference));
+            expressions.add(toStringExpression(programBuilder, itemId, variableReference));
           }
         }
         i = matcher.end();
