@@ -60,7 +60,7 @@ class PostSubmitHandlerTest {
 
     verify(requestFactory).createRequest(new URI("http://localhost:8080/here"), HttpMethod.POST);
     verify(httpHeaders).setAccept(Arrays.asList(MediaType.TEXT_PLAIN, MediaType.APPLICATION_JSON, MediaType.valueOf("application/*+json"), MediaType.ALL));
-    verify(httpHeaders).setContentType(MediaType.APPLICATION_JSON);
+    verify(httpHeaders).set("Content-Type", "application/json");
     verify(httpHeaders, times(2)).getContentType();
     verify(httpHeaders).put("Content-Type", List.of("application/json"));
     verify(httpHeaders).getContentLength();

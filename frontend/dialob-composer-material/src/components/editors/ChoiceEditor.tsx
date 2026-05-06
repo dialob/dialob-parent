@@ -70,7 +70,6 @@ const ChoiceEditor: React.FC = () => {
           label: {}
         }
         addValueSetEntry(currentValueSet.id, newEntry);
-        //setCurrentValueSet({ ...currentValueSet, entries: [newEntry] });
         scrollToChoiceItem();
       } else {
         const newEntry = {
@@ -78,7 +77,6 @@ const ChoiceEditor: React.FC = () => {
           label: {},
         };
         addValueSetEntry(currentValueSet.id, newEntry);
-        //setCurrentValueSet({ ...currentValueSet, entries: [...currentValueSet.entries, newEntry] });
         scrollToChoiceItem();
       }
     }

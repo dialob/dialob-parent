@@ -260,7 +260,17 @@ public abstract class AbstractDialobProgramTest {
       }
     }
     Assertions.fail("Error " + itemId + "." + errorCode + " not found");
+  }
 
+  protected void assertLabel(final DialobSession session, final ItemId itemId, String label) {
+    final Collection<ItemState> errorStates = session.itemStates().values();
+    for (var state : errorStates) {
+      if (state.id().equals(itemId)) {
+        Assertions.assertEquals(label, state.label());
+        return;
+      }
+    }
+    Assertions.fail("Label " + itemId + " not found");
   }
 
   protected ItemId toRef(String id) {

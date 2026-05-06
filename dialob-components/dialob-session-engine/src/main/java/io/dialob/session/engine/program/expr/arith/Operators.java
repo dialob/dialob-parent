@@ -83,7 +83,4 @@ public interface Operators {
   static VariableReference<?> var(@NonNull ItemId id, @NonNull ValueType valueType) {
     return new VariableReference.Builder<>().itemId(id).valueType(valueType).build();
   }
-  static VariableReference<?> var(@NonNull String id, @NonNull ValueType valueType) {
-    return var(ref(id), valueType);
-  }
 }
