@@ -38,7 +38,7 @@ class FormAzureBlobStorageDatabaseTest {
 
   private static final String AZURITE_IMAGE = "mcr.microsoft.com/azure-storage/azurite:3.35.0";
   private static final GenericContainer<?> AZURITE_CONTAINER = new GenericContainer<>(AZURITE_IMAGE)
-    .withCommand("azurite-blob", "--blobHost", "0.0.0.0")
+    .withCommand("azurite-blob", "--blobHost", "0.0.0.0", "--skipApiVersionCheck")
     .withExposedPorts(10000);
 
   private static final String DEFAULT_AZURITE_CONNECTION_STRING = "DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://127.0.0.1:%s/devstoreaccount1;";
