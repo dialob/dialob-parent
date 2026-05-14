@@ -28,7 +28,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.MediaType;
 import tools.jackson.core.JacksonException;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.time.Duration;
 import java.util.Objects;

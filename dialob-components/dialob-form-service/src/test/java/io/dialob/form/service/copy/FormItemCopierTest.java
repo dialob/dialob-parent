@@ -15,8 +15,6 @@
  */
 package io.dialob.form.service.copy;
 
-import tools.jackson.core.JacksonException;
-import tools.jackson.core.json.JsonFactoryBuilder;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.SerializationFeature;
 import io.dialob.api.form.Form;
@@ -33,7 +31,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 

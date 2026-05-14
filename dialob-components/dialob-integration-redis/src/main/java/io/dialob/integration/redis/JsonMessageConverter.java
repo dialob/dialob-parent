@@ -24,8 +24,6 @@ import org.springframework.messaging.converter.MessageConverter;
 import org.springframework.messaging.support.GenericMessage;
 import tools.jackson.core.JacksonException;
 
-import java.io.IOException;
-
 @Slf4j
 public class JsonMessageConverter<T> implements MessageConverter {
 

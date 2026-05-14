@@ -22,7 +22,6 @@ import io.dialob.api.form.FormTag;
 import io.dialob.api.form.FormValidationError;
 import io.dialob.api.rest.Errors;
 import io.dialob.api.rest.Response;
-import io.dialob.common.ErrorCodes;
 import io.dialob.db.spi.exceptions.DocumentNotFoundException;
 import io.dialob.form.service.api.FormDatabase;
 import io.dialob.form.service.api.FormVersionControlDatabase;

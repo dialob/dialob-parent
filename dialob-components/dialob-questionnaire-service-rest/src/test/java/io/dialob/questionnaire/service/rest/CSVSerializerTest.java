@@ -43,7 +43,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.function.Consumer;
 

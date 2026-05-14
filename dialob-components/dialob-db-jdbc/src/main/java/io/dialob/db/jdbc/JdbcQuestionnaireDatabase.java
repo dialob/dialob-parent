@@ -35,7 +35,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import java.io.IOException;
 import java.io.Reader;
 import java.sql.Timestamp;
 import java.util.ArrayList;
