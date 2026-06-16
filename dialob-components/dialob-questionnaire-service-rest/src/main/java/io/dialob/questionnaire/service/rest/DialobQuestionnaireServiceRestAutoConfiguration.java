@@ -17,6 +17,7 @@ package io.dialob.questionnaire.service.rest;
 
 import io.dialob.questionnaire.csvserializer.CSVSerializer;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
+import io.dialob.questionnaire.printout.DialobPrintoutWriter;
 import io.dialob.security.tenant.CurrentTenant;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,6 +31,11 @@ public class DialobQuestionnaireServiceRestAutoConfiguration {
   @Bean
   CSVSerializer csvSerializer(QuestionnaireDatabase questionnaireDatabase, CurrentTenant currentTenant) {
     return new CSVSerializer(questionnaireDatabase, currentTenant);
+  }
+
+  @Bean
+  DialobPrintoutWriter dialobPrintoutWriter() {
+    return new DialobPrintoutWriter();
   }
 
   @Bean

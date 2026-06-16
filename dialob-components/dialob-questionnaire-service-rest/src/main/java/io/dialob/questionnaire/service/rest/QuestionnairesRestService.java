@@ -211,6 +211,32 @@ public interface QuestionnairesRestService {
     String questionnaireId);
 
   /**
+   * Retrieves the printout body for a completed questionnaire.
+   * <p>
+   * The response is the generic printout shape (id, metadata, formMetadata, contextValues,
+   * form, pages, groups, items) consumed downstream (e.g. a Tagomi template) to render a PDF.
+   * The questionnaire session must be COMPLETED, otherwise a 409 is returned. The form is
+   * derived from the questionnaire metadata, so no form id needs to be supplied.
+   *
+   * @param questionnaireId the unique identifier of the questionnaire; must match the defined pattern
+   * @param timezone        IANA timezone used to format timestamps; defaults to {@code Europe/Helsinki}
+   * @param lang            optional language override; falls back to the questionnaire's language
+   * @return a ResponseEntity containing the printout body as a JSON string
+   */
+  @Operation(summary = "Get questionnaire printout",
+    description = "Returns the printout body of a completed questionnaire, used downstream to render a PDF. "
+      + "Structure, labels and value-set labels come from the form; visibility and label variables are "
+      + "re-derived from the stored answers.")
+  @GetMapping(path = "{questionnaireId}/printout", produces = MediaType.APPLICATION_JSON_VALUE)
+  ResponseEntity<String> getQuestionnairePrintout(
+    @Parameter(description = OpenApiDoc.QUESTIONNAIRE.QUEST_ID)
+    @PathVariable("questionnaireId") @Pattern(regexp = QUESTIONNAIRE_ID_PATTERN) String questionnaireId,
+    @Parameter(description = "IANA timezone used to format timestamps")
+    @RequestParam(value = "tz", defaultValue = "Europe/Helsinki") String timezone,
+    @Parameter(description = "Optional language override; defaults to the questionnaire's language")
+    @RequestParam(value = "lang", required = false) String lang);
+
+  /**
    * Deletes a questionnaire by its unique identifier.
    *
    * @param questionnaireId the unique identifier of the questionnaire to delete.
