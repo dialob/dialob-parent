@@ -118,6 +118,18 @@ See [Docker image README](docs/dialob-session-boot-docker.md).
 
 See [Dockerfile](dialob-session-boot/Dockerfile).
 
+## Documentation
+
+User-facing documentation is written in the [GitHub wiki](https://github.com/dialob/dialob-parent/wiki) and automatically synced into the Docusaurus site under [`dialob-docusaurus/`](dialob-docusaurus/).
+
+### How it works
+
+- **Source of truth**: the GitHub wiki. Edit docs there as usual.
+- **Sync**: every wiki page save triggers the `Wiki - Sync to Docusaurus` GitHub Actions workflow ([`.github/workflows/wiki-sync.yaml`](.github/workflows/wiki-sync.yaml)), which clones the wiki, runs [`scripts/sync-wiki.sh`](scripts/sync-wiki.sh) to inject Docusaurus frontmatter and rewrite internal links, then commits the result to `dialob-docusaurus/docs/`.
+- **Build**: any change under `dialob-docusaurus/` triggers the `Docusaurus - Build - Documentation` workflow ([`.github/workflows/docusaurus-build.yaml`](.github/workflows/docusaurus-build.yaml)), which builds and uploads the static site as a build artifact.
+
+The sync can also be triggered manually from the Actions tab via **Run workflow**.
+
 ## Additional Documentation
 
 - [Using S3 Data Storage](docs/S3.md)

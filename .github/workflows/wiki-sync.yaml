@@ -19,13 +19,8 @@ jobs:
       - name: Clone wiki
         run: git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.wiki.git wiki
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v5
-        with:
-          node-version: '24'
-
       - name: Run sync script
-        run: node .github/scripts/sync-wiki.mjs
+        run: bash scripts/sync-wiki.sh
 
       - name: Commit and push if changed
         run: |

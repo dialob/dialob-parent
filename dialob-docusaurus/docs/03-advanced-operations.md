@@ -372,8 +372,6 @@ Simply click on the download icon in the top right of the Composer window.
 
 ---
 
-<span id="localisation"></span>
-
 # Localisation
 
 ## Quick Summary
