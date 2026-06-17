@@ -6,13 +6,6 @@ on:
       - dev
       - main
 
-  pull_request:
-    paths:
-      - 'dialob-docusaurus/**'
-    branches:
-      - dev
-      - main
-
   workflow_dispatch:
 
 name: Docusaurus - Build - Documentation
