@@ -191,6 +191,18 @@ class QuestionnairesRestServiceControllerTest {
       .andExpect(status().isConflict());
   }
 
+  @Test
+  void shouldRejectPrintoutWhenInvalidTimezone() throws Exception {
+    when(questionnaireDatabase.findOne("t-123", "1234")).thenReturn(new Questionnaire.Builder()
+      .id("1234")
+      .metadata(new Questionnaire.Metadata.Builder().formId("f-1").status(Questionnaire.Metadata.Status.COMPLETED).language("en").build())
+      .build());
+
+    // the tz is validated before the form is loaded, so a bad zone short-circuits to 400
+    mockMvc.perform(get("/questionnaires/{questionnaireId}/printout", "1234").param("tz", "Not/AZone"))
+      .andExpect(status().isBadRequest());
+  }
+
 
   @Test
   void shouldUpdateQuestionnaireStatus() throws Exception {

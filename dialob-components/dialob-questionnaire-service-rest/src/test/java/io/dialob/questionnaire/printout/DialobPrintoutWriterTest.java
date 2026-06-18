@@ -23,6 +23,7 @@ import io.dialob.api.proto.ActionItem;
 import io.dialob.api.questionnaire.Answer;
 import io.dialob.api.questionnaire.ContextValue;
 import io.dialob.api.questionnaire.Questionnaire;
+import io.dialob.api.questionnaire.VariableValue;
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
@@ -36,6 +37,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
  * Verifies the printout body shape (pages / groups / items, byId / allIds, key / value / hiddenPrint),
@@ -52,6 +54,7 @@ class DialobPrintoutWriterTest {
   private final Map<String, FormItem> data = new LinkedHashMap<>();
   private final List<Answer> answers = new ArrayList<>();
   private final List<ContextValue> context = new ArrayList<>();
+  private final List<VariableValue> variables = new ArrayList<>();
   private final Map<String, ActionItem> engineItems = new HashMap<>();
 
   private void item(String id, String type, String labelEn, String activeWhen, String valueSetId, String... items) {
@@ -65,6 +68,11 @@ class DialobPrintoutWriterTest {
 
   private void answer(String id, Object value) {
     answers.add(new Answer.Builder().id(id).value(value).build());
+  }
+
+  /** A value calculated during the session (no form item), exposed to {@code {variable}} substitution. */
+  private void variable(String id, Object value) {
+    variables.add(new VariableValue.Builder().id(id).value(value).build());
   }
 
   /** Provide an engine-computed label for an item (otherwise the engine lookup returns nothing → fallback). */
@@ -97,6 +105,7 @@ class DialobPrintoutWriterTest {
         .formId("f-1").status(Questionnaire.Metadata.Status.COMPLETED).language(language).creator("bob").build())
       .answers(answers)
       .context(context)
+      .variableValues(variables)
       .build();
   }
 
@@ -245,6 +254,102 @@ class DialobPrintoutWriterTest {
     com.fasterxml.jackson.databind.JsonNode q1 = root.path("items").path("byId").path("q1");
     assertThat(iterableFieldNames(note)).containsExactlyInAnyOrder("type", "hiddenPrint", "key", "label");
     assertThat(iterableFieldNames(q1)).containsExactlyInAnyOrder("type", "label", "hiddenPrint", "key", "value");
+  }
+
+  @Test
+  void resolvesMultiChoiceValuesAndDropsUnknownEntries() throws Exception {
+    item("questionnaire", "questionnaire", null, null, null, "page1");
+    item("page1", "group", "Page 1", null, null, "g1");
+    item("g1", "group", "Group 1", null, null, "multi");
+    item("multi", "multichoice", "Pick", null, "vs1");
+    answer("multi", List.of("a", "b", "zzz")); // a,b resolve from vs1; zzz is unknown -> null
+
+    String json = writer.writePrintout(form(List.of(vs1())), questionnaire("en"), engine(), "en", tz);
+
+    com.fasterxml.jackson.databind.JsonNode value = new com.fasterxml.jackson.databind.ObjectMapper()
+      .readTree(json).path("items").path("byId").path("multi").path("value");
+    assertThat(value.isArray()).isTrue();
+    assertThat(value.get(0).asText()).isEqualTo("Option A");
+    assertThat(value.get(1).asText()).isEqualTo("Option B");
+    assertThat(value.get(2).isNull()).isTrue();
+  }
+
+  @Test
+  void keepsLabellessGroupWithVisibleDescendantAndDropsEmptyGroup() throws Exception {
+    item("questionnaire", "questionnaire", null, null, null, "page1");
+    item("page1", "group", "Page 1", null, null, "wrap", "empty");
+    item("wrap", "group", null, null, null, "inner"); // no label, nested group has a visible leaf -> kept
+    item("inner", "group", null, null, null, "q1");
+    item("q1", "text", "Name", null, null);
+    item("empty", "group", null, null, null, "q2"); // no label, child has no answer -> nothing visible -> dropped
+    item("q2", "text", "Unanswered", null, null);
+    answer("q1", "hi");
+
+    String json = writer.writePrintout(form(List.of(vs1())), questionnaire("en"), engine(), "en", tz);
+
+    com.fasterxml.jackson.databind.JsonNode groups = new com.fasterxml.jackson.databind.ObjectMapper()
+      .readTree(json).path("groups").path("byId");
+    assertThat(groups.has("wrap")).isTrue();
+    assertThat(groups.has("inner")).isTrue();
+    assertThat(groups.has("empty")).isFalse();
+  }
+
+  @Test
+  void fallbackStripsFormatModifierAndRendersPlaceholdersForUnansweredVars() throws Exception {
+    item("questionnaire", "questionnaire", null, null, null, "page1");
+    item("page1", "group", "Page 1", null, null, "g1");
+    item("g1", "group", "Group 1", null, null, "amount", "n1");
+    item("amount", "number", "Amount", null, null); // unanswered number var -> "0"
+    item("n1", "note", "When: {when:format}, amount: {amount}, who: {who}", null, null);
+    answer("when", "2020-01-02"); // referenced with a :modifier that gets stripped, value rendered verbatim
+    // amount unanswered number -> "0"; who unknown -> "-"; no engine label for n1 -> fallback substitution
+
+    String json = writer.writePrintout(form(List.of(vs1())), questionnaire("en"), engine(), "en", tz);
+
+    com.fasterxml.jackson.databind.JsonNode note = new com.fasterxml.jackson.databind.ObjectMapper()
+      .readTree(json).path("items").path("byId").path("n1").path("label");
+    assertThat(note.asText()).isEqualTo("When: 2020-01-02, amount: 0, who: -");
+  }
+
+  @Test
+  void marksItemHiddenWhenNoPrintPropSet() throws Exception {
+    item("questionnaire", "questionnaire", null, null, null, "page1");
+    item("page1", "group", "Page 1", null, null, "g1");
+    item("g1", "group", "Group 1", null, null, "secret");
+    data.put("secret", new FormItem.Builder().id("secret").type("text")
+      .label(Map.of("en", "Secret")).props(Map.of("noPrint", true)).build());
+    answer("secret", "x");
+
+    String json = writer.writePrintout(form(List.of(vs1())), questionnaire("en"), engine(), "en", tz);
+
+    com.fasterxml.jackson.databind.JsonNode secret = new com.fasterxml.jackson.databind.ObjectMapper()
+      .readTree(json).path("items").path("byId").path("secret");
+    assertThat(secret.path("hiddenPrint").asBoolean()).isTrue();
+  }
+
+  @Test
+  void usesCalculatedVariableValuesInSubstitution() throws Exception {
+    item("questionnaire", "questionnaire", null, null, null, "page1");
+    item("page1", "group", "Page 1", null, null, "g1");
+    item("g1", "group", "Group 1", null, null, "n1");
+    item("n1", "note", "Owner: {ownerName}", null, null);
+    variable("ownerName", "Acme"); // session-calculated variable (no form item) -> rendered verbatim
+    // no engine label for n1 -> fallback substitution reads the calculated variable value
+
+    String json = writer.writePrintout(form(List.of(vs1())), questionnaire("en"), engine(), "en", tz);
+
+    com.fasterxml.jackson.databind.JsonNode note = new com.fasterxml.jackson.databind.ObjectMapper()
+      .readTree(json).path("items").path("byId").path("n1").path("label");
+    assertThat(note.asText()).isEqualTo("Owner: Acme");
+  }
+
+  @Test
+  void throwsWhenFormHasNoQuestionnaireRoot() {
+    item("page1", "group", "Page 1", null, null); // no item of type "questionnaire"
+
+    assertThatThrownBy(() -> writer.writePrintout(form(List.of()), questionnaire("en"), engine(), "en", tz))
+      .isInstanceOf(IllegalStateException.class)
+      .hasMessageContaining("no questionnaire root");
   }
 
   private static List<String> iterableFieldNames(com.fasterxml.jackson.databind.JsonNode node) {
