@@ -74,7 +74,6 @@
     <immutables.version>2.12.1</immutables.version>
     <jetbrains-annotations.version>26.1.0</jetbrains-annotations.version>
     <jsoup.version>1.21.2</jsoup.version>
-    <json.version>20250517</json.version>
     <lombok.version>1.18.46</lombok.version>
     <protobuf-java.version>4.34.1</protobuf-java.version>
     <spotbugs-annotations.version>4.9.8</spotbugs-annotations.version>
@@ -297,11 +296,6 @@
         <groupId>org.jsoup</groupId>
         <artifactId>jsoup</artifactId>
         <version>${jsoup.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.json</groupId>
-        <artifactId>json</artifactId>
-        <version>${json.version}</version>
       </dependency>
       <dependency>
         <groupId>com.google.guava</groupId>

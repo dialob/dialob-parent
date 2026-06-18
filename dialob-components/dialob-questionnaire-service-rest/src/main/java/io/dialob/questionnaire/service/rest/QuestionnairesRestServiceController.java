@@ -220,8 +220,30 @@ public class QuestionnairesRestServiceController implements QuestionnairesRestSe
 
     final Form form = formDatabase.findOne(currentTenant.getId(), metadata.getFormId());
     final String language = (lang != null && !lang.isBlank()) ? lang : metadata.getLanguage();
-    final String body = printoutWriter.writePrintout(form, questionnaire, language, zoneId);
-    return ResponseEntity.ok(body);
+
+    // Rebuild a transient, non-persisted session over the stored answers and recompute it so the Dialob
+    // engine interpolates labels (incl. {variable} substitution in notes). The status is set to OPEN and
+    // — critically — the completed timestamp is cleared: the engine's isCompleted() checks the timestamp,
+    // not the status, and a completed session is frozen (rejects dispatch). Supplying an existing
+    // questionnaire keeps the session in-memory only. SET_LOCALE triggers the label interpolation.
+    final Questionnaire computeView = new Questionnaire.Builder().from(questionnaire)
+      .metadata(new Questionnaire.Metadata.Builder().from(metadata)
+        .status(Questionnaire.Metadata.Status.OPEN)
+        .completed(null)
+        .build())
+      .build();
+    final QuestionnaireSession session = questionnaireSessionBuilderFactory.createQuestionnaireSessionBuilder()
+      .questionnaire(computeView)
+      .formId(metadata.getFormId())
+      .build();
+    try {
+      session.dispatchActions(singletonList(ActionsFactory.setLocale(language)));
+      final String body = printoutWriter.writePrintout(
+        form, questionnaire, id -> session.getItemById(id).orElse(null), language, zoneId);
+      return ResponseEntity.ok(body);
+    } finally {
+      session.close();
+    }
   }
 
   /**

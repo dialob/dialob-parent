@@ -15,97 +15,94 @@
  */
 package io.dialob.questionnaire.printout;
 
-import java.io.StringWriter;
+import java.math.BigDecimal;
+import java.text.NumberFormat;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.json.JSONWriter;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.dialob.api.form.Form;
 import io.dialob.api.form.FormItem;
 import io.dialob.api.form.FormValueSet;
 import io.dialob.api.form.FormValueSetEntry;
+import io.dialob.api.proto.ActionItem;
 import io.dialob.api.questionnaire.Answer;
 import io.dialob.api.questionnaire.ContextValue;
 import io.dialob.api.questionnaire.Questionnaire;
-import io.dialob.questionnaire.printout.ActiveWhenEvaluator.NameResolver;
 
 /**
- * Serializes a completed questionnaire into the generic printout body JSON
- * (id, metadata, formMetadata, contextValues, form, pages, items, groups) consumed
- * downstream (e.g. a Tagomi template) to render a PDF.
+ * Serializes a completed questionnaire into the {@link PrintoutBody} JSON consumed downstream
+ * (e.g. a Tagomi template) to render a PDF.
  *
- * <p>The body is built from the static {@link Form} (structure, labels, value sets) and the
- * stored {@link Questionnaire} answers — not from the live session — because a completed Dialob
- * session is frozen and no longer exposes the computed hierarchy, labels or visibility. Item
- * visibility ({@code activeWhen}) and {@code {variable}} label substitution are therefore
- * re-derived here from the stored answers.
+ * <p>Structure, {@code activeWhen} visibility and value-set resolution come from the static
+ * {@link Form} and the stored {@link Questionnaire} answers. The displayed {@code label} is taken
+ * from the Dialob engine's computed {@link ActionItem} (so notes get the engine's locale-aware
+ * variable interpolation) when available, falling back to in-house {@code {variable}} substitution —
+ * which itself formats numeric variables with the questionnaire's locale. Serialized with Jackson.
  */
 public class DialobPrintoutWriter {
 
   private static final String FALLBACK_LANG = "en";
   private static final String PRINTOUT_DISABLE_PROPERTY = "noPrint";
   private static final DateTimeFormatter ISO_DATE_TIME = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
+  private static final ObjectMapper MAPPER = new ObjectMapper();
+  private static final Pattern NUMERIC = Pattern.compile("-?\\d+(\\.\\d+)?");
+
   private final Pattern substitutePattern = Pattern.compile("\\{([\\w:]+?)\\}");
 
-  private final ActiveWhenEvaluator evaluator = new ActiveWhenEvaluator();
-
-  public String writePrintout(Form form, Questionnaire questionnaire, String language, ZoneId timezone) {
-    Ctx ctx = new Ctx(form, questionnaire, language == null ? FALLBACK_LANG : language);
-    StringWriter buffer = new StringWriter();
-    JSONWriter w = new JSONWriter(buffer);
-
-    w.object();
-    w.key("id").value(questionnaire.getId());
-    writeMetadata(questionnaire, w, timezone);
-    writeFormMetadata(form, w, timezone);
-    writeContextValues(questionnaire, w);
-
+  public String writePrintout(Form form, Questionnaire questionnaire,
+                              Function<String, ActionItem> engineItem, String language, ZoneId timezone) {
+    Ctx ctx = new Ctx(form, questionnaire, language == null ? FALLBACK_LANG : language, engineItem);
     FormItem root = findRoot(form);
-    writeForm(root, w);
 
-    Set<String> groupList = new HashSet<>();
-    writePages(ctx, w, root);
+    Set<String> groupList = new LinkedHashSet<>();
     collectAllGroups(ctx, root.getId(), groupList);
     Set<String> itemList = collectSubitems(ctx, groupList);
-    writeSubitems(ctx, w, itemList);
-    writeGroups(ctx, w, groupList, itemList);
 
-    w.endObject();
-    return buffer.toString();
+    Map<String, Object> itemsById = new LinkedHashMap<>();
+    List<String> itemAllIds = buildSubitems(ctx, itemsById, itemList);
+
+    PrintoutBody body = new PrintoutBody(
+      questionnaire.getId(),
+      buildMetadata(questionnaire, timezone),
+      buildFormMetadata(form, timezone),
+      buildContextValues(questionnaire),
+      new PrintoutBody.FormRef(root.getItems()),
+      buildPages(ctx, root),
+      new PrintoutBody.Items(itemsById, itemAllIds),
+      buildGroups(ctx, groupList, new LinkedHashSet<>(itemAllIds)));
+
+    try {
+      return MAPPER.writeValueAsString(body);
+    } catch (JsonProcessingException e) {
+      throw new IllegalStateException("Failed to serialize printout for questionnaire " + questionnaire.getId(), e);
+    }
   }
 
-  private void writePages(Ctx ctx, JSONWriter w, FormItem root) {
-    w.key("pages").object().key("byId").object();
+  private PrintoutBody.Pages buildPages(Ctx ctx, FormItem root) {
+    Map<String, PrintoutBody.Page> byId = new LinkedHashMap<>();
     for (String pageId : root.getItems()) {
       FormItem page = findItem(ctx.form, pageId);
-      w.key(page.getId()).object();
-      w.key("type").value(page.getType());
-      w.key("label").value(getLabel(page, ctx.lang));
-      w.key("hiddenPrint").value(isHiddenPrint(page, ctx));
-      w.key("groupIds").value(page.getItems());
-      w.endObject();
+      byId.put(page.getId(), new PrintoutBody.Page(
+        page.getType(), getLabel(page, ctx.lang), isHiddenPrint(page, ctx), page.getItems()));
     }
-    w.endObject();
-    w.key("pageIds").value(root.getItems());
-    w.endObject();
-  }
-
-  private void writeForm(FormItem root, JSONWriter w) {
-    w.key("form").object().key("pages").value(root.getItems()).endObject();
+    return new PrintoutBody.Pages(byId, root.getItems());
   }
 
   private void collectAllGroups(Ctx ctx, String groupName, Set<String> groupList) {
@@ -122,7 +119,7 @@ public class DialobPrintoutWriter {
   }
 
   private Set<String> collectSubitems(Ctx ctx, Set<String> groupList) {
-    Set<String> itemList = new HashSet<>();
+    Set<String> itemList = new LinkedHashSet<>();
     for (String groupName : groupList) {
       FormItem group = findItem(ctx.form, groupName);
       for (String childName : group.getItems()) {
@@ -139,32 +136,23 @@ public class DialobPrintoutWriter {
     return itemList;
   }
 
-  private void writeGroups(Ctx ctx, JSONWriter w, Set<String> groupItems, Set<String> groupSubitems) {
-    Set<String> filtered = new HashSet<>();
+  private PrintoutBody.Groups buildGroups(Ctx ctx, Set<String> groupItems, Set<String> groupSubitems) {
+    Map<String, PrintoutBody.Group> byId = new LinkedHashMap<>();
     for (String name : groupItems) {
-      if (filterGroup(findItem(ctx.form, name), ctx, groupSubitems)) {
-        filtered.add(name);
-      }
-    }
-    w.key("groups").object().key("byId").object();
-    for (String name : filtered) {
       FormItem item = findItem(ctx.form, name);
-      w.key(item.getId()).object();
-      w.key("type").value(item.getType());
-      w.key("label").value(getLabel(item, ctx.lang));
-      w.key("hiddenPrint").value(isHiddenPrint(item, ctx));
-      w.key("itemIds").array();
+      if (!filterGroup(item, ctx, groupSubitems)) {
+        continue;
+      }
+      List<String> itemIds = new ArrayList<>();
       for (String sub : item.getItems()) {
         if (groupSubitems.contains(sub) || groupItems.contains(sub)) {
-          w.value(sub);
+          itemIds.add(sub);
         }
       }
-      w.endArray();
-      w.endObject();
+      byId.put(item.getId(), new PrintoutBody.Group(
+        item.getType(), getLabel(item, ctx.lang), isHiddenPrint(item, ctx), itemIds));
     }
-    w.endObject();
-    w.key("allIds").value(groupItems);
-    w.endObject();
+    return new PrintoutBody.Groups(byId, new ArrayList<>(groupItems));
   }
 
   private boolean filterGroup(FormItem group, Ctx ctx, Set<String> groupSubitems) {
@@ -183,44 +171,44 @@ public class DialobPrintoutWriter {
     return false;
   }
 
-  private void writeSubitems(Ctx ctx, JSONWriter w, Set<String> items) {
-    w.key("items").object().key("byId").object();
-    for (Iterator<String> it = items.iterator(); it.hasNext();) {
-      String itemId = it.next();
+  private List<String> buildSubitems(Ctx ctx, Map<String, Object> byId, Set<String> items) {
+    List<String> allIds = new ArrayList<>();
+    for (String itemId : items) {
       FormItem item = findItem(ctx.form, itemId);
-      if (item == null) { it.remove(); continue; }
+      if (item == null) {
+        continue;
+      }
       if ("rowgroup".equals(item.getType())) {
-        List<String> rows = writeRowgroupAnswer(ctx, w, item);
-        writeItem(w, ctx, item, null, rows, itemId);
-      } else if (!writeRegularItem(ctx, w, itemId, item)) {
-        it.remove();
+        List<String> rows = buildRowgroupAnswer(ctx, byId, item);
+        byId.put(itemId, item(ctx, item, rows, null));
+        allIds.add(itemId);
+      } else if (buildRegularItem(ctx, byId, itemId, item)) {
+        allIds.add(itemId);
       }
     }
-    w.endObject();
-    w.key("allIds").value(items);
-    w.endObject();
+    return allIds;
   }
 
   /** @return false (and the caller drops the item) when it has no answer and is not a note. */
-  private boolean writeRegularItem(Ctx ctx, JSONWriter w, String itemId, FormItem item) {
+  private boolean buildRegularItem(Ctx ctx, Map<String, Object> byId, String itemId, FormItem item) {
     Object answerValue = ctx.values.get(itemId);
     Object value = answerValue == null ? null : mapAnswerValue(item, answerValue, ctx);
     if (value != null) {
-      writeItem(w, ctx, item, value, answerValue, itemId);
+      byId.put(itemId, item(ctx, item, answerValue, value));
       return true;
     }
     if ("note".equals(item.getType())) {
-      writeNote(ctx, w, item, itemId);
+      byId.put(itemId, new PrintoutBody.Note(
+        item.getType(), isHiddenPrint(item, ctx), getLabel(item, ctx.lang), resolveLabel(item, ctx)));
       return true;
     }
     return false;
   }
 
-  private List<String> writeRowgroupAnswer(Ctx ctx, JSONWriter w, FormItem item) {
+  private List<String> buildRowgroupAnswer(Ctx ctx, Map<String, Object> byId, FormItem item) {
     Object value = ctx.values.get(item.getId());
     List<String> result = new ArrayList<>();
-    if (value instanceof List) {
-      List<?> indexes = (List<?>) value;
+    if (value instanceof List<?> indexes) {
       for (Object idxObj : indexes) {
         String rowId = item.getId() + "." + idxObj;
         result.add(rowId);
@@ -228,32 +216,17 @@ public class DialobPrintoutWriter {
         for (String columnName : item.getItems()) {
           FormItem columnItem = findItem(ctx.form, columnName);
           String cellId = rowId + "." + columnName;
-          writeRegularItem(ctx, w, cellId, columnItem);
+          buildRegularItem(ctx, byId, cellId, columnItem);
           cellIds.add(cellId);
         }
-        writeItem(w, ctx, item, null, cellIds, rowId);
+        byId.put(rowId, item(ctx, item, cellIds, null));
       }
     }
     return result;
   }
 
-  private void writeNote(Ctx ctx, JSONWriter w, FormItem item, String itemId) {
-    w.key(itemId).object();
-    w.key("type").value(item.getType());
-    w.key("hiddenPrint").value(isHiddenPrint(item, ctx));
-    w.key("key").value(getLabel(item, ctx.lang));
-    w.key("label").value(resolveLabel(item, ctx));
-    w.endObject();
-  }
-
-  private void writeItem(JSONWriter w, Ctx ctx, FormItem item, Object value, Object answerValue, String itemId) {
-    w.key(itemId).object();
-    w.key("type").value(item.getType());
-    w.key("label").value(resolveLabel(item, ctx));
-    w.key("hiddenPrint").value(isHiddenPrint(item, ctx));
-    w.key("key").value(answerValue);
-    w.key("value").value(value);
-    w.endObject();
+  private PrintoutBody.Item item(Ctx ctx, FormItem item, Object key, Object value) {
+    return new PrintoutBody.Item(item.getType(), resolveLabel(item, ctx), isHiddenPrint(item, ctx), key, value);
   }
 
   private Object mapAnswerValue(FormItem item, Object answerValue, Ctx ctx) {
@@ -286,7 +259,18 @@ public class DialobPrintoutWriter {
     return null;
   }
 
+  /**
+   * Displayed label — prefers the Dialob engine's computed label (locale-aware variable interpolation),
+   * falling back to in-house {@code {variable}} substitution over the form label.
+   */
   private String resolveLabel(FormItem item, Ctx ctx) {
+    ActionItem ai = ctx.engineItem.apply(item.getId());
+    if (ai != null) {
+      String engineLabel = ai.getLabel();
+      if (engineLabel != null && !engineLabel.isEmpty()) {
+        return engineLabel;
+      }
+    }
     return substituteVariables(getLabel(item, ctx.lang), ctx);
   }
 
@@ -309,10 +293,42 @@ public class DialobPrintoutWriter {
 
   private String getExpression(String name, Ctx ctx) {
     Object v = ctx.values.get(name);
-    if (v != null) return String.valueOf(v);
     FormItem fi = ctx.form.getData().get(name);
+    if (v != null) {
+      return formatVariable(v, fi, ctx);
+    }
     if (fi != null && "number".equals(fi.getType())) return "0";
     return "-";
+  }
+
+  /**
+   * Renders a substituted variable value. Numeric values are grouped per the questionnaire locale
+   * (e.g. {@code 45 646}), matching how the Dialob engine formats numbers; everything else is rendered
+   * verbatim. A value is treated as numeric only when the referenced item is a number/decimal field (or
+   * a computed/context variable) <em>and</em> the value parses cleanly as a number — so text, ids and
+   * phone numbers (e.g. {@code 010168-0066}) are never grouped.
+   */
+  private String formatVariable(Object v, FormItem fi, Ctx ctx) {
+    boolean numericField = fi == null || "number".equals(fi.getType()) || "decimal".equals(fi.getType());
+    if (numericField) {
+      BigDecimal n = toNumber(v);
+      if (n != null) {
+        return ctx.numberFormat.format(n);
+      }
+    }
+    return String.valueOf(v);
+  }
+
+  private static BigDecimal toNumber(Object v) {
+    if (v instanceof BigDecimal bd) return bd;
+    if (v instanceof Number num) return new BigDecimal(num.toString());
+    String s = String.valueOf(v).trim();
+    if (!NUMERIC.matcher(s).matches()) return null;
+    try {
+      return new BigDecimal(s);
+    } catch (NumberFormatException e) {
+      return null;
+    }
   }
 
   private String getLabel(FormItem item, String language) {
@@ -330,51 +346,43 @@ public class DialobPrintoutWriter {
     return isInactive(item, ctx);
   }
 
+  /**
+   * Visibility comes straight from the engine: an item is hidden when its computed {@code ActionItem}
+   * is marked inactive. The engine evaluates the form's full {@code activeWhen} expression language —
+   * so this no longer reimplements a subset of it. Items the engine never produced (id not in the
+   * computed view) default to visible.
+   */
   private boolean isInactive(FormItem item, Ctx ctx) {
-    String aw = item.getActiveWhen();
-    if (aw == null || aw.isBlank()) return false;
-    return !evaluator.isActive(aw, ctx.resolver);
+    ActionItem ai = ctx.engineItem.apply(item.getId());
+    return ai != null && Boolean.TRUE.equals(ai.getInactive());
   }
 
-  private void writeMetadata(Questionnaire q, JSONWriter w, ZoneId tz) {
-    w.key("metadata").object();
+  private PrintoutBody.Metadata buildMetadata(Questionnaire q, ZoneId tz) {
     var m = q.getMetadata();
-    w.key("created").value(writeDateTime(m.getCreated(), tz));
-    w.key("creator").value(m.getCreator());
-    w.key("formId").value(m.getFormId());
-    w.key("formRev").value(m.getFormRev());
-    w.key("label").value(m.getLabel());
-    w.key("language").value(m.getLanguage());
-    w.key("lastAnswer").value(writeDateTime(m.getLastAnswer(), tz));
-    w.key("owner").value(m.getOwner());
-    w.key("status").value(String.valueOf(m.getStatus()));
-    w.key("tenantId").value(m.getTenantId());
-    w.endObject();
+    return new PrintoutBody.Metadata(
+      writeDateTime(m.getCreated(), tz), m.getCreator(), m.getFormId(), m.getFormRev(),
+      m.getLabel(), m.getLanguage(), writeDateTime(m.getLastAnswer(), tz), m.getOwner(),
+      String.valueOf(m.getStatus()), m.getTenantId());
   }
 
-  private void writeFormMetadata(Form form, JSONWriter w, ZoneId tz) {
-    w.key("formMetadata").object();
+  private PrintoutBody.FormMetadata buildFormMetadata(Form form, ZoneId tz) {
     var m = form.getMetadata();
-    w.key("created").value(writeDateTime(m.getCreated(), tz));
-    w.key("creator").value(m.getCreator());
-    w.key("label").value(m.getLabel());
-    w.key("lastSaved").value(writeDateTime(m.getLastSaved(), tz));
-    w.key("savedBy").value(m.getSavedBy());
-    w.key("tenantId").value(m.getTenantId());
-    w.endObject();
+    return new PrintoutBody.FormMetadata(
+      writeDateTime(m.getCreated(), tz), m.getCreator(), m.getLabel(),
+      writeDateTime(m.getLastSaved(), tz), m.getSavedBy(), m.getTenantId());
   }
 
-  private void writeContextValues(Questionnaire q, JSONWriter w) {
-    w.key("contextValues").object();
+  private Map<String, Object> buildContextValues(Questionnaire q) {
+    Map<String, Object> contextValues = new LinkedHashMap<>();
     if (q.getContext() != null) {
       for (ContextValue cv : q.getContext()) {
-        w.key(cv.getId()).value(cv.getValue());
+        contextValues.put(cv.getId(), cv.getValue());
       }
     }
-    w.endObject();
+    return contextValues;
   }
 
-  private Object writeDateTime(Instant instant, ZoneId tz) {
+  private String writeDateTime(Instant instant, ZoneId tz) {
     return instant == null ? null : ISO_DATE_TIME.format(ZonedDateTime.ofInstant(instant, tz));
   }
 
@@ -394,12 +402,15 @@ public class DialobPrintoutWriter {
   private final class Ctx {
     final Form form;
     final String lang;
-    final Map<String, Object> values = new HashMap<>();
-    final NameResolver resolver;
+    final Map<String, Object> values = new LinkedHashMap<>();
+    final NumberFormat numberFormat;
+    final Function<String, ActionItem> engineItem;
 
-    Ctx(Form form, Questionnaire q, String lang) {
+    Ctx(Form form, Questionnaire q, String lang, Function<String, ActionItem> engineItem) {
       this.form = form;
       this.lang = lang;
+      this.engineItem = engineItem;
+      this.numberFormat = NumberFormat.getInstance(Locale.forLanguageTag(lang));
 
       if (q.getAnswers() != null) {
         for (Answer a : q.getAnswers()) {
@@ -416,15 +427,6 @@ public class DialobPrintoutWriter {
           if (c.getValue() != null) values.putIfAbsent(c.getId(), c.getValue());
         }
       }
-      this.resolver = new NameResolver() {
-        @Override public Object value(String name) { return values.get(name); }
-        @Override public boolean isAnswered(String name) {
-          Object v = values.get(name);
-          if (v == null) return false;
-          if (v instanceof Collection<?> c) return !c.isEmpty();
-          return !String.valueOf(v).isEmpty();
-        }
-      };
     }
   }
 }

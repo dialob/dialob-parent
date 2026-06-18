@@ -164,6 +164,12 @@ class QuestionnairesRestServiceControllerTest {
       .putData("page1", new FormItem.Builder().id("page1").type("group").label(java.util.Map.of("en", "P")).addItems("q1").build())
       .putData("q1", new FormItem.Builder().id("q1").type("text").label(java.util.Map.of("en", "Q1")).build())
       .build());
+    // the printout rebuilds a transient session for engine labels; here it returns none -> writer uses form labels
+    final QuestionnaireSession session = mock();
+    final QuestionnaireSessionBuilder sessionBuilder = mock(QuestionnaireSessionBuilder.class, RETURNS_SELF);
+    when(questionnaireSessionBuilderFactory.createQuestionnaireSessionBuilder()).thenReturn(sessionBuilder);
+    when(sessionBuilder.build()).thenReturn(session);
+    when(session.getItemById(any())).thenReturn(Optional.empty());
 
     mockMvc.perform(get("/questionnaires/{questionnaireId}/printout", "1234"))
       .andExpect(status().isOk())

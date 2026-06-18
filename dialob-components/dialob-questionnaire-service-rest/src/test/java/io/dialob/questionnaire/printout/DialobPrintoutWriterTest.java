@@ -19,7 +19,9 @@ import io.dialob.api.form.Form;
 import io.dialob.api.form.FormItem;
 import io.dialob.api.form.FormValueSet;
 import io.dialob.api.form.FormValueSetEntry;
+import io.dialob.api.proto.ActionItem;
 import io.dialob.api.questionnaire.Answer;
+import io.dialob.api.questionnaire.ContextValue;
 import io.dialob.api.questionnaire.Questionnaire;
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -27,15 +29,20 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
 
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Verifies that the printout body built from the static {@link Form} + stored answers keeps the
- * exact shape the downstream template consumes (pages / groups / items, byId / allIds,
- * key / value / hiddenPrint), and that visibility ({@code activeWhen}) and value-set label
- * resolution and rowgroup row/cell expansion behave as expected.
+ * Verifies the printout body shape (pages / groups / items, byId / allIds, key / value / hiddenPrint),
+ * value-set resolution and rowgroup expansion — from the form + answers — that visibility comes from the
+ * engine's computed {@code inactive} flag (no hand-rolled {@code activeWhen} evaluation), that the displayed
+ * {@code label} prefers the engine's computed label, and that the in-house fallback substitution formats
+ * numeric variables with the locale while leaving text/ids alone.
  */
 class DialobPrintoutWriterTest {
 
@@ -44,6 +51,8 @@ class DialobPrintoutWriterTest {
 
   private final Map<String, FormItem> data = new LinkedHashMap<>();
   private final List<Answer> answers = new ArrayList<>();
+  private final List<ContextValue> context = new ArrayList<>();
+  private final Map<String, ActionItem> engineItems = new HashMap<>();
 
   private void item(String id, String type, String labelEn, String activeWhen, String valueSetId, String... items) {
     FormItem.Builder b = new FormItem.Builder().id(id).type(type);
@@ -58,6 +67,21 @@ class DialobPrintoutWriterTest {
     answers.add(new Answer.Builder().id(id).value(value).build());
   }
 
+  /** Provide an engine-computed label for an item (otherwise the engine lookup returns nothing → fallback). */
+  private void engineLabel(String id, String label) {
+    engineItems.put(id, new ActionItem.Builder().id(id).type("note").label(label).build());
+  }
+
+  /** Mark an item inactive in the engine's computed view, so the writer hides it from the printout. */
+  private void engineInactive(String id) {
+    engineItems.put(id, new ActionItem.Builder().id(id).type("text").inactive(true).build());
+  }
+
+  /** Engine lookup; returns {@code null} for ids without an explicit engine label, so the writer falls back. */
+  private Function<String, ActionItem> engine() {
+    return engineItems::get;
+  }
+
   private Form form(List<FormValueSet> valueSets) {
     return new Form.Builder()
       .metadata(new Form.Metadata.Builder().label("My Form").tenantId("t-1").build())
@@ -66,12 +90,13 @@ class DialobPrintoutWriterTest {
       .build();
   }
 
-  private Questionnaire questionnaire() {
+  private Questionnaire questionnaire(String language) {
     return new Questionnaire.Builder()
       .id("q-123")
       .metadata(new Questionnaire.Metadata.Builder()
-        .formId("f-1").status(Questionnaire.Metadata.Status.COMPLETED).language("en").creator("bob").build())
+        .formId("f-1").status(Questionnaire.Metadata.Status.COMPLETED).language(language).creator("bob").build())
       .answers(answers)
+      .context(context)
       .build();
   }
 
@@ -89,11 +114,12 @@ class DialobPrintoutWriterTest {
     item("q1", "text", "Name", null, null);
     item("q2", "list", "Choice", null, "vs1");
     item("n1", "note", "Some note text", null, null);
-    item("q3", "text", "Hidden Q", "showHidden = 'yes'", null); // activeWhen false -> inactive -> excluded
+    item("q3", "text", "Hidden Q", "showHidden = 'yes'", null);
+    engineInactive("q3"); // engine computed it inactive -> excluded from the printout
     answer("q1", "hello");
     answer("q2", "a");
 
-    String json = writer.writePrintout(form(List.of(vs1())), questionnaire(), "en", tz);
+    String json = writer.writePrintout(form(List.of(vs1())), questionnaire("en"), engine(), "en", tz);
 
     String expected = """
       {
@@ -124,7 +150,43 @@ class DialobPrintoutWriterTest {
       """;
 
     JSONAssert.assertEquals(expected, json, JSONCompareMode.LENIENT);
-    org.assertj.core.api.Assertions.assertThat(json).doesNotContain("q3").doesNotContain("Hidden Q");
+    assertThat(json).doesNotContain("q3").doesNotContain("Hidden Q");
+  }
+
+  @Test
+  void prefersEngineComputedLabelOverFormTemplate() throws Exception {
+    item("questionnaire", "questionnaire", null, null, null, "page1");
+    item("page1", "group", "Page 1", null, null, "g1");
+    item("g1", "group", "Group 1", null, null, "n1");
+    item("n1", "note", "Saldo: {popSavings} eur", null, null); // form template
+    engineLabel("n1", "Saldo: 45 646 eur");                    // engine-computed (locale-grouped)
+
+    String json = writer.writePrintout(form(List.of(vs1())), questionnaire("fi"), engine(), "fi", tz);
+
+    com.fasterxml.jackson.databind.JsonNode note =
+      new com.fasterxml.jackson.databind.ObjectMapper().readTree(json).path("items").path("byId").path("n1");
+    assertThat(note.path("key").asText()).isEqualTo("Saldo: {popSavings} eur"); // raw template
+    assertThat(note.path("label").asText()).isEqualTo("Saldo: 45 646 eur");      // engine label
+  }
+
+  @Test
+  void fallbackFormatsNumericVariablesButLeavesTextAndIdsAlone() throws Exception {
+    item("questionnaire", "questionnaire", null, null, null, "page1");
+    item("page1", "group", "Page 1", null, null, "g1");
+    item("g1", "group", "Group 1", null, null, "popSavings", "phone", "n1");
+    item("popSavings", "number", "Savings", null, null);
+    item("phone", "text", "Phone", null, null);
+    item("n1", "note", "Savings: {popSavings}, phone: {phone}, hetu: {hetu}", null, null);
+    answer("popSavings", "45646");          // INTEGER stored as string -> grouped
+    answer("phone", "0401234567");          // text -> left as-is
+    context.add(ContextValue.of("hetu", "010168-0066")); // id-like -> not numeric -> left as-is
+    // no engine label for n1 -> writer falls back to in-house substitution
+
+    String json = writer.writePrintout(form(List.of(vs1())), questionnaire("en"), engine(), "en", tz);
+
+    com.fasterxml.jackson.databind.JsonNode note =
+      new com.fasterxml.jackson.databind.ObjectMapper().readTree(json).path("items").path("byId").path("n1");
+    assertThat(note.path("label").asText()).isEqualTo("Savings: 45,646, phone: 0401234567, hetu: 010168-0066");
   }
 
   @Test
@@ -134,13 +196,13 @@ class DialobPrintoutWriterTest {
     item("rg", "rowgroup", "Table", null, null, "c1", "c2");
     item("c1", "text", "Col1", null, null);
     item("c2", "list", "Col2", null, "vs1");
-    answer("rg", List.of(0, 1)); // two rows
+    answer("rg", List.of(0, 1));
     answer("rg.0.c1", "r0c1");
     answer("rg.0.c2", "a");
     answer("rg.1.c1", "r1c1");
     answer("rg.1.c2", "b");
 
-    String json = writer.writePrintout(form(List.of(vs1())), questionnaire(), "en", tz);
+    String json = writer.writePrintout(form(List.of(vs1())), questionnaire("en"), engine(), "en", tz);
 
     String expected = """
       {
@@ -164,5 +226,30 @@ class DialobPrintoutWriterTest {
       """;
 
     JSONAssert.assertEquals(expected, json, JSONCompareMode.LENIENT);
+    assertThat(json).contains("\"value\":null");
+  }
+
+  @Test
+  void notesOmitValueRegularItemsIncludeIt() throws Exception {
+    item("questionnaire", "questionnaire", null, null, null, "page1");
+    item("page1", "group", "Page 1", null, null, "g1");
+    item("g1", "group", "Group 1", null, null, "q1", "n1");
+    item("q1", "text", "Name", null, null);
+    item("n1", "note", "A note", null, null);
+    answer("q1", "hello");
+
+    String json = writer.writePrintout(form(List.of(vs1())), questionnaire("en"), engine(), "en", tz);
+
+    com.fasterxml.jackson.databind.JsonNode root = new com.fasterxml.jackson.databind.ObjectMapper().readTree(json);
+    com.fasterxml.jackson.databind.JsonNode note = root.path("items").path("byId").path("n1");
+    com.fasterxml.jackson.databind.JsonNode q1 = root.path("items").path("byId").path("q1");
+    assertThat(iterableFieldNames(note)).containsExactlyInAnyOrder("type", "hiddenPrint", "key", "label");
+    assertThat(iterableFieldNames(q1)).containsExactlyInAnyOrder("type", "label", "hiddenPrint", "key", "value");
+  }
+
+  private static List<String> iterableFieldNames(com.fasterxml.jackson.databind.JsonNode node) {
+    List<String> names = new ArrayList<>();
+    node.fieldNames().forEachRemaining(names::add);
+    return names;
   }
 }
