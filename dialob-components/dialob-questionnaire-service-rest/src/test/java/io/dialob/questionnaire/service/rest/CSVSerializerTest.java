@@ -23,6 +23,7 @@ import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.db.spi.spring.DatabaseExceptionMapper;
 import io.dialob.form.service.api.FormDatabase;
 import io.dialob.questionnaire.csvserializer.CSVSerializer;
+import io.dialob.questionnaire.printout.DialobPrintoutWriter;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSessionBuilderFactory;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSessionSaveService;
@@ -78,6 +79,11 @@ class CSVSerializerTest {
     @Bean
     CSVSerializer csvSerializer(QuestionnaireDatabase questionnaireDatabase, CurrentTenant currentTenant) {
       return new CSVSerializer(questionnaireDatabase, currentTenant);
+    }
+
+    @Bean
+    DialobPrintoutWriter dialobPrintoutWriter() {
+      return new DialobPrintoutWriter();
     }
 
   }
