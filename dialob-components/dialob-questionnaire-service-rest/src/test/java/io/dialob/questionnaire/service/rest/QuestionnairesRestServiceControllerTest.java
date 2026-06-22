@@ -152,7 +152,7 @@ class QuestionnairesRestServiceControllerTest {
   }
 
   @Test
-  void shouldReturnPrintoutForCompletedQuestionnaire() throws Exception {
+  void shouldReturnSessionStateForCompletedQuestionnaire() throws Exception {
     when(questionnaireDatabase.findOne("t-123", "1234")).thenReturn(new Questionnaire.Builder()
       .id("1234")
       .metadata(new Questionnaire.Metadata.Builder().formId("f-1").status(Questionnaire.Metadata.Status.COMPLETED).language("en").build())
@@ -164,14 +164,14 @@ class QuestionnairesRestServiceControllerTest {
       .putData("page1", new FormItem.Builder().id("page1").type("group").label(java.util.Map.of("en", "P")).addItems("q1").build())
       .putData("q1", new FormItem.Builder().id("q1").type("text").label(java.util.Map.of("en", "Q1")).build())
       .build());
-    // the printout rebuilds a transient session for engine labels; here it returns none -> writer uses form labels
+    // the session-state endpoint rebuilds a transient session for engine labels; here it returns none -> writer uses form labels
     final QuestionnaireSession session = mock();
     final QuestionnaireSessionBuilder sessionBuilder = mock(QuestionnaireSessionBuilder.class, RETURNS_SELF);
     when(questionnaireSessionBuilderFactory.createQuestionnaireSessionBuilder()).thenReturn(sessionBuilder);
     when(sessionBuilder.build()).thenReturn(session);
     when(session.getItemById(any())).thenReturn(Optional.empty());
 
-    mockMvc.perform(get("/questionnaires/{questionnaireId}/printout", "1234"))
+    mockMvc.perform(get("/questionnaires/{questionnaireId}/session-state", "1234"))
       .andExpect(status().isOk())
       .andExpect(content().contentType(MediaType.APPLICATION_JSON))
       .andExpect(jsonPath("$.id", is("1234")))
@@ -181,25 +181,25 @@ class QuestionnairesRestServiceControllerTest {
   }
 
   @Test
-  void shouldRejectPrintoutWhenNotCompleted() throws Exception {
+  void shouldRejectSessionStateWhenNotCompleted() throws Exception {
     when(questionnaireDatabase.findOne("t-123", "1234")).thenReturn(new Questionnaire.Builder()
       .id("1234")
       .metadata(new Questionnaire.Metadata.Builder().formId("f-1").status(Questionnaire.Metadata.Status.OPEN).build())
       .build());
 
-    mockMvc.perform(get("/questionnaires/{questionnaireId}/printout", "1234"))
+    mockMvc.perform(get("/questionnaires/{questionnaireId}/session-state", "1234"))
       .andExpect(status().isConflict());
   }
 
   @Test
-  void shouldRejectPrintoutWhenInvalidTimezone() throws Exception {
+  void shouldRejectSessionStateWhenInvalidTimezone() throws Exception {
     when(questionnaireDatabase.findOne("t-123", "1234")).thenReturn(new Questionnaire.Builder()
       .id("1234")
       .metadata(new Questionnaire.Metadata.Builder().formId("f-1").status(Questionnaire.Metadata.Status.COMPLETED).language("en").build())
       .build());
 
     // the tz is validated before the form is loaded, so a bad zone short-circuits to 400
-    mockMvc.perform(get("/questionnaires/{questionnaireId}/printout", "1234").param("tz", "Not/AZone"))
+    mockMvc.perform(get("/questionnaires/{questionnaireId}/session-state", "1234").param("tz", "Not/AZone"))
       .andExpect(status().isBadRequest());
   }
 

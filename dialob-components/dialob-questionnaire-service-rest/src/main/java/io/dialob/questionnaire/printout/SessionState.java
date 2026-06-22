@@ -19,11 +19,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Typed model of the printout body JSON consumed downstream (e.g. a Tagomi template) to render a PDF.
- * Serialized with Jackson by {@link DialobPrintoutWriter}. Field declaration order matches the
- * emitted JSON key order; {@code null}s are emitted (the consumer relies on the keys being present).
+ * Typed model of a completed questionnaire's serialized session state (id, metadata, formMetadata,
+ * contextValues, form, pages, groups, items). Its primary consumer is a printout pipeline (e.g. a
+ * Tagomi template rendering a PDF), but the data is a plain Dialob session view. Serialized with
+ * Jackson by {@link DialobPrintoutWriter}. Field declaration order matches the emitted JSON key
+ * order; {@code null}s are emitted (the consumer relies on the keys being present).
  */
-public record PrintoutBody(
+public record SessionState(
   String id,
   Metadata metadata,
   FormMetadata formMetadata,

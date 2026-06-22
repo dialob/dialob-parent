@@ -48,7 +48,7 @@ import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.api.questionnaire.VariableValue;
 
 /**
- * Serializes a completed questionnaire into the {@link PrintoutBody} JSON consumed downstream
+ * Serializes a completed questionnaire into the {@link SessionState} JSON consumed downstream
  * (e.g. a Tagomi template) to render a PDF.
  *
  * <p>Structure, {@code activeWhen} visibility and value-set resolution come from the static
@@ -79,14 +79,14 @@ public class DialobPrintoutWriter {
     Map<String, Object> itemsById = new LinkedHashMap<>();
     List<String> itemAllIds = buildSubitems(ctx, itemsById, itemList);
 
-    PrintoutBody body = new PrintoutBody(
+    SessionState body = new SessionState(
       questionnaire.getId(),
       buildMetadata(questionnaire, timezone),
       buildFormMetadata(form, timezone),
       buildContextValues(questionnaire),
-      new PrintoutBody.FormRef(root.getItems()),
+      new SessionState.FormRef(root.getItems()),
       buildPages(ctx, root),
-      new PrintoutBody.Items(itemsById, itemAllIds),
+      new SessionState.Items(itemsById, itemAllIds),
       buildGroups(ctx, groupList, new LinkedHashSet<>(itemAllIds)));
 
     try {
@@ -96,14 +96,14 @@ public class DialobPrintoutWriter {
     }
   }
 
-  private PrintoutBody.Pages buildPages(Ctx ctx, FormItem root) {
-    Map<String, PrintoutBody.Page> byId = new LinkedHashMap<>();
+  private SessionState.Pages buildPages(Ctx ctx, FormItem root) {
+    Map<String, SessionState.Page> byId = new LinkedHashMap<>();
     for (String pageId : root.getItems()) {
       FormItem page = findItem(ctx.form, pageId);
-      byId.put(page.getId(), new PrintoutBody.Page(
+      byId.put(page.getId(), new SessionState.Page(
         page.getType(), getLabel(page, ctx.lang), isHiddenPrint(page, ctx), page.getItems()));
     }
-    return new PrintoutBody.Pages(byId, root.getItems());
+    return new SessionState.Pages(byId, root.getItems());
   }
 
   private void collectAllGroups(Ctx ctx, String groupName, Set<String> groupList) {
@@ -135,8 +135,8 @@ public class DialobPrintoutWriter {
     return itemList;
   }
 
-  private PrintoutBody.Groups buildGroups(Ctx ctx, Set<String> groupItems, Set<String> groupSubitems) {
-    Map<String, PrintoutBody.Group> byId = new LinkedHashMap<>();
+  private SessionState.Groups buildGroups(Ctx ctx, Set<String> groupItems, Set<String> groupSubitems) {
+    Map<String, SessionState.Group> byId = new LinkedHashMap<>();
     for (String name : groupItems) {
       FormItem item = findItem(ctx.form, name);
       if (!filterGroup(item, ctx, groupSubitems)) {
@@ -148,10 +148,10 @@ public class DialobPrintoutWriter {
           itemIds.add(sub);
         }
       }
-      byId.put(item.getId(), new PrintoutBody.Group(
+      byId.put(item.getId(), new SessionState.Group(
         item.getType(), getLabel(item, ctx.lang), isHiddenPrint(item, ctx), itemIds));
     }
-    return new PrintoutBody.Groups(byId, new ArrayList<>(groupItems));
+    return new SessionState.Groups(byId, new ArrayList<>(groupItems));
   }
 
   private boolean filterGroup(FormItem group, Ctx ctx, Set<String> groupSubitems) {
@@ -197,7 +197,7 @@ public class DialobPrintoutWriter {
       return true;
     }
     if ("note".equals(item.getType())) {
-      byId.put(itemId, new PrintoutBody.Note(
+      byId.put(itemId, new SessionState.Note(
         item.getType(), isHiddenPrint(item, ctx), getLabel(item, ctx.lang), resolveLabel(item, ctx)));
       return true;
     }
@@ -224,8 +224,8 @@ public class DialobPrintoutWriter {
     return result;
   }
 
-  private PrintoutBody.Item item(Ctx ctx, FormItem item, Object key, Object value) {
-    return new PrintoutBody.Item(item.getType(), resolveLabel(item, ctx), isHiddenPrint(item, ctx), key, value);
+  private SessionState.Item item(Ctx ctx, FormItem item, Object key, Object value) {
+    return new SessionState.Item(item.getType(), resolveLabel(item, ctx), isHiddenPrint(item, ctx), key, value);
   }
 
   private Object mapAnswerValue(FormItem item, Object answerValue, Ctx ctx) {
@@ -356,17 +356,17 @@ public class DialobPrintoutWriter {
     return ai != null && Boolean.TRUE.equals(ai.getInactive());
   }
 
-  private PrintoutBody.Metadata buildMetadata(Questionnaire q, ZoneId tz) {
+  private SessionState.Metadata buildMetadata(Questionnaire q, ZoneId tz) {
     var m = q.getMetadata();
-    return new PrintoutBody.Metadata(
+    return new SessionState.Metadata(
       writeDateTime(m.getCreated(), tz), m.getCreator(), m.getFormId(), m.getFormRev(),
       m.getLabel(), m.getLanguage(), writeDateTime(m.getLastAnswer(), tz), m.getOwner(),
       String.valueOf(m.getStatus()), m.getTenantId());
   }
 
-  private PrintoutBody.FormMetadata buildFormMetadata(Form form, ZoneId tz) {
+  private SessionState.FormMetadata buildFormMetadata(Form form, ZoneId tz) {
     var m = form.getMetadata();
-    return new PrintoutBody.FormMetadata(
+    return new SessionState.FormMetadata(
       writeDateTime(m.getCreated(), tz), m.getCreator(), m.getLabel(),
       writeDateTime(m.getLastSaved(), tz), m.getSavedBy(), m.getTenantId());
   }

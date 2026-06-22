@@ -192,8 +192,8 @@ public class QuestionnairesRestServiceController implements QuestionnairesRestSe
    * @return
    */
   @Override
-  public ResponseEntity<String> getQuestionnairePrintout(String questionnaireId, String timezone, String lang) {
-    LOGGER.debug("GET /questionnaires/{}/printout", questionnaireId);
+  public ResponseEntity<String> getQuestionnaireSessionState(String questionnaireId, String timezone, String lang) {
+    LOGGER.debug("GET /questionnaires/{}/session-state", questionnaireId);
     final Questionnaire questionnaire = questionnaireRepository.findOne(currentTenant.getId(), questionnaireId);
     final Questionnaire.Metadata metadata = questionnaire.getMetadata();
 

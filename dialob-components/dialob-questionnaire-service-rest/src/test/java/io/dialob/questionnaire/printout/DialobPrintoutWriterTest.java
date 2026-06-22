@@ -40,7 +40,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
- * Verifies the printout body shape (pages / groups / items, byId / allIds, key / value / hiddenPrint),
+ * Verifies the session-state shape (pages / groups / items, byId / allIds, key / value / hiddenPrint),
  * value-set resolution and rowgroup expansion — from the form + answers — that visibility comes from the
  * engine's computed {@code inactive} flag (no hand-rolled {@code activeWhen} evaluation), that the displayed
  * {@code label} prefers the engine's computed label, and that the in-house fallback substitution formats
