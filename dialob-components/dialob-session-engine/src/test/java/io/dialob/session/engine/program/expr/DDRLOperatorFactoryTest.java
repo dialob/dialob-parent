@@ -257,4 +257,32 @@ class DDRLOperatorFactoryTest {
     assertInstanceOf(FunctionCallOperator.class, func);
   }
 
+  @Test
+  void shouldRejectNonConstantFormatArgument() {
+    DDRLOperatorFactory factory = new DDRLOperatorFactory();
+    Expression arg = VariableReference.of(IdUtils.toId("var1"), ValueType.STRING);
+
+    assertThrows(FormatExpressionException.class,
+      () -> factory.createOperator(ValueType.STRING, "format", List.of(arg)));
+  }
+
+  @Test
+  void shouldRejectNonStringConstantFormatArgument() {
+    DDRLOperatorFactory factory = new DDRLOperatorFactory();
+    Expression arg = new Constant<>(1, ValueType.INTEGER);
+
+    assertThrows(FormatExpressionException.class,
+      () -> factory.createOperator(ValueType.STRING, "format", List.of(arg)));
+  }
+
+  @Test
+  void shouldRejectFormatWithWrongArgumentCount() {
+    DDRLOperatorFactory factory = new DDRLOperatorFactory();
+    Expression arg1 = new Constant<>("a", ValueType.STRING);
+    Expression arg2 = new Constant<>("b", ValueType.STRING);
+
+    assertThrows(FormatExpressionException.class,
+      () -> factory.createOperator(ValueType.STRING, "format", List.of(arg1, arg2)));
+  }
+
 }

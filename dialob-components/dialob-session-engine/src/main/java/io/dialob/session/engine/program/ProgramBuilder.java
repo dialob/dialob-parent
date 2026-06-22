@@ -87,7 +87,7 @@ public class ProgramBuilder implements ExpressionCompiler, BuilderParent, Builde
 
   public ProgramBuilder(@NonNull FunctionRegistry functionRegistry) {
     this.functionRegistry = functionRegistry;
-    this.operatorFactory = new DDRLOperatorFactory();
+    this.operatorFactory = new DDRLOperatorFactory(this);
   }
 
   protected void addItem(Item item) {
@@ -383,6 +383,9 @@ public class ProgramBuilder implements ExpressionCompiler, BuilderParent, Builde
           return argTypes[0].getItemValueType();
         }
         return argTypes[0];
+      }
+      if (ParserUtil.isFormatFunction(functionName)) {
+        return ValueType.STRING;
       }
       return functionRegistry.returnTypeOf(functionName, argTypes);
     }

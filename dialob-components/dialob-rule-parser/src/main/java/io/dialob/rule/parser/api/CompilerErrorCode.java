@@ -53,4 +53,7 @@ public class CompilerErrorCode {
   public static final String ARRAY_TYPE_EXPECTED = "ARRAY_TYPE_EXPECTED";
   public static final String ARRAY_TYPE_UNEXPECTED = "ARRAY_TYPE_UNEXPECTED";
 
+  public static final String FORMAT_ARGUMENT_MUST_BE_CONSTANT = "FORMAT_ARGUMENT_MUST_BE_CONSTANT";
+  public static final String UNKNOWN_FORMAT_ITEM = "UNKNOWN_FORMAT_ITEM";
+
 }
