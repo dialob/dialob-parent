@@ -346,8 +346,11 @@ class DialobPrintoutWriterTest {
   @Test
   void throwsWhenFormHasNoQuestionnaireRoot() {
     item("page1", "group", "Page 1", null, null); // no item of type "questionnaire"
+    Form formWithoutRoot = form(List.of());
+    Questionnaire q = questionnaire("en");
+    Function<String, ActionItem> engineLookup = engine();
 
-    assertThatThrownBy(() -> writer.writePrintout(form(List.of()), questionnaire("en"), engine(), "en", tz))
+    assertThatThrownBy(() -> writer.writePrintout(formWithoutRoot, q, engineLookup, "en", tz))
       .isInstanceOf(IllegalStateException.class)
       .hasMessageContaining("no questionnaire root");
   }

@@ -45,6 +45,7 @@ import io.dialob.api.proto.ActionItem;
 import io.dialob.api.questionnaire.Answer;
 import io.dialob.api.questionnaire.ContextValue;
 import io.dialob.api.questionnaire.Questionnaire;
+import io.dialob.api.questionnaire.VariableValue;
 
 /**
  * Serializes a completed questionnaire into the {@link PrintoutBody} JSON consumed downstream
@@ -109,11 +110,9 @@ public class DialobPrintoutWriter {
     FormItem item = findItem(ctx.form, groupName);
     for (String childName : item.getItems()) {
       FormItem child = findItem(ctx.form, childName);
-      if (child != null && "group".equals(child.getType())) {
-        if (!isInactive(child, ctx)) {
-          groupList.add(childName);
-          collectAllGroups(ctx, childName, groupList);
-        }
+      if (child != null && "group".equals(child.getType()) && !isInactive(child, ctx)) {
+        groupList.add(childName);
+        collectAllGroups(ctx, childName, groupList);
       }
     }
   }
@@ -412,20 +411,17 @@ public class DialobPrintoutWriter {
       this.engineItem = engineItem;
       this.numberFormat = NumberFormat.getInstance(Locale.forLanguageTag(lang));
 
-      if (q.getAnswers() != null) {
-        for (Answer a : q.getAnswers()) {
-          if (a.getValue() != null) values.putIfAbsent(a.getId(), a.getValue());
-        }
-      }
-      if (q.getVariableValues() != null) {
-        for (var v : q.getVariableValues()) {
-          if (v.getValue() != null) values.putIfAbsent(v.getId(), v.getValue());
-        }
-      }
-      if (q.getContext() != null) {
-        for (ContextValue c : q.getContext()) {
-          if (c.getValue() != null) values.putIfAbsent(c.getId(), c.getValue());
-        }
+      index(q.getAnswers(), Answer::getId, Answer::getValue);
+      index(q.getVariableValues(), VariableValue::getId, VariableValue::getValue);
+      index(q.getContext(), ContextValue::getId, ContextValue::getValue);
+    }
+
+    /** Indexes a list of id/value holders into {@link #values}, keeping the first non-null value per id. */
+    private <T> void index(List<T> items, Function<T, String> id, Function<T, Object> value) {
+      if (items == null) return;
+      for (T item : items) {
+        Object v = value.apply(item);
+        if (v != null) values.putIfAbsent(id.apply(item), v);
       }
     }
   }
