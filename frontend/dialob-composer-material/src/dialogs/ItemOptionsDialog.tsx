@@ -70,7 +70,7 @@ const SaveIdButton: React.FC<{
 }> = ({ id, item, setIdError, setEditMode }) => {
   const { form, setForm, setRevision } = useComposer();
   const { changeItemId } = useBackend();
-  const { updateItemId } = useSave();
+  const { resetItem, resetValueSets } = useSave();
   const { setActiveItem, setErrors } = useEditor();
 
     const handleChangeId = () => {
@@ -84,8 +84,9 @@ const SaveIdButton: React.FC<{
             setIdError(false);
             setRevision(result.rev);
             setEditMode(false);
-            setActiveItem({ ...item, id: id });
-            updateItemId(id);
+            setActiveItem(result.form.data[id]);
+            resetItem(result.form.data[id]);
+            resetValueSets(result.form.valueSets ?? []);
           } else if (response.apiError) {
             setErrors([{ level: 'FATAL', message: response.apiError.message }]);
             setEditMode(false);
@@ -170,7 +171,7 @@ const ItemOptionsDialog: React.FC = () => {
   }
 
   return (
-    <SavingProvider savingState={{
+    <SavingProvider key={item.id} savingState={{
       item: structuredClone(item),
       valueSets: structuredClone(form.valueSets),
       composerMetadata: structuredClone(form.metadata.composer)

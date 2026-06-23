@@ -1,5 +1,5 @@
 import { produce } from "immer";
-import { ContextVariable, ContextVariableType, DialobItems, DialobItemTemplate, LocalizedString, TranslationMetadata, ValidationRule, ValueSetEntry, Variable } from "../../../types";
+import { ContextVariable, ContextVariableType, DialobItem, DialobItems, DialobItemTemplate, LocalizedString, TranslationMetadata, ValidationRule, ValueSet, ValueSetEntry, Variable } from "../../../types";
 import { cleanLocalizedString, cleanString } from "../../../utils/StringUtils";
 import { SavingAction } from "./SavingAction";
 import { SavingState } from "./SavingContext";
@@ -491,6 +491,14 @@ const resetVariables = (state: SavingState, variables: (ContextVariable | Variab
   state.variables = variables;
 }
 
+const resetItem = (state: SavingState, item: DialobItem): void => {
+  state.item = item;
+}
+
+const resetValueSets = (state: SavingState, valueSets: ValueSet[]): void => {
+  state.valueSets = valueSets;
+}
+
 const changeVariableId = (state: SavingState, variables: (ContextVariable | Variable)[]): void => {
   if (state.variables && state.items) {
     // Build a map of old variable names to new variable names
@@ -699,6 +707,10 @@ export const itemReducer = (state: SavingState, action: SavingAction): SavingSta
       resetItems(state, action.items);
     } else if (action.type === 'resetVariables') {
       resetVariables(state, action.variables);
+    } else if (action.type === 'resetItem') {
+      resetItem(state, action.item);
+    } else if (action.type === 'resetValueSets') {
+      resetValueSets(state, action.valueSets);
     } else if (action.type === 'setMetadataValue') {
       setMetadataValue(state, action.attr, action.value);
     } else if (action.type === 'applyTranslations') {

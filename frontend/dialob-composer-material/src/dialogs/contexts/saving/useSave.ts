@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { SavingContext } from './SavingContext';
-import { ContextVariable, ContextVariableType, DialobItems, DialobItemTemplate, LocalizedString, ValidationRule, ValueSetEntry, Variable } from '../../../types';
+import { ContextVariable, ContextVariableType, DialobItem, DialobItems, DialobItemTemplate, LocalizedString, ValidationRule, ValueSet, ValueSetEntry, Variable } from '../../../types';
 import { TranslationResult } from '../../../backend/types';
 
 export const useSave = () => {
@@ -137,6 +137,14 @@ export const useSave = () => {
     dispatch({ type: 'resetVariables', variables });
   }
 
+  const resetItem = (item: DialobItem) => {
+    dispatch({ type: 'resetItem', item });
+  }
+
+  const resetValueSets = (valueSets: ValueSet[]) => {
+    dispatch({ type: 'resetValueSets', valueSets });
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const setMetadataValue = (attr: string, value: any) => {
     dispatch({ type: 'setMetadataValue', attr, value });
@@ -187,6 +195,8 @@ export const useSave = () => {
     clearPendingRenames,
     resetItems,
     resetVariables,
+    resetItem,
+    resetValueSets,
     setMetadataValue,
     applyTranslations,
     addAITranslation,

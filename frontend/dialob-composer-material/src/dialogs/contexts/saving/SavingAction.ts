@@ -1,5 +1,5 @@
 import {
-  DialobItemTemplate, ValueSetEntry, ValidationRule, LocalizedString,
+  DialobItem, DialobItemTemplate, ValueSet, ValueSetEntry, ValidationRule, LocalizedString,
   ContextVariableType,
   ContextVariable,
   Variable,
@@ -46,6 +46,8 @@ export type SavingAction =
   | { type: 'clearPendingRenames' }
   | { type: 'resetItems', items: DialobItems }
   | { type: 'resetVariables', variables: (ContextVariable | Variable)[] }
+  | { type: 'resetItem', item: DialobItem }
+  | { type: 'resetValueSets', valueSets: ValueSet[] }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   | { type: 'setMetadataValue', attr: string, value: any }
   | { type: 'applyTranslations', translations: TranslationResult[], sourceLanguage: string, targetLanguage: string }
