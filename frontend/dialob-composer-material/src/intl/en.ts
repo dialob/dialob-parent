@@ -336,6 +336,8 @@ const en = {
   'errors.message.ARRAY_TYPE_EXPECTED': 'Array type expected',
   'errors.message.ARRAY_TYPE_UNEXPECTED': 'Array type unexpected',
   'errors.message.FORM_SOURCE_ITEM_NOT_FOUND': 'Form source item not found',
+  'errors.message.FORMAT_ARGUMENT_MUST_BE_CONSTANT': 'format() argument must be a string literal',
+  'errors.message.UNKNOWN_FORMAT_ITEM': 'Unknown item in format() template',
 
   'markdownEditor.format': 'Format',
   'markdownEditor.list': 'List',
