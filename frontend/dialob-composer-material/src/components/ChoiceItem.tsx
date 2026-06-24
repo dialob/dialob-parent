@@ -1,7 +1,6 @@
 import React from "react";
-import { Box, IconButton, TableCell, TableRow, TextField, Typography, alpha, useTheme, Tooltip } from '@mui/material';
-import { Close, Edit, PostAdd } from "@mui/icons-material";
-import { FormattedMessage } from "react-intl";
+import { Box, IconButton, Table, TableBody, TableCell, TableRow, TextField, Typography, alpha, useTheme } from '@mui/material';
+import { ArrowDownward, ArrowUpward, Close, Edit } from "@mui/icons-material";
 import { useComposer } from "../dialob";
 import ChoiceDeleteDialog from "../dialogs/ChoiceDeleteDialog";
 import { useErrorColor } from "../utils/ErrorUtils";
@@ -17,8 +16,6 @@ import AITranslationIndicator from "./translations/AITranslationIndicator";
 import TranslateButton from "./translations/TranslateButton";
 import { useAITranslation } from "./translations";
 import { buildValueSetEntryId } from "../utils/TranslationUtils";
-import { DragHandle, DragHandleProps } from "./DragHandle";
-import { SortableHandleProps } from "./useSortableRow";
 
 
 export interface ChoiceItemProps {
@@ -26,14 +23,11 @@ export interface ChoiceItemProps {
   index: number,
   valueSetId?: string,
   isGlobal?: boolean,
-  onRuleEdit: (index: number, rule: string) => void,
-  onTextEdit: (index: number, label: LocalizedString) => void,
-  onDelete: (index: number) => void,
-  onUpdateId: (index: number, id: string) => void,
-  onInsertBelow: (index: number) => void,
-  setNodeRef?: (node: HTMLElement | null) => void,
-  style?: React.CSSProperties,
-  handleProps?: SortableHandleProps,
+  onRuleEdit: (entry: ValueSetEntry, rule: string) => void,
+  onTextEdit: (entry: ValueSetEntry, label: LocalizedString) => void,
+  onDelete: (entry: ValueSetEntry) => void,
+  onUpdateId: (entry: ValueSetEntry, id: string) => void,
+  onMove?: (entry: ValueSetEntry, direction: 'up' | 'down') => void
 }
 
 type ExpandedField = 'id' | 'rule' | string | null;
@@ -44,13 +38,10 @@ const truncate = (value: string | undefined, maxLen = 28) => {
 };
 
 const ChoiceItem: React.FC<ChoiceItemProps> = (props) => {
-  const {
-    entry, index, valueSetId, isGlobal, onRuleEdit, onTextEdit, onDelete, onUpdateId, onInsertBelow,
-    setNodeRef, style, handleProps,
-  } = props;
+  const { entry, index, valueSetId, isGlobal, onRuleEdit, onTextEdit, onDelete, onUpdateId, onMove } = props;
   const { form } = useComposer();
   const { editor } = useEditor();
-  const { applyTranslations } = useSave();
+  const { savingState, moveValueSetEntry, applyTranslations } = useSave();
   const { translateEntries, config } = useBackend();
   const theme = useTheme();
   const formLanguages = form.metadata.languages;
@@ -64,6 +55,7 @@ const ChoiceItem: React.FC<ChoiceItemProps> = (props) => {
   const [localizedString, setLocalizedString] = React.useState<LocalizedString>(entry.label || {});
   const [localRule, setLocalRule] = React.useState(entry.when ?? '');
   const [translatingLanguage, setTranslatingLanguage] = React.useState<string | null>(null);
+  const length = savingState.valueSets?.find(v => v.id === valueSetId)?.entries?.length || 0;
 
   const getEntryId = (): string => {
     return buildValueSetEntryId(valueSetId!, index, entry.id);
@@ -90,7 +82,7 @@ const ChoiceItem: React.FC<ChoiceItemProps> = (props) => {
   const handleUpdate = (value: string, language: string) => {
     const updated = { ...localizedString, [language]: value };
     setLocalizedString(updated);
-    onTextEdit(index, updated);
+    onTextEdit(entry, updated);
     if (isAITranslated(language)) {
       removeFlag(language);
     }
@@ -100,7 +92,7 @@ const ChoiceItem: React.FC<ChoiceItemProps> = (props) => {
     const updated = { ...localizedString };
     delete updated[language];
     setLocalizedString(updated);
-    onTextEdit(index, updated);
+    onTextEdit(entry, updated);
     if (isAITranslated(language)) {
       removeFlag(language);
     }
@@ -109,12 +101,20 @@ const ChoiceItem: React.FC<ChoiceItemProps> = (props) => {
   const handleChangeId = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newId = e.target.value;
     setLocalId(newId);
-    onUpdateId(index, newId);
+    onUpdateId(entry, newId);
   };
 
   const handleUpdateRule = (value: string) => {
     setLocalRule(value);
-    onRuleEdit(index, value);
+    onRuleEdit(entry, value);
+  };
+
+  const handleMove = (direction: 'up' | 'down') => {
+    if (valueSetId) {
+      const newIndex = direction === 'up' ? index - 1 : index + 1;
+      moveValueSetEntry(valueSetId, index, newIndex);
+      onMove?.(entry, direction);
+    }
   };
 
   const handleTranslate = async (targetLanguage: string) => {
@@ -171,116 +171,113 @@ const ChoiceItem: React.FC<ChoiceItemProps> = (props) => {
 
   return (
     <>
-      <ChoiceDeleteDialog open={open} itemId={entry.id} onClick={() => onDelete(index)} onClose={() => setOpen(false)} />
-      <TableRow
-        ref={setNodeRef}
-        style={style}
-        data-choice-item-row
-        sx={{ backgroundColor: alpha(backgroundColor, 0.1) }}
-      >
-        <TableCell align='center' width='15%'>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <IconButton sx={{ p: 0.5 }} onClick={() => setOpen(true)}><Close color='error' /></IconButton>
-            <Tooltip title={<FormattedMessage id='menus.insert.below' />}>
-              <IconButton sx={{ p: 0.5 }} onClick={() => onInsertBelow(index)}>
-                <PostAdd color='success' />
+      <ChoiceDeleteDialog open={open} itemId={entry.id} onClick={() => onDelete(entry)} onClose={() => setOpen(false)} />
+      <Table>
+        <TableBody>
+          <TableRow sx={{ backgroundColor: alpha(backgroundColor, 0.1) }}>
+            <TableCell align='center' width='15%'>
+              <IconButton sx={{ p: 0.5 }} onClick={() => setOpen(true)}><Close color='error' /></IconButton>
+              <IconButton sx={{ p: 0.5 }} onClick={() => handleMove('up')} disabled={index === 0}>
+                <ArrowUpward />
               </IconButton>
-            </Tooltip>
-            <DragHandle {...handleProps as DragHandleProps} />
-          </Box>
-        </TableCell>
-
-        <TableCell width={isGlobal ? '20%' : '15%'} sx={{ p: 0.5 }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Typography variant='body2' noWrap sx={{ flex: 1 }}>{truncate(localId)}</Typography>
-            <IconButton size='small' sx={editBtnSx(expandedField === 'id', theme.palette.warning.main)} onClick={() => toggleField('id')}>
-              <Edit fontSize='small' color={expandedField === 'id' ? 'warning' : 'inherit'} />
-            </IconButton>
-          </Box>
-        </TableCell>
-
-        {!isGlobal && (
-          <TableCell width='15%' sx={{ p: 0.5 }}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <Typography variant='body2' noWrap sx={{ flex: 1, color: entry.when ? 'text.primary' : 'text.disabled' }}>
-                {truncate(entry.when)}
-              </Typography>
-              <IconButton size='small' sx={editBtnSx(expandedField === 'rule', theme.palette.primary.main)} onClick={() => toggleField('rule')}>
-                <Edit fontSize='small' color={expandedField === 'rule' ? 'primary' : 'inherit'} />
+              <IconButton sx={{ p: 0.5 }} onClick={() => handleMove('down')} disabled={index === length - 1}>
+                <ArrowDownward />
               </IconButton>
-            </Box>
-          </TableCell>
-        )}
+            </TableCell>
 
-        {formLanguages?.map(lang => {
-          const hasValue = localizedString && localizedString[lang] !== undefined;
-          const sourceLanguage = editor.activeFormLanguage;
-          const hasSourceValue = localizedString && localizedString[sourceLanguage];
-          const canTranslate = !hasValue && hasSourceValue && lang !== sourceLanguage && config.translationServiceUrl;
-          const isTranslating = translatingLanguage === lang;
-          const aiMetadata = isAITranslated(lang) ? getAITranslationMetadata(lang) : null;
-
-          return (
-            <TableCell key={lang} width={formLanguages ? `${(isGlobal ? 65 : 55) / formLanguages.length}%` : 0} sx={{ p: 0.5 }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                <Typography variant='body2' noWrap sx={{ flex: 1 }}>{truncate(localizedString?.[lang])}</Typography>
-                <IconButton size='small' sx={editBtnSx(expandedField === lang, theme.palette.action.active)} onClick={() => toggleField(lang)}>
-                  <Edit fontSize='small' color='inherit' />
+            <TableCell width={isGlobal ? '20%' : '15%'} sx={{ p: 0.5 }}>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Typography variant='body2' noWrap sx={{ flex: 1 }}>{truncate(localId)}</Typography>
+                <IconButton size='small' sx={editBtnSx(expandedField === 'id', theme.palette.warning.main)} onClick={() => toggleField('id')}>
+                  <Edit fontSize='small' color={expandedField === 'id' ? 'warning' : 'inherit'} />
                 </IconButton>
-                {canTranslate && (
-                  <TranslateButton
-                    sourceLanguage={sourceLanguage}
-                    targetLanguage={lang}
-                    isTranslating={isTranslating}
-                    onClick={() => handleTranslate(lang)}
-                  />
-                )}
-                {aiMetadata && (
-                  <AITranslationIndicator
-                    metadata={aiMetadata}
-                    onClick={() => removeFlag(lang)}
-                  />
-                )}
               </Box>
             </TableCell>
-          );
-        })}
-      </TableRow>
 
-      {expandedField && (
-        <TableRow>
-          <TableCell colSpan={colSpan} sx={{ p: 1, backgroundColor: expandedBg }}>
-            {expandedField === 'id' && (
-              <TextField
-                value={localId}
-                onChange={handleChangeId}
-                variant='standard'
-                fullWidth
-                InputProps={{ disableUnderline: true }}
-                autoFocus
-              />
+            {!isGlobal && (
+              <TableCell width='15%' sx={{ p: 0.5 }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <Typography variant='body2' noWrap sx={{ flex: 1, color: entry.when ? 'text.primary' : 'text.disabled' }}>
+                    {truncate(entry.when)}
+                  </Typography>
+                  <IconButton size='small' sx={editBtnSx(expandedField === 'rule', theme.palette.primary.main)} onClick={() => toggleField('rule')}>
+                    <Edit fontSize='small' color={expandedField === 'rule' ? 'primary' : 'inherit'} />
+                  </IconButton>
+                </Box>
+              </TableCell>
             )}
-            {expandedField === 'rule' && (
-              <CodeEditorWithClear value={localRule || undefined} onClear={() => handleUpdateRule('')}>
-                <CodeMirror value={localRule} onChange={handleUpdateRule} />
-              </CodeEditorWithClear>
-            )}
-            {formLanguages?.includes(expandedField) && (
-              <TextEditorWithClear
-                value={localizedString?.[expandedField]}
-                onChange={(value) => handleUpdate(value, expandedField)}
-                onClear={localizedString?.[expandedField] !== undefined ? () => handleClearLanguage(expandedField) : undefined}
-                variant='standard'
-                fullWidth
-                multiline
-                InputProps={{ disableUnderline: true }}
-                autoFocus
-                sx={{ pt: 0.5 }}
-              />
-            )}
-          </TableCell>
-        </TableRow>
-      )}
+
+            {formLanguages?.map(lang => {
+              const hasValue = localizedString && localizedString[lang] !== undefined;
+              const sourceLanguage = editor.activeFormLanguage;
+              const hasSourceValue = localizedString && localizedString[sourceLanguage];
+              const canTranslate = !hasValue && hasSourceValue && lang !== sourceLanguage && config.translationServiceUrl;
+              const isTranslating = translatingLanguage === lang;
+              const aiMetadata = isAITranslated(lang) ? getAITranslationMetadata(lang) : null;
+
+              return (
+                <TableCell key={lang} width={formLanguages ? `${(isGlobal ? 65 : 55) / formLanguages.length}%` : 0} sx={{ p: 0.5 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                    <Typography variant='body2' noWrap sx={{ flex: 1 }}>{truncate(localizedString?.[lang])}</Typography>
+                    <IconButton size='small' sx={editBtnSx(expandedField === lang, theme.palette.action.active)} onClick={() => toggleField(lang)}>
+                      <Edit fontSize='small' color='inherit' />
+                    </IconButton>
+                    {canTranslate && (
+                      <TranslateButton
+                        sourceLanguage={sourceLanguage}
+                        targetLanguage={lang}
+                        isTranslating={isTranslating}
+                        onClick={() => handleTranslate(lang)}
+                      />
+                    )}
+                    {aiMetadata && (
+                      <AITranslationIndicator
+                        metadata={aiMetadata}
+                        onClick={() => removeFlag(lang)}
+                      />
+                    )}
+                  </Box>
+                </TableCell>
+              );
+            })}
+          </TableRow>
+
+          {expandedField && (
+            <TableRow>
+              <TableCell colSpan={colSpan} sx={{ p: 1, backgroundColor: expandedBg }}>
+                {expandedField === 'id' && (
+                  <TextField
+                    value={localId}
+                    onChange={handleChangeId}
+                    variant='standard'
+                    fullWidth
+                    InputProps={{ disableUnderline: true }}
+                    autoFocus
+                  />
+                )}
+                {expandedField === 'rule' && (
+                  <CodeEditorWithClear value={localRule || undefined} onClear={() => handleUpdateRule('')}>
+                    <CodeMirror value={localRule} onChange={handleUpdateRule} />
+                  </CodeEditorWithClear>
+                )}
+                {formLanguages?.includes(expandedField) && (
+                  <TextEditorWithClear
+                    value={localizedString?.[expandedField]}
+                    onChange={(value) => handleUpdate(value, expandedField)}
+                    onClear={localizedString?.[expandedField] !== undefined ? () => handleClearLanguage(expandedField) : undefined}
+                    variant='standard'
+                    fullWidth
+                    multiline
+                    InputProps={{ disableUnderline: true }}
+                    autoFocus
+                    sx={{ pt: 0.5 }}
+                  />
+                )}
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
     </>
   );
 };

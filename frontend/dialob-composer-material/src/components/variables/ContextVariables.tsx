@@ -7,68 +7,13 @@ import ContextVariableRow from "./ContextVariableRow";
 import { isContextVariable } from "../../utils/ItemUtils";
 import { ContextVariable } from "../../types";
 import { useSave } from "../../dialogs/contexts/saving/useSave";
-import { SortableFlatList } from "../SortableFlatList";
-import { useSortableRow } from "../useSortableRow";
-import { scrollToVariableRow } from "../../utils/ScrollUtils";
-
-const contextSortableId = (index: number) => `context-${index}`;
-
-const SortableContextVariableRow: React.FC<{
-  item: ContextVariable;
-  index: number;
-  sortableId: string;
-  onClose: () => void;
-  onInsertBelow: (index: number) => void;
-}> = ({ sortableId, ...rowProps }) => {
-  const { setNodeRef, style, handleProps } = useSortableRow(sortableId);
-  return (
-    <ContextVariableRow
-      {...rowProps}
-      setNodeRef={setNodeRef}
-      style={style}
-      handleProps={handleProps}
-    />
-  );
-};
 
 const ContextVariables: React.FC<{ onClose: () => void }> = ({ onClose }) => {
-  const { savingState, createVariable, moveVariable } = useSave();
-
-  const contextVariableRows = React.useMemo(() => {
-    if (!savingState.variables) {
-      return [];
-    }
-    return savingState.variables
-      .map((variable, absoluteIndex) => ({ variable, absoluteIndex }))
-      .filter((row): row is { variable: ContextVariable; absoluteIndex: number } =>
-        isContextVariable(row.variable)
-      );
-  }, [savingState.variables]);
-
-  const itemIds = contextVariableRows.map((_, index) => contextSortableId(index));
+  const { savingState, createVariable } = useSave();
 
   const handleAdd = () => {
     createVariable(true);
-    scrollToVariableRow();
-  };
-
-  const handleInsertBelow = (index: number) => {
-    const row = contextVariableRows[index];
-    if (!row) {
-      return;
-    }
-    createVariable(true, row.absoluteIndex);
-    scrollToVariableRow(index + 1);
-  };
-
-  const handleReorder = (activeId: string, overId: string) => {
-    const fromFilteredIndex = itemIds.indexOf(activeId);
-    const toFilteredIndex = itemIds.indexOf(overId);
-    const row = contextVariableRows[fromFilteredIndex];
-    if (fromFilteredIndex >= 0 && toFilteredIndex >= 0 && row) {
-      moveVariable(row.variable.name, toFilteredIndex, true);
-    }
-  };
+  }
 
   return (
     <BorderedTable sx={{ tableLayout: 'fixed' }}>
@@ -97,20 +42,11 @@ const ContextVariables: React.FC<{ onClose: () => void }> = ({ onClose }) => {
           </TableCell>
         </TableRow>
       </TableHead>
-      <SortableFlatList itemIds={itemIds} onReorder={handleReorder}>
-        <TableBody>
-          {contextVariableRows.map(({ variable }, index) => (
-            <SortableContextVariableRow
-              key={itemIds[index]}
-              sortableId={itemIds[index]}
-              item={variable}
-              index={index}
-              onClose={onClose}
-              onInsertBelow={handleInsertBelow}
-            />
-          ))}
-        </TableBody>
-      </SortableFlatList>
+      <TableBody>
+        {(savingState.variables?.filter(v => isContextVariable(v)) as ContextVariable[])?.map((item, index) => (
+          <ContextVariableRow key={index} index={index} item={item} onClose={onClose} />
+        ))}
+      </TableBody>
     </BorderedTable>
   )
 }

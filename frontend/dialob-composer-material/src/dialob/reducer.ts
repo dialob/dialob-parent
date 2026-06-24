@@ -7,8 +7,6 @@ import {
   DialobItem
 } from '../types';
 import { isContextVariable } from '../utils/ItemUtils';
-import { shiftValueSetTranslationIndices, syncValueSetTranslationIndices } from '../utils/ValueSetUtils';
-import { reorderVariableSubset } from '../utils/VariableUtils';
 import { cleanLocalizedString, cleanString } from '../utils/StringUtils';
 import { SavingState } from '../dialogs/contexts/saving/SavingContext';
 import { FlattenedItem } from '../components/tree/types';
@@ -382,19 +380,13 @@ const setValueSetEntries = (state: ComposerState, valueSetId: string, entries: V
   }
 }
 
-const addValueSetEntry = (state: ComposerState, valueSetId: string, entry?: ValueSetEntry, insertAfterIndex?: number): void => {
+const addValueSetEntry = (state: ComposerState, valueSetId: string, entry?: ValueSetEntry): void => {
   if (state.valueSets) {
     const vsIdx = state.valueSets.findIndex(vs => vs.id === valueSetId);
     if (vsIdx > -1) {
       const cleanedEntry: ValueSetEntry = entry ? { ...entry, label: cleanLocalizedString(entry.label) } : { id: '', label: {} };
       if (state.valueSets[vsIdx].entries !== undefined) {
-        if (insertAfterIndex !== undefined && insertAfterIndex >= -1) {
-          const insertIndex = insertAfterIndex + 1;
-          shiftValueSetTranslationIndices(state.metadata.composer?.aiTranslations, valueSetId, insertIndex, 1);
-          state.valueSets[vsIdx].entries!.splice(insertIndex, 0, cleanedEntry);
-        } else {
-          state.valueSets[vsIdx].entries!.push(cleanedEntry);
-        }
+        state.valueSets[vsIdx].entries!.push(cleanedEntry);
       } else {
         state.valueSets[vsIdx].entries = [cleanedEntry];
       }
@@ -459,10 +451,8 @@ const moveValueSetEntry = (state: ComposerState, valueSetId: string, from: numbe
   if (state.valueSets) {
     const vsIdx = state.valueSets.findIndex(vs => vs.id === valueSetId);
     if (vsIdx > -1 && state.valueSets[vsIdx].entries !== undefined) {
-      const entries = state.valueSets[vsIdx].entries!;
-      const newIndex = to > entries.length ? entries.length - 1 : to;
-      entries.splice(newIndex, 0, entries.splice(from, 1)[0]);
-      syncValueSetTranslationIndices(state.metadata.composer?.aiTranslations, valueSetId, entries);
+      const newIndex = to > state.valueSets[vsIdx].entries!.length ? state.valueSets[vsIdx].entries!.length - 1 : to;
+      state.valueSets[vsIdx].entries!.splice(newIndex, 0, state.valueSets[vsIdx].entries!.splice(from, 1)[0]);
     }
   }
 }
@@ -520,7 +510,7 @@ const setContextValue = (state: ComposerState, name: string, value: string): voi
   }
 }
 
-const createVariable = (state: ComposerState, context: boolean, insertAfterIndex?: number): void => {
+const createVariable = (state: ComposerState, context: boolean): void => {
   const variableId = generateItemIdWithPrefix(state, context ? 'context' : 'var');
 
   const variable: ContextVariable | Variable = context ? {
@@ -534,8 +524,6 @@ const createVariable = (state: ComposerState, context: boolean, insertAfterIndex
 
   if (!Array.isArray(state.variables)) {
     state.variables = [variable];
-  } else if (insertAfterIndex !== undefined && insertAfterIndex >= -1) {
-    state.variables.splice(insertAfterIndex + 1, 0, variable);
   } else {
     state.variables.push(variable);
   }
@@ -637,9 +625,11 @@ const updateVariableDescription = (state: ComposerState, variableId: string, des
   }
 }
 
-const moveVariable = (state: ComposerState, name: string, toFilteredIndex: number, context: boolean): void => {
-  if (state.variables) {
-    reorderVariableSubset(state.variables, name, toFilteredIndex, context);
+const moveVariable = (state: ComposerState, origin: ContextVariable | Variable, destination: ContextVariable | Variable): void => {
+  const originIdx = state.variables?.findIndex(v => v.name === origin.name);
+  const destinationIdx = state.variables?.findIndex(v => v.name === destination.name);
+  if (originIdx !== undefined && destinationIdx !== undefined && originIdx > -1 && destinationIdx > -1 && state.variables) {
+    [state.variables[originIdx], state.variables[destinationIdx]] = [state.variables[destinationIdx], state.variables[originIdx]];
   }
 }
 
@@ -760,7 +750,7 @@ const applyListChanges = (state: ComposerState, newState: SavingState): void => 
 const applyVariableChanges = (state: ComposerState, newState: SavingState): void => {
   // Apply changes from the SavingContext - used to apply changes made in the VariablesDialog
   state.variables = newState.variables;
-
+  
   // Also apply any modified items (e.g., rowgroup items arrays that were updated)
   if (newState.items) {
     Object.keys(newState.items).forEach(itemId => {
@@ -796,7 +786,7 @@ const applyTranslations = (state: ComposerState, translations: TranslationResult
 
   translations.forEach(translation => {
     const parts = translation.id.split(':');
-
+    
     if (parts[0] === 'i') {
       // Item translation: i:itemId:type or i:itemId:v:index
       const itemId = parts[1];
@@ -854,7 +844,7 @@ const removeAITranslation = (state: ComposerState, entryId: string, targetLangua
   if (!state.metadata.composer?.aiTranslations) {
     return;
   }
-
+  
   state.metadata.composer.aiTranslations = state.metadata.composer.aiTranslations.filter(
     t => !(t.entryId === entryId && t.targetLanguage === targetLanguage)
   );
@@ -898,7 +888,7 @@ export const formReducer = (state: ComposerState, action: ComposerAction, callba
     } else if (action.type === 'setValueSetEntries') {
       setValueSetEntries(state, action.valueSetId, action.entries);
     } else if (action.type === 'addValueSetEntry') {
-      addValueSetEntry(state, action.valueSetId, action.entry, action.insertAfterIndex);
+      addValueSetEntry(state, action.valueSetId, action.entry);
     } else if (action.type === 'updateValueSetEntry') {
       updateValueSetEntry(state, action.valueSetId, action.index, action.entry);
     } else if (action.type === 'updateValueSetEntryLabel') {
@@ -918,7 +908,7 @@ export const formReducer = (state: ComposerState, action: ComposerAction, callba
     } else if (action.type === 'setContextValue') {
       setContextValue(state, action.name, action.value);
     } else if (action.type === 'createVariable') {
-      createVariable(state, action.context, action.insertAfterIndex);
+      createVariable(state, action.context);
     } else if (action.type === 'createScopedExpressionVariable') {
       createScopedExpressionVariable(state, action.rowgroupId, action.callbacks ?? callbacks);
     } else if (action.type === 'updateContextVariable') {
@@ -932,7 +922,7 @@ export const formReducer = (state: ComposerState, action: ComposerAction, callba
     } else if (action.type === 'deleteVariable') {
       deleteVariable(state, action.variableId);
     } else if (action.type === 'moveVariable') {
-      moveVariable(state, action.name, action.toFilteredIndex, action.context);
+      moveVariable(state, action.origin, action.destination);
     } else if (action.type === 'addLanguage') {
       addLanguage(state, action.language, action.copyFrom);
     } else if (action.type === 'deleteLanguage') {

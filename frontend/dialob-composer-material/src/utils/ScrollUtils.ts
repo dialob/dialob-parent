@@ -67,21 +67,20 @@ export const scrollToAddedItem = (item: DialobItem) => {
   }), 500);
 }
 
-// Scrolls a table row (matched by data-attribute selector) into view inside the open dialog.
-// When index is omitted or out of range, the last row is targeted (used after appending).
-const scrollToDialogRow = (rowSelector: string, index?: number) => {
+export const scrollToChoiceItem = () => {
   const dialogContent = document.querySelector('.MuiDialogContent-root');
   if (dialogContent) {
-    // Double rAF + small delay lets complex table layouts finish rendering the new row first.
+    // Use requestAnimationFrame to ensure DOM updates are complete,
+    // with a small delay to allow complex table layouts to finish rendering
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         setTimeout(() => {
-          const rows = dialogContent.querySelectorAll(rowSelector);
-          const target = index !== undefined && index >= 0 && index < rows.length
-            ? rows[index]
-            : rows[rows.length - 1];
+          // Find all choice item tables and get the last one
+          const choiceTables = dialogContent.querySelectorAll('table table');
+          const lastChoiceItem = choiceTables[choiceTables.length - 1];
 
-          target?.scrollIntoView({
+          // Scroll the last item into view
+          lastChoiceItem.scrollIntoView({
             behavior: 'smooth',
             block: 'nearest',
             inline: 'nearest'
@@ -91,7 +90,3 @@ const scrollToDialogRow = (rowSelector: string, index?: number) => {
     });
   }
 }
-
-export const scrollToChoiceItem = (index?: number) => scrollToDialogRow('[data-choice-item-row]', index);
-
-export const scrollToVariableRow = (index?: number) => scrollToDialogRow('[data-variable-row]', index);

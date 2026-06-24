@@ -1,26 +1,34 @@
 import React from 'react';
-import { Alert, Box, IconButton, TableCell, TableRow, Tooltip, Typography, alpha, useTheme } from '@mui/material';
-import { Edit, PostAdd, Warning } from '@mui/icons-material';
-import { FormattedMessage } from 'react-intl';
+import { Alert, Box, IconButton, TableCell, TableRow, Typography, alpha, useTheme } from '@mui/material';
 import { Variable } from '../../types';
 import { useEditor } from '../../editor';
 import { getErrorSeverity, useErrorColorSx } from '../../utils/ErrorUtils';
-import { DeleteButton, DescriptionField, ExpressionField, NameField, PublishedSwitch, UsersField, SortableVariableRowProps } from './VariableComponents';
+import { DeleteButton, DescriptionField, ExpressionField, NameField, PublishedSwitch, UsersField, VariableProps } from './VariableComponents';
+import { ArrowDownward, ArrowUpward, Edit, Warning } from '@mui/icons-material';
 import { ErrorMessage } from '../ErrorComponents';
-import { DragHandle, DragHandleProps } from '../DragHandle';
+import { isContextVariable } from '../../utils/ItemUtils';
+import { useSave } from '../../dialogs/contexts/saving/useSave';
 
 type ExpandedField = 'name' | 'expression' | 'description' | null;
 
-const ExpressionVariableRow: React.FC<SortableVariableRowProps> = React.memo(function ExpressionVariableRow({
-  index, item, onClose, onInsertBelow, setNodeRef, style, handleProps,
-}) {
+const ExpressionVariableRow: React.FC<VariableProps> = React.memo(function ExpressionVariableRow({ index, item, onClose }) {
   const { editor } = useEditor();
+  const { savingState, moveVariable } = useSave();
   const theme = useTheme();
   const variable = item as Variable;
   const errorColorSx = useErrorColorSx(editor.errors, variable.name);
   const backgroundColor = errorColorSx ? errorColorSx : theme.palette.background.paper;
   const itemErrors = editor.errors?.filter(e => e.itemId === variable.name);
   const [expandedField, setExpandedField] = React.useState<ExpandedField>(null);
+  const expressionVariables = savingState.variables?.filter(v => !isContextVariable(v));
+
+  const handleMove = (direction: 'up' | 'down') => {
+    const destination = direction === 'up' ? index - 1 : index + 1;
+    const destinationVariable = expressionVariables?.[destination];
+    if (destinationVariable) {
+      moveVariable(variable, destinationVariable);
+    }
+  }
 
   const toggleField = (field: ExpandedField) => {
     setExpandedField(prev => prev === field ? null : field);
@@ -44,21 +52,22 @@ const ExpressionVariableRow: React.FC<SortableVariableRowProps> = React.memo(fun
 
   return (
     <>
-      <TableRow
-        ref={setNodeRef}
-        style={style}
-        data-variable-row
-        sx={{ backgroundColor: alpha(backgroundColor, 0.1) }}
-      >
+      <TableRow key={variable.name} sx={{ backgroundColor: alpha(backgroundColor, 0.1) }}>
         <TableCell width='10%' align='center' sx={{ p: 1 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <DeleteButton variable={variable} />
-            <Tooltip title={<FormattedMessage id='menus.insert.below' />}>
-              <IconButton sx={{ p: 0.5 }} onClick={() => onInsertBelow(index)}>
-                <PostAdd color='success' />
+            <IconButton
+              sx={{ p: 0.5 }}
+              disabled={index === 0}
+              onClick={() => handleMove('up')}>
+                <ArrowUpward />
               </IconButton>
-            </Tooltip>
-            <DragHandle {...handleProps as DragHandleProps} />
+            <IconButton
+              sx={{ p: 0.5 }}
+              disabled={index === (expressionVariables?.length || 0) - 1}
+              onClick={() => handleMove('down')}>
+              <ArrowDownward />
+            </IconButton>
           </Box>
         </TableCell>
         <TableCell width='10%' align='center' sx={{ p: 1 }}>

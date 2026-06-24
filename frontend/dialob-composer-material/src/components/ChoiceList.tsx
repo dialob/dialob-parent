@@ -1,147 +1,93 @@
 import React from "react";
-import { TableBody } from "@mui/material";
+import { TableBody, TableCell, TableRow } from "@mui/material";
+import { useComposer } from "../dialob";
 import ChoiceItem from "./ChoiceItem";
 import { LocalizedString, ValueSet, ValueSetEntry } from "../types";
 import { useSave } from "../dialogs/contexts/saving/useSave";
-import { SortableFlatList } from "./SortableFlatList";
-import { useSortableRow } from "./useSortableRow";
-import { createDefaultValueSetEntry } from "../utils/ValueSetUtils";
-import { arrayMove } from "@dnd-kit/sortable";
-import { scrollToChoiceItem } from "../utils/ScrollUtils";
 
-
-const SortableChoiceItem: React.FC<{
-  entry: ValueSetEntry;
-  index: number;
-  sortableId: string;
-  valueSetId: string;
-  isGlobal?: boolean;
-  onRuleEdit: (index: number, rule: string) => void;
-  onTextEdit: (index: number, label: LocalizedString) => void;
-  onDelete: (index: number) => void;
-  onUpdateId: (index: number, id: string) => void;
-  onInsertBelow: (index: number) => void;
-}> = (props) => {
-  const { sortableId, ...itemProps } = props;
-  const { setNodeRef, style, handleProps } = useSortableRow(sortableId);
-
-  return (
-    <ChoiceItem
-      {...itemProps}
-      setNodeRef={setNodeRef}
-      style={style}
-      handleProps={handleProps}
-    />
-  );
-};
 
 const ChoiceList: React.FC<{
   valueSet?: ValueSet,
   updateValueSet?: (value: React.SetStateAction<ValueSet | undefined>) => void,
   isGlobal?: boolean
 }> = ({ valueSet, updateValueSet, isGlobal }) => {
-  const { deleteValueSetEntry, updateValueSetEntry, addValueSetEntry, moveValueSetEntry } = useSave();
-  const entries = valueSet?.entries ?? [];
-  const itemIds = entries.map((_, index) => `${valueSet?.id}-${index}`);
+  const { form } = useComposer();
+  const { deleteValueSetEntry, updateValueSetEntry } = useSave();
+  const languageNo = form.metadata.languages?.length || 0;
 
-  const updateValueSetEntryId = (index: number, id: string) => {
-    if (valueSet?.entries?.[index]) {
-      const newEntry = { ...valueSet.entries[index], id };
-      updateValueSetEntry(valueSet.id, index, newEntry);
-      updateValueSet?.({
-        ...valueSet,
-        entries: valueSet.entries.map((e, i) => i === index ? newEntry : e),
-      });
+  const updateValueSetEntryId = (entry: ValueSetEntry, id: string) => {
+    if (valueSet && valueSet.entries) {
+      const newEntry = { ...entry, id };
+      const idx = valueSet.entries.findIndex(e => e.id === entry.id);
+      updateValueSetEntry(valueSet.id, idx, newEntry);
+      updateValueSet?.({ ...valueSet, entries: valueSet.entries.map(e => e.id === entry.id ? newEntry : e) });
     }
   }
 
-  const updateValueSetEntryLabel = (index: number, label: LocalizedString) => {
-    if (valueSet?.entries?.[index]) {
-      const newEntry = { ...valueSet.entries[index], label };
-      updateValueSetEntry(valueSet.id, index, newEntry);
-      updateValueSet?.({
-        ...valueSet,
-        entries: valueSet.entries.map((e, i) => i === index ? newEntry : e),
-      });
+  const updateValueSetEntryLabel = (entry: ValueSetEntry, label: LocalizedString) => {
+    if (valueSet && valueSet.entries) {
+      const newEntry = { ...entry, label };
+      const idx = valueSet.entries.findIndex(e => e.id === entry.id);
+      updateValueSetEntry(valueSet.id, idx, newEntry);
+      updateValueSet?.({ ...valueSet, entries: valueSet.entries.map(e => e.id === entry.id ? newEntry : e) });
     }
   }
 
-  const updateValueSetEntryRule = (index: number, rule: string) => {
-    if (valueSet?.entries?.[index]) {
-      const newEntry: ValueSetEntry = { ...valueSet.entries[index], when: rule };
+  const updateValueSetEntryRule = (entry: ValueSetEntry, rule: string) => {
+    if (valueSet && valueSet.entries) {
+      const newEntry: ValueSetEntry = { ...entry, when: rule };
       if (rule === '') {
         delete newEntry.when;
       }
-      updateValueSetEntry(valueSet.id, index, newEntry);
-      updateValueSet?.({
-        ...valueSet,
-        entries: valueSet.entries.map((e, i) => i === index ? newEntry : e),
-      });
+      const idx = valueSet.entries.findIndex(e => e.id === entry.id);
+      updateValueSetEntry(valueSet.id, idx, newEntry);
+      updateValueSet?.({ ...valueSet, entries: valueSet.entries.map(e => e.id === entry.id ? newEntry : e) });
     }
   }
 
-  const onDeleteValueSetEntry = (index: number) => {
-    if (valueSet?.entries?.[index]) {
-      deleteValueSetEntry(valueSet.id, index);
-      updateValueSet?.({
-        ...valueSet,
-        entries: valueSet.entries.filter((_, i) => i !== index),
-      });
+  const onDeleteValueSetEntry = (entry: ValueSetEntry) => {
+    if (valueSet && valueSet.entries) {
+      const idx = valueSet.entries.findIndex(e => e.id === entry.id);
+      deleteValueSetEntry(valueSet.id, idx);
+      updateValueSet?.({ ...valueSet, entries: valueSet.entries.filter(e => e.id !== entry.id) });
     }
   }
 
-  const handleInsertBelow = (index: number) => {
-    if (!valueSet) {
-      return;
+  const moveValueSetEntry = (entry: ValueSetEntry, direction: 'up' | 'down') => {
+    if (valueSet && valueSet.entries) {
+      const idx = valueSet.entries.findIndex(e => e.id === entry.id);
+      if (idx < 0 || (direction === 'up' && idx === 0) || (direction === 'down' && idx === valueSet.entries.length - 1)) {
+        return;
+      }
+      const newEntries = [...valueSet.entries];
+      const swapIndex = direction === 'up' ? idx - 1 : idx + 1;
+      newEntries[idx] = valueSet.entries[swapIndex];
+      newEntries[swapIndex] = entry;
+      updateValueSet?.({ ...valueSet, entries: newEntries });
     }
-    const newEntry = createDefaultValueSetEntry(valueSet.entries);
-    addValueSetEntry(valueSet.id, newEntry, index);
-    const newEntries = valueSet.entries ? [...valueSet.entries] : [];
-    newEntries.splice(index + 1, 0, newEntry);
-    updateValueSet?.({ ...valueSet, entries: newEntries });
-    scrollToChoiceItem(index + 1);
-  };
-
-  const handleReorder = (activeId: string, overId: string) => {
-    if (!valueSet?.entries) {
-      return;
-    }
-    const fromIndex = itemIds.indexOf(activeId);
-    const toIndex = itemIds.indexOf(overId);
-    if (fromIndex < 0 || toIndex < 0 || fromIndex === toIndex) {
-      return;
-    }
-    moveValueSetEntry(valueSet.id, fromIndex, toIndex);
-    updateValueSet?.({
-      ...valueSet,
-      entries: arrayMove([...valueSet.entries], fromIndex, toIndex),
-    });
-  };
-
-  if (!valueSet || entries.length === 0) {
-    return <TableBody />;
   }
 
   return (
-    <SortableFlatList itemIds={itemIds} onReorder={handleReorder}>
-      <TableBody>
-        {entries.map((entry, index) => (
-          <SortableChoiceItem
-            key={itemIds[index]}
-            sortableId={itemIds[index]}
-            entry={entry}
-            index={index}
-            valueSetId={valueSet.id}
-            isGlobal={isGlobal}
-            onRuleEdit={updateValueSetEntryRule}
-            onTextEdit={updateValueSetEntryLabel}
-            onDelete={onDeleteValueSetEntry}
-            onUpdateId={updateValueSetEntryId}
-            onInsertBelow={handleInsertBelow}
-          />
-        ))}
-      </TableBody>
-    </SortableFlatList>
+    <TableBody>
+      <TableRow>
+        <TableCell colSpan={isGlobal ? 2 + languageNo : 3 + languageNo}>
+          {valueSet?.entries && valueSet.entries?.length > 0 && valueSet.entries.map((entry, index) => (
+            <ChoiceItem 
+              key={`${valueSet.id}-${index}`}
+              entry={entry}
+              index={index}
+              valueSetId={valueSet.id}
+              isGlobal={isGlobal}
+              onRuleEdit={updateValueSetEntryRule}
+              onTextEdit={updateValueSetEntryLabel}
+              onDelete={onDeleteValueSetEntry}
+              onUpdateId={updateValueSetEntryId}
+              onMove={moveValueSetEntry}
+            />
+          ))}
+        </TableCell>
+      </TableRow>
+    </TableBody>
   );
 };
 
