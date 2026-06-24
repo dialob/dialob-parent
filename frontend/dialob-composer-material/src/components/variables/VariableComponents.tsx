@@ -10,6 +10,7 @@ import CodeMirror from '../code/CodeMirror';
 import { validateId } from '../../utils/ValidateUtils';
 import { CodeEditorWithClear } from '../code/CodeEditorWithClear';
 import { ContextVariable, ContextVariableType, DialobItem, Variable } from '../../types';
+import { SortableHandleProps } from '../useSortableRow';
 import { useComposer } from '../../dialob';
 import { useSave } from '../../dialogs/contexts/saving/useSave';
 import { TextEditorWithClear } from '../editors/TextEditorWithClear';
@@ -27,6 +28,13 @@ export interface VariableProps {
   index: number;
   item: Variable | ContextVariable;
   onClose: () => void;
+}
+
+export interface SortableVariableRowProps extends VariableProps {
+  onInsertBelow: (index: number) => void;
+  setNodeRef?: (node: HTMLElement | null) => void;
+  style?: React.CSSProperties;
+  handleProps?: SortableHandleProps;
 }
 
 export const DeleteButton: React.FC<{ variable: ContextVariable | Variable }> = ({ variable }) => {

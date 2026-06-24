@@ -14,6 +14,7 @@ import { useEditor } from '../editor';
 import { getErrorSeverity, getItemErrorColor } from '../utils/ErrorUtils';
 import { scrollToItem, scrollToChoiceItem } from '../utils/ScrollUtils';
 import { downloadValueSet } from '../utils/ParseUtils';
+import { createDefaultValueSetEntry } from '../utils/ValueSetUtils';
 import { ErrorMessage } from '../components/ErrorComponents';
 import { BoldedMessage } from '../intl/BoldedMessage';
 import { useDocs } from '../utils/DocsUtils';
@@ -37,12 +38,12 @@ const SaveButton: React.FC = () => {
 
   const hasChanges = React.useMemo(() => {
     return (savingState.valueSets && (JSON.stringify(savingState.valueSets) !== JSON.stringify(form.valueSets))) ||
-      (savingState.composerMetadata?.globalValueSets && 
+      (savingState.composerMetadata?.globalValueSets &&
         (JSON.stringify(savingState.composerMetadata?.globalValueSets) !== JSON.stringify(form.metadata.composer?.globalValueSets))) ||
-      (savingState.composerMetadata?.aiTranslations && 
+      (savingState.composerMetadata?.aiTranslations &&
         (JSON.stringify(savingState.composerMetadata?.aiTranslations) !== JSON.stringify(form.metadata.composer?.aiTranslations)));
   }, [savingState, form.valueSets, form.metadata.composer?.globalValueSets, form.metadata.composer?.aiTranslations]);
-  
+
   const handleSave = () => {
     if (savingState.valueSets && savingState.composerMetadata?.globalValueSets) {
       applyListChanges(savingState);
@@ -79,7 +80,7 @@ const GlobalListsDialogContent: React.FC = () => {
   const lastActiveList = React.useRef<string | undefined>(undefined);
   const users = currentValueSet && Object.values(form.data).filter(i => i.valueSetId === currentValueSet?.id);
   const itemErrors = editor.errors?.filter(e => e.itemId === currentValueSet?.id);
-  
+
   const sourceLanguage = editor.activeFormLanguage;
   const targetLanguages = formLanguages?.filter(lang => lang !== sourceLanguage) || [];
   const hasTranslatableContent = useHasTranslatableContent(currentValueSet, sourceLanguage, targetLanguages);
@@ -106,19 +107,19 @@ const GlobalListsDialogContent: React.FC = () => {
       setGlobalValueSets(mappedGvs);
     }
   }, [savingState, dialogOpen]);
-  
+
   // Set currentValueSet only when dialog opens or when activeList changes
   React.useEffect(() => {
     // Check if activeList has changed or this is first render
     const activeListChanged = lastActiveList.current !== editor.activeList;
-    
+
     if (dialogOpen && activeListChanged && savingState.valueSets && savingState.composerMetadata?.globalValueSets) {
       const mappedGvs = getMappedGvs();
-      
+
       if (mappedGvs && mappedGvs.length > 0) {
         if (editor.activeList && editor.activeList !== 'global') {
           const activeList = savingState.valueSets.find(vs => vs.id === editor.activeList);
-          
+
           if (activeList) {
             setCurrentValueSet(activeList);
             lastActiveList.current = editor.activeList;
@@ -130,7 +131,7 @@ const GlobalListsDialogContent: React.FC = () => {
         lastActiveList.current = editor.activeList;
       }
     }
-    
+
     // Reset tracking when dialog closes
     if (!dialogOpen) {
       lastActiveList.current = undefined;
@@ -171,23 +172,11 @@ const GlobalListsDialogContent: React.FC = () => {
 
   const addEntry = () => {
     if (currentValueSet) {
-      if (!currentValueSet.entries) {
-        const newEntry = {
-          id: 'choice1',
-          label: {}
-        }
-        addValueSetEntry(currentValueSet.id, newEntry);
-        setCurrentValueSet({ ...currentValueSet, entries: [newEntry] });
-        scrollToChoiceItem();
-      } else {
-        const newEntry = {
-          id: 'choice' + (currentValueSet.entries?.length + 1),
-          label: {},
-        };
-        addValueSetEntry(currentValueSet.id, newEntry);
-        setCurrentValueSet({ ...currentValueSet, entries: [...currentValueSet.entries, newEntry] });
-        scrollToChoiceItem();
-      }
+      const newEntry = createDefaultValueSetEntry(currentValueSet.entries);
+      addValueSetEntry(currentValueSet.id, newEntry);
+      const newEntries = currentValueSet.entries ? [...currentValueSet.entries, newEntry] : [newEntry];
+      setCurrentValueSet({ ...currentValueSet, entries: newEntries });
+      scrollToChoiceItem();
     }
   }
 
@@ -234,7 +223,7 @@ const GlobalListsDialogContent: React.FC = () => {
     <>
       <UploadValuesetDialog open={uploadDialogOpen} onClose={() => setUploadDialogOpen(false)}
         currentValueSet={currentValueSet} setCurrentValueSet={setCurrentValueSet} />
-      
+
       <TranslateChoicesConfirmDialog
         open={translateDialogOpen}
         onConfirm={handleTranslateAllChoices}

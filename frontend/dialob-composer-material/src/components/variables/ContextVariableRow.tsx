@@ -1,35 +1,27 @@
 import React from 'react';
-import { Box, IconButton, TableCell, TableRow, Typography, alpha, useTheme } from '@mui/material';
+import { Box, IconButton, TableCell, TableRow, Tooltip, Typography, alpha, useTheme } from '@mui/material';
+import { Edit, PostAdd } from '@mui/icons-material';
+import { FormattedMessage } from 'react-intl';
 import { ContextVariable } from '../../types';
 import { useEditor } from '../../editor';
 import { useErrorColorSx } from '../../utils/ErrorUtils';
 import {
   ContextTypeMenu, DefaultValueField, DeleteButton, DescriptionField,
-  NameField, PublishedSwitch, UsersField, VariableProps
+  NameField, PublishedSwitch, UsersField, SortableVariableRowProps
 } from './VariableComponents';
-import { ArrowDownward, ArrowUpward, Edit } from '@mui/icons-material';
-import { isContextVariable } from '../../utils/ItemUtils';
-import { useSave } from '../../dialogs/contexts/saving/useSave';
+import { DragHandle, DragHandleProps } from '../DragHandle';
 
 type ExpandedField = 'name' | 'defaultValue' | 'description' | null;
 
-const ContextVariableRow: React.FC<VariableProps> = React.memo(function ContextVariableRow({ index, item, onClose }) {
+const ContextVariableRow: React.FC<SortableVariableRowProps> = React.memo(function ContextVariableRow({
+  index, item, onClose, onInsertBelow, setNodeRef, style, handleProps,
+}) {
   const { editor } = useEditor();
-  const { savingState, moveVariable } = useSave();
   const theme = useTheme();
   const variable = item as ContextVariable;
   const errorColorSx = useErrorColorSx(editor.errors, variable.name);
   const backgroundColor = errorColorSx ? errorColorSx : theme.palette.background.paper;
-  const contextVariables = savingState.variables?.filter(v => isContextVariable(v));
   const [expandedField, setExpandedField] = React.useState<ExpandedField>(null);
-
-  const handleMove = (direction: 'up' | 'down') => {
-    const destination = direction === 'up' ? index - 1 : index + 1;
-    const destinationVariable = contextVariables?.[destination];
-    if (destinationVariable) {
-      moveVariable(variable, destinationVariable);
-    }
-  }
 
   const toggleField = (field: ExpandedField) => {
     setExpandedField(prev => prev === field ? null : field);
@@ -51,22 +43,21 @@ const ContextVariableRow: React.FC<VariableProps> = React.memo(function ContextV
 
   return (
     <>
-      <TableRow key={variable.name} sx={{ backgroundColor: alpha(backgroundColor, 0.1) }}>
+      <TableRow
+        ref={setNodeRef}
+        style={style}
+        data-variable-row
+        sx={{ backgroundColor: alpha(backgroundColor, 0.1) }}
+      >
         <TableCell width='10%' align='center' sx={{ p: 0.5 }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <DeleteButton variable={variable} />
-            <IconButton
-              sx={{ p: 0.5 }}
-              disabled={index === 0}
-              onClick={() => handleMove('up')}>
-                <ArrowUpward />
+            <Tooltip title={<FormattedMessage id='menus.insert.below' />}>
+              <IconButton sx={{ p: 0.5 }} onClick={() => onInsertBelow(index)}>
+                <PostAdd color='success' />
               </IconButton>
-            <IconButton
-              sx={{ p: 0.5 }}
-              disabled={index === (contextVariables?.length || 0) - 1}
-              onClick={() => handleMove('down')}>
-              <ArrowDownward />
-            </IconButton>
+            </Tooltip>
+            <DragHandle {...handleProps as DragHandleProps} />
           </Box>
         </TableCell>
         <TableCell width='10%' align='center' sx={{ p: 0.5 }}>
