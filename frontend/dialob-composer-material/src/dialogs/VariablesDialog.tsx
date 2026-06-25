@@ -12,6 +12,16 @@ import { useSave } from './contexts/saving/useSave';
 import { useBackend } from '../backend/useBackend';
 import { ChangeIdResult } from '../backend/types';
 import { ContextVariable, Variable } from '../types';
+import { useSyncStagingBaseline } from './contexts/saving/useSyncStagingBaseline';
+
+const VariablesStagingSync: React.FC = () => {
+  const { form } = useComposer();
+  const { savingState, resetItems } = useSave();
+
+  useSyncStagingBaseline(form.data, savingState.items, resetItems, true);
+
+  return null;
+};
 
 const SaveButton: React.FC = () => {
   const { form, applyVariableChanges, applyVariableList, setForm, setRevision } = useComposer();
@@ -127,6 +137,7 @@ const VariablesDialog: React.FC<{ open: boolean, onClose: () => void }> = ({ ope
 
   return (
     <SavingProvider savingState={{ variables: form.variables, items: structuredClone(form.data) }}>
+      <VariablesStagingSync />
       <Dialog open={dialogOpen} onClose={onClose} fullWidth maxWidth='lg' PaperProps={{ sx: { maxHeight: '60vh' } }}>
         <DialogTitle sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontWeight: 'bold' }}>
           <FormattedMessage id='dialogs.variables.title' />

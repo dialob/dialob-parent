@@ -18,6 +18,12 @@ import { SavingProvider } from './contexts/saving/SavingProvider';
 import { useSave } from './contexts/saving/useSave';
 import { DialobItem } from '../types';
 import { getCategoryItems } from '../utils/ConfigUtils';
+import { ItemOptionsBaselineContext, ItemOptionsBaseline } from './contexts/saving/ItemOptionsBaselineContext';
+import {
+  mergeItemAfterRename,
+  mergeValueSetsAfterRename,
+  rewriteAiTranslationEntryIds,
+} from '../utils/RenameMergeUtils';
 
 export const StyledButtonContainer = styled(Box)(({ theme }) => ({
   '& .MuiButton-root': {
@@ -70,22 +76,50 @@ const SaveIdButton: React.FC<{
 }> = ({ id, item, setIdError, setEditMode }) => {
   const { form, setForm, setRevision } = useComposer();
   const { changeItemId } = useBackend();
-  const { updateItemId } = useSave();
+  const { savingState, applyIdRenameMerge } = useSave();
   const { setActiveItem, setErrors } = useEditor();
+  const baseline = React.useContext(ItemOptionsBaselineContext);
 
     const handleChangeId = () => {
-    if (item && id !== item.id) {
+    if (item && id !== item.id && baseline) {
       if (validateId(id, form.data, form.variables)) {
-        changeItemId(form, item.id, id).then((response) => {
+        const oldId = item.id;
+        changeItemId(form, oldId, id).then((response) => {
           const result = response.result as ChangeIdResult;
           if (response.success) {
+            const mergedItem = mergeItemAfterRename(
+              savingState.item,
+              baseline.item,
+              result.form.data[id],
+              oldId,
+              id
+            );
+            const mergedValueSets = mergeValueSetsAfterRename(
+              savingState.valueSets,
+              baseline.valueSets,
+              result.form.valueSets,
+              oldId,
+              id
+            );
+            const mergedComposerMetadata = rewriteAiTranslationEntryIds(
+              savingState.composerMetadata ?? baseline.composerMetadata,
+              oldId,
+              id
+            );
+
             setForm(result.form);
             setErrors(result.errors);
             setIdError(false);
             setRevision(result.rev);
             setEditMode(false);
-            setActiveItem({ ...item, id: id });
-            updateItemId(id);
+            if (mergedItem) {
+              setActiveItem(mergedItem);
+            }
+            applyIdRenameMerge({
+              mergedItem,
+              mergedValueSets,
+              mergedComposerMetadata,
+            });
           } else if (response.apiError) {
             setErrors([{ level: 'FATAL', message: response.apiError.message }]);
             setEditMode(false);
@@ -103,6 +137,91 @@ const SaveIdButton: React.FC<{
   )
 }
 
+const ItemOptionsDialogContent: React.FC<{
+  open: boolean;
+  item: DialobItem;
+  activeTab: OptionsTabType;
+  setActiveTab: React.Dispatch<React.SetStateAction<OptionsTabType>>;
+  editMode: boolean;
+  setEditMode: React.Dispatch<React.SetStateAction<boolean>>;
+  id: string;
+  setId: React.Dispatch<React.SetStateAction<string>>;
+  idError: boolean;
+  setIdError: React.Dispatch<React.SetStateAction<boolean>>;
+  isInputType: boolean | undefined;
+  canHaveChoices: boolean | undefined;
+  isLargeScreen: boolean;
+  handleClose: () => void;
+  handleDelete: () => void;
+  handleCloseChange: () => void;
+  handleOpenHelp: () => void;
+}> = (props) => {
+  const {
+    open, item, activeTab, setActiveTab, editMode, setEditMode, id, setId, idError, setIdError,
+    isInputType, canHaveChoices, isLargeScreen, handleClose, handleDelete, handleCloseChange, handleOpenHelp,
+  } = props;
+
+  return (
+    <Dialog open={open} onClose={handleClose} fullWidth maxWidth={activeTab === 'choices' ? 'xl' : isLargeScreen ? 'xl' : 'md'} PaperProps={{ sx: { maxHeight: '60vh' } }}>
+      <DialogTitle sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+        {editMode ? <TextField value={id} autoFocus={editMode} onChange={(e) => setId(e.target.value)} error={idError}
+          helperText={<FormattedMessage id='dialogs.change.id.tip' />} InputProps={{
+            endAdornment: (
+              <>
+                <SaveIdButton id={id} item={item} setIdError={setIdError} setEditMode={setEditMode} />
+                <IconButton onClick={handleCloseChange}><Close color='error' /></IconButton>
+              </>
+            )
+          }} /> :
+          <Button variant='text' sx={{ color: 'inherit', textTransform: 'none', fontWeight: 'bold', fontSize: 'h5.fontSize' }}
+            endIcon={<Edit color='primary' />} onClick={() => setEditMode(true)}>
+            {id}
+          </Button>}
+        <Box flexGrow={1} />
+        <StyledButtonContainer>
+          <Button variant='outlined' endIcon={<Help />} onClick={handleOpenHelp}>
+            <FormattedMessage id='buttons.help' />
+          </Button>
+          <ConversionMenu inDialog />
+          <Button color='error' endIcon={<Delete />} onClick={handleDelete}><FormattedMessage id='buttons.delete' /></Button>
+        </StyledButtonContainer>
+      </DialogTitle>
+      <DialogContent sx={{ padding: 0, borderTop: 1, borderBottom: 1, borderColor: 'divider' }}>
+        <Box sx={{ display: 'flex', height: '70vh' }}>
+          <Tabs value={activeTab} onChange={(e, value) => setActiveTab(value)} orientation='vertical' sx={{ borderRight: 1, borderColor: 'divider' }}>
+            <Tab icon={<Tooltip placement='right' title={<FormattedMessage id='tooltips.label' />}><Label /></Tooltip>} value='label' />
+            <Tab icon={<Tooltip placement='right' title={<FormattedMessage id='tooltips.description' />}><Description /></Tooltip>} value='description' />
+            <Tab icon={
+              <Tooltip placement='right' title={<FormattedMessage id='tooltips.rules' />}>
+                <Box sx={{ display: 'flex', alignItems: 'center', width: 1 }}>
+                  <Visibility />
+                  <Box flexGrow={1} />
+                  <Gavel />
+                </Box>
+              </Tooltip>
+            } value='rules' />
+            {isInputType && <Tab icon={<Tooltip placement='right' title={<FormattedMessage id='tooltips.validations' />}><Rule /></Tooltip>} value='validations' />}
+            {canHaveChoices && <Tab icon={<Tooltip placement='right' title={<FormattedMessage id='tooltips.choices' />}><List /></Tooltip>} value='choices' />}
+            <Tab icon={<Tooltip placement='right' title={<FormattedMessage id='tooltips.properties' />}><Dns /></Tooltip>} value='properties' />
+          </Tabs>
+          <Box sx={{ p: 2, width: 1, maxWidth: 0.9 }}>
+            {activeTab === 'label' && <Editors.Label />}
+            {activeTab === 'description' && <Editors.Description />}
+            {activeTab === 'rules' && <Editors.Rules />}
+            {activeTab === 'validations' && <Editors.Validations />}
+            {activeTab === 'choices' && <Editors.Choice />}
+            {activeTab === 'properties' && <Editors.Properties />}
+          </Box>
+        </Box>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleClose} color="primary" endIcon={<Close />}><FormattedMessage id='buttons.close' /></Button>
+        <SaveItemButton />
+      </DialogActions>
+    </Dialog>
+  );
+};
+
 const ItemOptionsDialog: React.FC = () => {
   const theme = useTheme();
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('xl'));
@@ -116,6 +235,16 @@ const ItemOptionsDialog: React.FC = () => {
   const [editMode, setEditMode] = React.useState(false);
   const [id, setId] = React.useState<string>(item?.id || '');
   const [idError, setIdError] = React.useState<boolean>(false);
+  const baseline = React.useMemo<ItemOptionsBaseline | null>(() => {
+    if (!open || !item) {
+      return null;
+    }
+    return {
+      item: structuredClone(form.data[item.id] ?? item),
+      valueSets: structuredClone(form.valueSets ?? []),
+      composerMetadata: structuredClone(form.metadata.composer),
+    };
+  }, [open, item?.id]);
   const resolvedConfig = config.itemTypes ?? DEFAULT_ITEMTYPE_CONFIG;
   const inputCategory = resolvedConfig.categories.find(c => c.type === 'input');
   const isInputType = item && inputCategory && getCategoryItems(inputCategory).some(i => i.config.type === item.type);
@@ -165,74 +294,38 @@ const ItemOptionsDialog: React.FC = () => {
     window.open(docsUrl, "_blank");
   }
 
-  if (!item) {
+  if (!item || !baseline) {
     return null;
   }
 
   return (
-    <SavingProvider savingState={{
-      item: structuredClone(item),
-      valueSets: structuredClone(form.valueSets),
-      composerMetadata: structuredClone(form.metadata.composer)
-    }}>
-      <Dialog open={open} onClose={handleClose} fullWidth maxWidth={activeTab === 'choices' ? 'xl' : isLargeScreen ? 'xl' : 'md'} PaperProps={{ sx: { maxHeight: '60vh' } }}>
-        <DialogTitle sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-          {editMode ? <TextField value={id} autoFocus={editMode} onChange={(e) => setId(e.target.value)} error={idError}
-            helperText={<FormattedMessage id='dialogs.change.id.tip' />} InputProps={{
-              endAdornment: (
-                <>
-                  <SaveIdButton id={id} item={item} setIdError={setIdError} setEditMode={setEditMode} />
-                  <IconButton onClick={handleCloseChange}><Close color='error' /></IconButton>
-                </>
-              )
-            }} /> :
-            <Button variant='text' sx={{ color: 'inherit', textTransform: 'none', fontWeight: 'bold', fontSize: 'h5.fontSize' }}
-              endIcon={<Edit color='primary' />} onClick={() => setEditMode(true)}>
-              {id}
-            </Button>}
-          <Box flexGrow={1} />
-          <StyledButtonContainer>
-            <Button variant='outlined' endIcon={<Help />} onClick={handleOpenHelp}>
-              <FormattedMessage id='buttons.help' />
-            </Button>
-            <ConversionMenu inDialog />
-            <Button color='error' endIcon={<Delete />} onClick={handleDelete}><FormattedMessage id='buttons.delete' /></Button>
-          </StyledButtonContainer>
-        </DialogTitle>
-        <DialogContent sx={{ padding: 0, borderTop: 1, borderBottom: 1, borderColor: 'divider' }}>
-          <Box sx={{ display: 'flex', height: '70vh' }}>
-            <Tabs value={activeTab} onChange={(e, value) => setActiveTab(value)} orientation='vertical' sx={{ borderRight: 1, borderColor: 'divider' }}>
-              <Tab icon={<Tooltip placement='right' title={<FormattedMessage id='tooltips.label' />}><Label /></Tooltip>} value='label' />
-              <Tab icon={<Tooltip placement='right' title={<FormattedMessage id='tooltips.description' />}><Description /></Tooltip>} value='description' />
-              <Tab icon={
-                <Tooltip placement='right' title={<FormattedMessage id='tooltips.rules' />}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', width: 1 }}>
-                    <Visibility />
-                    <Box flexGrow={1} />
-                    <Gavel />
-                  </Box>
-                </Tooltip>
-              } value='rules' />
-              {isInputType && <Tab icon={<Tooltip placement='right' title={<FormattedMessage id='tooltips.validations' />}><Rule /></Tooltip>} value='validations' />}
-              {canHaveChoices && <Tab icon={<Tooltip placement='right' title={<FormattedMessage id='tooltips.choices' />}><List /></Tooltip>} value='choices' />}
-              <Tab icon={<Tooltip placement='right' title={<FormattedMessage id='tooltips.properties' />}><Dns /></Tooltip>} value='properties' />
-            </Tabs>
-            <Box sx={{ p: 2, width: 1, maxWidth: 0.9 }}>
-              {activeTab === 'label' && <Editors.Label />}
-              {activeTab === 'description' && <Editors.Description />}
-              {activeTab === 'rules' && <Editors.Rules />}
-              {activeTab === 'validations' && <Editors.Validations />}
-              {activeTab === 'choices' && <Editors.Choice />}
-              {activeTab === 'properties' && <Editors.Properties />}
-            </Box>
-          </Box>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color="primary" endIcon={<Close />}><FormattedMessage id='buttons.close' /></Button>
-          <SaveItemButton />
-        </DialogActions>
-      </Dialog>
-    </SavingProvider>
+    <ItemOptionsBaselineContext.Provider value={baseline}>
+      <SavingProvider savingState={{
+        item: structuredClone(item),
+        valueSets: structuredClone(form.valueSets),
+        composerMetadata: structuredClone(form.metadata.composer)
+      }}>
+        <ItemOptionsDialogContent
+          open={open}
+          item={item}
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          editMode={editMode}
+          setEditMode={setEditMode}
+          id={id}
+          setId={setId}
+          idError={idError}
+          setIdError={setIdError}
+          isInputType={isInputType}
+          canHaveChoices={canHaveChoices}
+          isLargeScreen={isLargeScreen}
+          handleClose={handleClose}
+          handleDelete={handleDelete}
+          handleCloseChange={handleCloseChange}
+          handleOpenHelp={handleOpenHelp}
+        />
+      </SavingProvider>
+    </ItemOptionsBaselineContext.Provider>
   );
 };
 

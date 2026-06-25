@@ -1,5 +1,5 @@
 import { produce } from "immer";
-import { ContextVariable, ContextVariableType, DialobItems, DialobItemTemplate, LocalizedString, TranslationMetadata, ValidationRule, ValueSetEntry, Variable } from "../../../types";
+import { ComposerMetadata, ContextVariable, ContextVariableType, DialobItem, DialobItems, DialobItemTemplate, LocalizedString, TranslationMetadata, ValidationRule, ValueSet, ValueSetEntry, Variable } from "../../../types";
 import { cleanLocalizedString, cleanString } from "../../../utils/StringUtils";
 import { SavingAction } from "./SavingAction";
 import { SavingState } from "./SavingContext";
@@ -48,12 +48,6 @@ const updateItem = (state: SavingState, attribute: string, value: any, language?
     } else {
       state.item[attribute] = value;
     }
-  }
-}
-
-const updateItemId = (state: SavingState, itemId: string): void => {
-  if (state.item) {
-    state.item.id = itemId;
   }
 }
 
@@ -631,14 +625,37 @@ const removeAITranslation = (state: SavingState, entryId: string, targetLanguage
   );
 }
 
+const applyIdRenameMerge = (
+  state: SavingState,
+  mergedItem?: DialobItem,
+  mergedValueSets?: ValueSet[],
+  mergedItems?: DialobItems,
+  mergedVariables?: (ContextVariable | Variable)[],
+  mergedComposerMetadata?: ComposerMetadata
+): void => {
+  if (mergedItem !== undefined) {
+    state.item = mergedItem;
+  }
+  if (mergedValueSets !== undefined) {
+    state.valueSets = mergedValueSets;
+  }
+  if (mergedItems !== undefined) {
+    state.items = mergedItems;
+  }
+  if (mergedVariables !== undefined) {
+    state.variables = mergedVariables;
+  }
+  if (mergedComposerMetadata !== undefined) {
+    state.composerMetadata = mergedComposerMetadata;
+  }
+}
+
 
 export const itemReducer = (state: SavingState, action: SavingAction): SavingState => {
 
   const newState = produce(state, state => {
     if (action.type === 'updateItem') {
       updateItem(state, action.attribute, action.value, action.language);
-    } else if (action.type === 'updateItemId') {
-      updateItemId(state, action.itemId);
     } else if (action.type === 'updateLocalizedString') {
       updateLocalizedString(state, action.attribute, action.value, action.index);
     } else if (action.type === 'changeItemType') {
@@ -699,6 +716,8 @@ export const itemReducer = (state: SavingState, action: SavingAction): SavingSta
       resetItems(state, action.items);
     } else if (action.type === 'resetVariables') {
       resetVariables(state, action.variables);
+    } else if (action.type === 'applyIdRenameMerge') {
+      applyIdRenameMerge(state, action.mergedItem, action.mergedValueSets, action.mergedItems, action.mergedVariables, action.mergedComposerMetadata);
     } else if (action.type === 'setMetadataValue') {
       setMetadataValue(state, action.attr, action.value);
     } else if (action.type === 'applyTranslations') {

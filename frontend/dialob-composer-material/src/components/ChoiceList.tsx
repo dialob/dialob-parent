@@ -11,15 +11,28 @@ const ChoiceList: React.FC<{
   updateValueSet?: (value: React.SetStateAction<ValueSet | undefined>) => void,
   isGlobal?: boolean
 }> = ({ valueSet, updateValueSet, isGlobal }) => {
-  const { form } = useComposer();
-  const { deleteValueSetEntry, updateValueSetEntry } = useSave();
+  const { form, updateItem: updateComposerItem } = useComposer();
+  const { deleteValueSetEntry, updateValueSetEntry, updateItem, savingState } = useSave();
   const languageNo = form.metadata.languages?.length || 0;
+
+  const propagateDefaultValueRename = (valueSetId: string, oldEntryId: string, newEntryId: string) => {
+    Object.values(form.data).forEach(dialobItem => {
+      if (dialobItem.valueSetId === valueSetId && dialobItem.defaultValue === oldEntryId) {
+        updateComposerItem(dialobItem.id, 'defaultValue', newEntryId);
+        if (savingState.item?.id === dialobItem.id) {
+          updateItem(dialobItem.id, 'defaultValue', newEntryId);
+        }
+      }
+    });
+  };
 
   const updateValueSetEntryId = (entry: ValueSetEntry, id: string) => {
     if (valueSet && valueSet.entries) {
+      const oldId = entry.id;
       const newEntry = { ...entry, id };
       const idx = valueSet.entries.findIndex(e => e.id === entry.id);
       updateValueSetEntry(valueSet.id, idx, newEntry);
+      propagateDefaultValueRename(valueSet.id, oldId, id);
       updateValueSet?.({ ...valueSet, entries: valueSet.entries.map(e => e.id === entry.id ? newEntry : e) });
     }
   }

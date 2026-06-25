@@ -24,6 +24,7 @@ import TranslationProgressDialog from '../components/translations/TranslationPro
 import { useHasTranslatableContent, useBulkTranslateValueSet } from '../components/translations';
 import { SavingProvider } from './contexts/saving/SavingProvider';
 import { useBackend } from '../backend/useBackend';
+import { useSyncStagingBaseline } from './contexts/saving/useSyncStagingBaseline';
 
 interface GlobalValueSet {
   id: string;
@@ -63,12 +64,18 @@ const SaveButton: React.FC = () => {
 }
 
 const GlobalListsDialogContent: React.FC = () => {
-  const { savingState, createValueSet, addValueSetEntry, setGlobalValueSetName, updateItem, deleteGlobalValueSet } = useSave();
+  const { savingState, createValueSet, addValueSetEntry, setGlobalValueSetName, updateItem, deleteGlobalValueSet, applyIdRenameMerge } = useSave();
   const { form } = useComposer();
   const { editor, setActiveList, setActivePage, setHighlightedItem } = useEditor();
   const { config } = useBackend();
   const docsUrl = useDocs('lists');
   const dialogOpen = editor.activeList !== undefined;
+
+  const resetValueSets = React.useCallback((valueSets: ValueSet[]) => {
+    applyIdRenameMerge({ mergedValueSets: valueSets });
+  }, [applyIdRenameMerge]);
+
+  useSyncStagingBaseline(form.valueSets, savingState.valueSets, resetValueSets, dialogOpen);
   const formLanguages = form.metadata.languages;
   const [globalValueSets, setGlobalValueSets] = React.useState<GlobalValueSet[] | undefined>(undefined);
   const [currentValueSet, setCurrentValueSet] = React.useState<ValueSet | undefined>(undefined);

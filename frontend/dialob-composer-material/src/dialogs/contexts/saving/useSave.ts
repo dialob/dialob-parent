@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { SavingContext } from './SavingContext';
-import { ContextVariable, ContextVariableType, DialobItems, DialobItemTemplate, LocalizedString, ValidationRule, ValueSetEntry, Variable } from '../../../types';
+import { ComposerMetadata, ContextVariable, ContextVariableType, DialobItem, DialobItems, DialobItemTemplate, LocalizedString, ValidationRule, ValueSet, ValueSetEntry, Variable } from '../../../types';
 import { TranslationResult } from '../../../backend/types';
 
 export const useSave = () => {
@@ -10,10 +10,6 @@ export const useSave = () => {
   const updateItem = (itemId: string, attribute: string, value: any, language?: string) => {
     dispatch({ type: 'updateItem', itemId, attribute, value, language });
   };
-
-  const updateItemId = (itemId: string) => {
-    dispatch({ type: 'updateItemId', itemId });
-  }
 
   const updateLocalizedString = (itemId: string, attribute: string, value: LocalizedString, index?: number) => {
     dispatch({ type: 'updateLocalizedString', itemId, attribute, value, index });
@@ -137,6 +133,16 @@ export const useSave = () => {
     dispatch({ type: 'resetVariables', variables });
   }
 
+  const applyIdRenameMerge = (merge: {
+    mergedItem?: DialobItem;
+    mergedValueSets?: ValueSet[];
+    mergedItems?: DialobItems;
+    mergedVariables?: (ContextVariable | Variable)[];
+    mergedComposerMetadata?: ComposerMetadata;
+  }) => {
+    dispatch({ type: 'applyIdRenameMerge', ...merge });
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const setMetadataValue = (attr: string, value: any) => {
     dispatch({ type: 'setMetadataValue', attr, value });
@@ -156,7 +162,6 @@ export const useSave = () => {
 
   return {
     updateItem,
-    updateItemId,
     updateLocalizedString,
     changeItemType,
     setItemProp,
@@ -187,6 +192,7 @@ export const useSave = () => {
     clearPendingRenames,
     resetItems,
     resetVariables,
+    applyIdRenameMerge,
     setMetadataValue,
     applyTranslations,
     addAITranslation,
