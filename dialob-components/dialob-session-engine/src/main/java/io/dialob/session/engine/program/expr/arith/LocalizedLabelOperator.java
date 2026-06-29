@@ -104,9 +104,14 @@ public record LocalizedLabelOperator(
   }
 
   static Expression toStringExpression(@NonNull ProgramBuilder programBuilder, ItemId itemId, VariableReference variableReference) {
-    return programBuilder.findValueSetIdForItem(itemId)
-      .<Expression>map(valueSetId -> ValueSetEntryToStringOperator.of(new ValueSetId(valueSetId), variableReference))
-      .orElseGet(() -> ToStringOperator.of(variableReference));
+    Optional<String> valueSetId = programBuilder.findValueSetIdForItem(itemId);
+    if (valueSetId.isPresent()) {
+      return ValueSetEntryToStringOperator.of(new ValueSetId(valueSetId.get()), variableReference);
+    }
+    if (programBuilder.isBooleanItem(itemId)) {
+      return LocalizedBooleanToStringOperator.of(variableReference);
+    }
+    return ToStringOperator.of(variableReference);
   }
 
 

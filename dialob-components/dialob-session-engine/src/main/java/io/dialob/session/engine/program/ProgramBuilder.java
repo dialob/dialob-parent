@@ -146,6 +146,21 @@ public class ProgramBuilder implements ExpressionCompiler, BuilderParent, Builde
     return Optional.empty();
   }
 
+  public boolean isBooleanItem(@NonNull ItemId itemId) {
+    return findItemById(itemId)
+      .flatMap(item -> {
+        if (item instanceof QuestionBuilder questionBuilder) {
+          return questionBuilder.getValueType();
+        }
+        if (item instanceof VariableBuilder variableBuilder) {
+          return variableBuilder.getValueType();
+        }
+        return Optional.<ValueType>empty();
+      })
+      .map(ValueType.BOOLEAN::equals)
+      .orElse(false);
+  }
+
   public GroupBuilder addRoot() {
     return queue(new GroupBuilder(this, null, Constants.QUESTIONNAIRE).root());
   }

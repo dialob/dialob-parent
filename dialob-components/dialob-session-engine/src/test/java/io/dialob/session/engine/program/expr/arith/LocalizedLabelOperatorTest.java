@@ -50,6 +50,7 @@ class LocalizedLabelOperatorTest {
   public void beforeEach() {
     MockitoAnnotations.initMocks(this);
     when(programBuilder.findValueSetIdForItem(any(ItemId.class))).thenReturn(Optional.empty());
+    when(programBuilder.isBooleanItem(any(ItemId.class))).thenReturn(false);
     when(outputFormatter.format(any())).then(invocation -> String.valueOf(invocation.<Object>getArgument(0)));
     when(context.getOutputFormatter()).thenReturn(outputFormatter);
   }
@@ -86,6 +87,7 @@ class LocalizedLabelOperatorTest {
     verify(context).getItemValue(ref("var1"));
     verify(programBuilder).findItemBuilder(anyString());
     verify(programBuilder).findValueSetIdForItem(any(ItemId.class));
+    verify(programBuilder).isBooleanItem(any(ItemId.class));
     verifyNoMoreInteractions(programBuilder, context);
   }
 
@@ -108,6 +110,7 @@ class LocalizedLabelOperatorTest {
     verify(context).getItemValue(ref("var1"));
     verify(programBuilder).findItemBuilder(anyString());
     verify(programBuilder).findValueSetIdForItem(any(ItemId.class));
+    verify(programBuilder).isBooleanItem(any(ItemId.class));
     verify(context).getOutputFormatter();
     verifyNoMoreInteractions(programBuilder, context);
   }
@@ -157,6 +160,7 @@ class LocalizedLabelOperatorTest {
     verify(context).getOutputFormatter();
     verify(programBuilder).findItemBuilder(anyString());
     verify(programBuilder).findValueSetIdForItem(any(ItemId.class));
+    verify(programBuilder).isBooleanItem(any(ItemId.class));
     verifyNoMoreInteractions(programBuilder, context);
   }
   @Test
@@ -174,6 +178,7 @@ class LocalizedLabelOperatorTest {
     verify(context).getOutputFormatter();
     verify(programBuilder).findItemBuilder(anyString());
     verify(programBuilder).findValueSetIdForItem(any(ItemId.class));
+    verify(programBuilder).isBooleanItem(any(ItemId.class));
     verifyNoMoreInteractions(programBuilder, context);
   }
   @Test
@@ -290,6 +295,45 @@ class LocalizedLabelOperatorTest {
     verify(programBuilder).findValueSetIdForItem(any(ItemId.class));
     verify(valueSet).entries();
     verifyNoMoreInteractions(programBuilder, context, valueSet);
+  }
+
+  @Test
+  void shouldInterpolateBooleanToLocalizedLabel() {
+    AbstractItemBuilder<?,ProgramBuilder> itemBuilder = Mockito.mock();
+    when(programBuilder.findItemBuilder("bool1")).thenReturn(Optional.of(itemBuilder));
+    when(itemBuilder.getId()).thenReturn(IdUtils.toId("bool1"));
+    when(programBuilder.findValueSetIdForItem(IdUtils.toId("bool1"))).thenReturn(Optional.empty());
+    when(programBuilder.isBooleanItem(IdUtils.toId("bool1"))).thenReturn(true);
+
+    LocalizedLabelOperator operator = LocalizedLabelOperator.createLocalizedLabelOperator(programBuilder, Label.of(Map.of("fi","Valittu: {bool1}")));
+    when(context.getLanguage()).thenReturn("fi");
+    when(context.getItemValue(ref("bool1"))).thenReturn(Boolean.TRUE);
+    assertEquals("Valittu: Kyllä", operator.eval(context));
+    verify(context, atLeastOnce()).getLanguage();
+    verify(context).getItemValue(ref("bool1"));
+    verify(programBuilder).findItemBuilder("bool1");
+    verify(programBuilder).findValueSetIdForItem(IdUtils.toId("bool1"));
+    verify(programBuilder).isBooleanItem(IdUtils.toId("bool1"));
+    verifyNoMoreInteractions(programBuilder, context);
+  }
+
+  @Test
+  void shouldInterpolateBooleanKeyToRawValue() {
+    AbstractItemBuilder<?,ProgramBuilder> itemBuilder = Mockito.mock();
+    when(programBuilder.findItemBuilder("bool1")).thenReturn(Optional.of(itemBuilder));
+    when(itemBuilder.getId()).thenReturn(IdUtils.toId("bool1"));
+
+    LocalizedLabelOperator operator = LocalizedLabelOperator.createLocalizedLabelOperator(programBuilder, Label.of(Map.of("fi","Raw: {bool1:key}")));
+    when(context.getLanguage()).thenReturn("fi");
+    when(context.getItemValue(ref("bool1"))).thenReturn(Boolean.TRUE);
+    when(outputFormatter.format(Boolean.TRUE)).thenReturn("true");
+    assertEquals("Raw: true", operator.eval(context));
+    verify(context, atLeastOnce()).getLanguage();
+    verify(context).getItemValue(ref("bool1"));
+    verify(context).getOutputFormatter();
+    verify(outputFormatter).format(Boolean.TRUE);
+    verify(programBuilder).findItemBuilder("bool1");
+    verifyNoMoreInteractions(programBuilder, context, outputFormatter);
   }
 
 }
