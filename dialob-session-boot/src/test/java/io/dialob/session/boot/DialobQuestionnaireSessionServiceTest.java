@@ -541,7 +541,7 @@ class DialobQuestionnaireSessionServiceTest {
         .extracting("type", "ids", "item.id", "item.label").containsExactlyInAnyOrder(
           tuple(REMOVE_ERROR, null, null, null),
           tuple(ITEM, null, "question2", "Shown if previous ones are ok"),
-          tuple(ITEM, null, "question4", "Question1 is ok true"),
+          tuple(ITEM, null, "question4", "Question1 is ok Yes"),
           tuple(ITEM, null, "questionnaire", "is valid testing")
         ))
       .answer("question1", null)
@@ -549,7 +549,7 @@ class DialobQuestionnaireSessionServiceTest {
         .extracting("type", "ids", "item.id", "item.label", "error.description").containsExactlyInAnyOrder(
           tuple(REMOVE_ITEMS, List.of("question2"), null, null, null),
           tuple(ITEM, null, "questionnaire", "is valid testing", null),
-          tuple(ITEM, null, "question4", "Question1 is ok false", null),
+          tuple(ITEM, null, "question4", "Question1 is ok No", null),
           tuple(ERROR, null, null, null, "Fill in the missing information.")
         ))
       .answer("question1", "a")
@@ -557,7 +557,7 @@ class DialobQuestionnaireSessionServiceTest {
         .extracting("type", "ids", "item.id", "item.label").containsExactlyInAnyOrder(
           tuple(REMOVE_ERROR, null, null, null),
           tuple(ITEM, null, "question2", "Shown if previous ones are ok"),
-          tuple(ITEM, null, "question4", "Question1 is ok true"),
+          tuple(ITEM, null, "question4", "Question1 is ok Yes"),
           tuple(ITEM, null, "questionnaire", "is valid testing")
         ))
       .answer("question3", "1970-01-01")
