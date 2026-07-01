@@ -1,5 +1,11 @@
 # @dialob/dialob-composer-material
 
+## 0.0.19
+
+### Patch Changes
+
+- Format function support
+
 ## 0.0.18
 
 ### Patch Changes
