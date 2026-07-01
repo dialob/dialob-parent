@@ -211,6 +211,37 @@ public interface QuestionnairesRestService {
     String questionnaireId);
 
   /**
+   * Retrieves the serialized session state for a completed questionnaire.
+   * <p>
+   * The response is a generic session-state shape (id, metadata, formMetadata, contextValues,
+   * form, pages, groups, items) — its primary consumer is a printout pipeline (e.g. a Tagomi
+   * template rendering a PDF), but the data itself is a plain Dialob session view. The
+   * questionnaire session must be COMPLETED, otherwise a 409 is returned. The form is derived
+   * from the questionnaire metadata, so no form id needs to be supplied.
+   *
+   * @param questionnaireId the unique identifier of the questionnaire; must match the defined pattern
+   * @param timezone        IANA timezone used only to render the absolute metadata audit timestamps
+   *                        (created/lastAnswer/lastSaved/completed), which Dialob stores as {@code Instant}s;
+   *                        answer date/time values are stored zoneless and emitted verbatim. Defaults to
+   *                        {@code Europe/Helsinki}.
+   * @param lang            optional language override; falls back to the questionnaire's language
+   * @return a ResponseEntity containing the session state as a JSON string
+   */
+  @Operation(summary = "Get questionnaire session state",
+    description = "Returns the serialized session state of a completed questionnaire (primary use: rendering a "
+      + "printout/PDF downstream). Structure, labels and value-set labels come from the form; visibility and "
+      + "label variables are re-derived from the stored answers.")
+  @GetMapping(path = "{questionnaireId}/session-state", produces = MediaType.APPLICATION_JSON_VALUE)
+  ResponseEntity<String> getQuestionnaireSessionState(
+    @Parameter(description = OpenApiDoc.QUESTIONNAIRE.QUEST_ID)
+    @PathVariable("questionnaireId") @Pattern(regexp = QUESTIONNAIRE_ID_PATTERN) String questionnaireId,
+    @Parameter(description = "IANA timezone used to render the metadata audit timestamps "
+      + "(created/lastAnswer/lastSaved/completed); answer date/time values are zoneless and emitted as-is")
+    @RequestParam(value = "tz", defaultValue = "Europe/Helsinki") String timezone,
+    @Parameter(description = "Optional language override; defaults to the questionnaire's language")
+    @RequestParam(value = "lang", required = false) String lang);
+
+  /**
    * Deletes a questionnaire by its unique identifier.
    *
    * @param questionnaireId the unique identifier of the questionnaire to delete.

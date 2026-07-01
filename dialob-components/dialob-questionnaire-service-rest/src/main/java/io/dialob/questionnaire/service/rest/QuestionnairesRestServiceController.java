@@ -35,6 +35,7 @@ import io.dialob.questionnaire.service.api.session.QuestionnaireSession;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSessionBuilderFactory;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSessionSaveService;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSessionService;
+import io.dialob.questionnaire.printout.DialobPrintoutWriter;
 import io.dialob.rest.type.ApiException;
 import io.dialob.security.tenant.CurrentTenant;
 import io.dialob.security.user.CurrentUserProvider;
@@ -50,6 +51,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.DateTimeException;
 import java.time.ZoneId;
 import java.util.*;
 import java.util.function.Function;
@@ -79,6 +81,8 @@ public class QuestionnairesRestServiceController implements QuestionnairesRestSe
 
   private final CSVSerializer csvSerializer;
 
+  private final DialobPrintoutWriter printoutWriter;
+
   public QuestionnairesRestServiceController(@NonNull QuestionnaireSessionService questionnaireSessionService,
                                              QuestionnaireSessionSaveService questionnaireSessionSaveService,
                                              @NonNull QuestionnaireSessionBuilderFactory questionnaireSessionBuilderFactory,
@@ -86,7 +90,8 @@ public class QuestionnairesRestServiceController implements QuestionnairesRestSe
                                              @NonNull FormDatabase formDatabase,
                                              @NonNull CurrentTenant currentTenant,
                                              @NonNull CurrentUserProvider currentUserProvider,
-                                             @NonNull CSVSerializer csvSerializer) {
+                                             @NonNull CSVSerializer csvSerializer,
+                                             @NonNull DialobPrintoutWriter printoutWriter) {
     this.questionnaireSessionService = questionnaireSessionService;
     this.questionnaireSessionSaveService = questionnaireSessionSaveService;
     this.questionnaireSessionBuilderFactory = questionnaireSessionBuilderFactory;
@@ -95,6 +100,7 @@ public class QuestionnairesRestServiceController implements QuestionnairesRestSe
     this.currentTenant = currentTenant;
     this.currentUserProvider = currentUserProvider;
     this.csvSerializer = csvSerializer;
+    this.printoutWriter = printoutWriter;
   }
 
   /**
@@ -177,6 +183,67 @@ public class QuestionnairesRestServiceController implements QuestionnairesRestSe
   public ResponseEntity<Questionnaire> getQuestionnaire(String questionnaireId) {
     LOGGER.debug("GET /questionnaire/{}", questionnaireId);
     return ResponseEntity.ok(questionnaireRepository.findOne(currentTenant.getId(), questionnaireId));
+  }
+
+  /**
+   * @param questionnaireId
+   * @param timezone
+   * @param lang
+   * @return
+   */
+  @Override
+  public ResponseEntity<String> getQuestionnaireSessionState(String questionnaireId, String timezone, String lang) {
+    LOGGER.debug("GET /questionnaires/{}/session-state", questionnaireId);
+    final Questionnaire questionnaire = questionnaireRepository.findOne(currentTenant.getId(), questionnaireId);
+    final Questionnaire.Metadata metadata = questionnaire.getMetadata();
+
+    if (metadata == null || metadata.getStatus() != Questionnaire.Metadata.Status.COMPLETED) {
+      throw new ApiException(new Errors.Builder().addErrors(new Errors.Error.Builder()
+        .code("NotCompleted")
+        .context("metadata.status")
+        .error("Questionnaire is not completed")
+        .rejectedValue(metadata == null ? null : String.valueOf(metadata.getStatus())).build())
+        .status(HttpStatus.CONFLICT.value()).build());
+    }
+
+    final ZoneId zoneId;
+    try {
+      zoneId = ZoneId.of(timezone);
+    } catch (DateTimeException e) {
+      throw new ApiException(new Errors.Builder().addErrors(new Errors.Error.Builder()
+        .code("InvalidTimezone")
+        .context("tz")
+        .error("Invalid timezone")
+        .rejectedValue(timezone).build())
+        .status(HttpStatus.BAD_REQUEST.value()).build());
+    }
+
+    final Form form = formDatabase.findOne(currentTenant.getId(), metadata.getFormId());
+    final String language = (lang != null && !lang.isBlank()) ? lang : metadata.getLanguage();
+
+    // Rebuild a transient, non-persisted session over the stored answers and recompute it so the Dialob
+    // engine interpolates labels (incl. {variable} substitution in notes). The status is set to OPEN and
+    // — critically — the completed timestamp is cleared: the engine's isCompleted() checks the timestamp,
+    // not the status, and a completed session is frozen (rejects dispatch). Supplying an existing
+    // questionnaire keeps the session in-memory only. SET_LOCALE triggers the label interpolation.
+    final Questionnaire computeView = new Questionnaire.Builder().from(questionnaire)
+      .metadata(new Questionnaire.Metadata.Builder().from(metadata)
+        .status(Questionnaire.Metadata.Status.OPEN)
+        .completed(null)
+        .build())
+      .build();
+    final QuestionnaireSession session = questionnaireSessionBuilderFactory.createQuestionnaireSessionBuilder()
+      .questionnaire(computeView)
+      .formId(metadata.getFormId())
+      .build();
+    try {
+      session.dispatchActions(singletonList(ActionsFactory.setLocale(language)));
+      final String body = printoutWriter.writePrintout(
+        form, questionnaire, id -> session.getItemById(id).orElse(null), language, zoneId);
+      return ResponseEntity.ok(body);
+    } finally {
+      session.close();
+    }
   }
 
   /**

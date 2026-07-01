@@ -16,6 +16,8 @@
 package io.dialob.questionnaire.service.rest;
 
 import com.google.common.collect.Lists;
+import io.dialob.api.form.Form;
+import io.dialob.api.form.FormItem;
 import io.dialob.api.proto.*;
 import io.dialob.api.questionnaire.Answer;
 import io.dialob.api.questionnaire.Questionnaire;
@@ -24,6 +26,7 @@ import io.dialob.db.spi.exceptions.DocumentNotFoundException;
 import io.dialob.db.spi.spring.DatabaseExceptionMapper;
 import io.dialob.form.service.api.FormDatabase;
 import io.dialob.questionnaire.csvserializer.CSVSerializer;
+import io.dialob.questionnaire.printout.DialobPrintoutWriter;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import io.dialob.questionnaire.service.api.session.*;
 import io.dialob.rest.DialobRestAutoConfiguration;
@@ -87,6 +90,11 @@ class QuestionnairesRestServiceControllerTest {
       return new CSVSerializer(questionnaireDatabase, currentTenant);
     }
 
+    @Bean
+    DialobPrintoutWriter dialobPrintoutWriter() {
+      return new DialobPrintoutWriter();
+    }
+
   }
 
   @Autowired
@@ -141,6 +149,58 @@ class QuestionnairesRestServiceControllerTest {
     verify(questionnaireSessionService).findOne("1234");
     verify(questionnaireSession).getStatus();
     verifyNoMoreInteractions(questionnaireSessionService, questionnaireSession);
+  }
+
+  @Test
+  void shouldReturnSessionStateForCompletedQuestionnaire() throws Exception {
+    when(questionnaireDatabase.findOne("t-123", "1234")).thenReturn(new Questionnaire.Builder()
+      .id("1234")
+      .metadata(new Questionnaire.Metadata.Builder().formId("f-1").status(Questionnaire.Metadata.Status.COMPLETED).language("en").build())
+      .answers(List.of(new Answer.Builder().id("q1").value("hi").build()))
+      .build());
+    when(formDatabase.findOne("t-123", "f-1")).thenReturn(new Form.Builder()
+      .metadata(new Form.Metadata.Builder().label("F").build())
+      .putData("questionnaire", new FormItem.Builder().id("questionnaire").type("questionnaire").addItems("page1").build())
+      .putData("page1", new FormItem.Builder().id("page1").type("group").label(java.util.Map.of("en", "P")).addItems("q1").build())
+      .putData("q1", new FormItem.Builder().id("q1").type("text").label(java.util.Map.of("en", "Q1")).build())
+      .build());
+    // the session-state endpoint rebuilds a transient session for engine labels; here it returns none -> writer uses form labels
+    final QuestionnaireSession session = mock();
+    final QuestionnaireSessionBuilder sessionBuilder = mock(QuestionnaireSessionBuilder.class, RETURNS_SELF);
+    when(questionnaireSessionBuilderFactory.createQuestionnaireSessionBuilder()).thenReturn(sessionBuilder);
+    when(sessionBuilder.build()).thenReturn(session);
+    when(session.getItemById(any())).thenReturn(Optional.empty());
+
+    mockMvc.perform(get("/questionnaires/{questionnaireId}/session-state", "1234"))
+      .andExpect(status().isOk())
+      .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+      .andExpect(jsonPath("$.id", is("1234")))
+      .andExpect(jsonPath("$.metadata.status", is("COMPLETED")))
+      .andExpect(jsonPath("$.items.byId.q1.value", is("hi")))
+      .andExpect(jsonPath("$.groups.allIds", hasItem("page1")));
+  }
+
+  @Test
+  void shouldRejectSessionStateWhenNotCompleted() throws Exception {
+    when(questionnaireDatabase.findOne("t-123", "1234")).thenReturn(new Questionnaire.Builder()
+      .id("1234")
+      .metadata(new Questionnaire.Metadata.Builder().formId("f-1").status(Questionnaire.Metadata.Status.OPEN).build())
+      .build());
+
+    mockMvc.perform(get("/questionnaires/{questionnaireId}/session-state", "1234"))
+      .andExpect(status().isConflict());
+  }
+
+  @Test
+  void shouldRejectSessionStateWhenInvalidTimezone() throws Exception {
+    when(questionnaireDatabase.findOne("t-123", "1234")).thenReturn(new Questionnaire.Builder()
+      .id("1234")
+      .metadata(new Questionnaire.Metadata.Builder().formId("f-1").status(Questionnaire.Metadata.Status.COMPLETED).language("en").build())
+      .build());
+
+    // the tz is validated before the form is loaded, so a bad zone short-circuits to 400
+    mockMvc.perform(get("/questionnaires/{questionnaireId}/session-state", "1234").param("tz", "Not/AZone"))
+      .andExpect(status().isBadRequest());
   }
 
 

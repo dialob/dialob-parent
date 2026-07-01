@@ -202,4 +202,67 @@ class QuestionnaireRowGroupTest extends AbstractWebSocketTests {
     }).execute();
   }
 
+  @Test
+  void shouldUpdateNote() throws Exception {
+    Form.Builder formBuilder1 = new Form.Builder()
+      .id("shouldUpdateNote")
+      .rev("1")
+      .metadata(new Form.Metadata.Builder().label("shouldUpdateNote").build());
+
+
+    Consumer<Form.Builder> initializer = formBuilder -> {
+      addQuestionnaire(formBuilder, builder -> builder.addClassName("main-questionnaire").addItems("p1"));
+      addItem(formBuilder, "p1", builder -> builder.type("group").putLabel("en","Sivu").addItems("g1"));
+      addItem(formBuilder, "g1", builder -> builder.type("rowgroup").putLabel("en","Ryhma").addItems("q1", "q2", "n1", "summa"));
+      addItem(formBuilder, "q1", builder -> builder.type("number").putLabel("en","Kysymys 1"));
+      addItem(formBuilder, "q2", builder -> builder.type("number").putLabel("en","Kysymys 2"));
+      addItem(formBuilder, "n1", builder -> builder.type("note").putLabel("en","{summa}"));
+      addVariable(formBuilder, "summa", builder -> builder.expression("q1 + q2"));
+      formBuilder.metadata(new Form.Metadata.Builder().label("shouldUpdateNote").build());
+    };
+    initializer.accept(formBuilder1);
+    shouldFindForm(formBuilder1.build());
+
+    createAndOpenSession("shouldUpdateNote")
+      .expectActivated()
+      .expectActions(actions -> {
+        Assertions.assertThat(actions.getActions())
+          .extracting("type", "item.id", "item.label")
+          .usingElementComparator(TestUtils.ORDER_AGNOSTIC_LIST_COMPARATOR)
+          .containsOnly(
+            tuple(Action.Type.RESET,   null, null),
+            tuple(Action.Type.LOCALE,  null, null),
+            tuple(Action.Type.ITEM, "questionnaire", "shouldUpdateNote"),
+            tuple(Action.Type.ITEM, "g1", "Ryhma"),
+            tuple(Action.Type.ITEM, "p1", "Sivu")
+          );
+      }).next()
+      .addRow("g1")
+      .expectActions(actions -> {
+        Assertions.assertThat(actions.getActions())
+          .extracting("type", "item.id", "item.label")
+          .usingElementComparator(TestUtils.ORDER_AGNOSTIC_LIST_COMPARATOR)
+          .containsOnly(
+            tuple(Action.Type.ITEM, "g1.0.q1", "Kysymys 1"),
+            tuple(Action.Type.ITEM, "g1.0.q2", "Kysymys 2"),
+            tuple(Action.Type.ITEM, "g1.0", "Ryhma"),
+            tuple(Action.Type.ITEM, "g1", "Ryhma")
+          );
+      }).next()
+      .answerQuestion("g1.0.q1", "1")
+      .expectUpdateWithoutActions()
+      .next()
+      .answerQuestion("g1.0.q2", "3")
+      .expectActions(actions -> {
+        Assertions.assertThat(actions.getActions())
+          .extracting("type", "item.id", "item.label")
+          .usingElementComparator(TestUtils.ORDER_AGNOSTIC_LIST_COMPARATOR)
+          .containsOnly(
+            tuple(Action.Type.ITEM, "g1.0.n1", "4")
+          );
+      }).next()
+      .execute();
+
+  }
+
 }

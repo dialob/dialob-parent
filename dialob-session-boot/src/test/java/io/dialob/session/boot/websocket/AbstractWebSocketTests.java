@@ -19,6 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.Form;
 import io.dialob.api.form.FormItem;
+import io.dialob.api.form.Variable;
 import io.dialob.api.questionnaire.ContextValue;
 import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.form.service.api.FormDatabase;
@@ -190,6 +191,14 @@ abstract class AbstractWebSocketTests implements ProvideTestRedis {
     FormItem formItemBean = builder.build();
     formBuilder.putData(formItemBean.getId(), formItemBean);
     return formItemBean;
+  }
+
+  protected Variable addVariable(Form.Builder formBuilder, String itemId, Consumer<Variable.Builder> builderConsumer) {
+    Variable.Builder builder = new Variable.Builder().name(itemId);
+    builderConsumer.accept(builder);
+    Variable variable = builder.build();
+    formBuilder.addVariables(variable);
+    return variable;
   }
 
   protected WebSocketRequestTestTemplate.ExpectionBuilder openSession(Questionnaire questionnaire) {
