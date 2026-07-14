@@ -5,13 +5,13 @@ import { FormattedMessage } from 'react-intl';
 import { Variable } from '../../types';
 import { useEditor } from '../../editor';
 import { getErrorSeverity, useErrorColorSx } from '../../utils/ErrorUtils';
-import { DeleteButton, DescriptionField, ExpressionField, NameField, PublishedSwitch, UsersField, SortableVariableRowProps } from './VariableComponents';
+import { DeleteButton, DescriptionField, ExpressionField, NameField, PublishedSwitch, UsersField, VariableProps } from './VariableComponents';
 import { ErrorMessage } from '../ErrorComponents';
 import { DragHandle, DragHandleProps } from '../DragHandle';
 
 type ExpandedField = 'name' | 'expression' | 'description' | null;
 
-const ExpressionVariableRow: React.FC<SortableVariableRowProps> = React.memo(function ExpressionVariableRow({
+const ExpressionVariableRow: React.FC<VariableProps> = React.memo(function ExpressionVariableRow({
   index, item, onClose, onInsertBelow, setNodeRef, style, handleProps,
 }) {
   const { editor } = useEditor();

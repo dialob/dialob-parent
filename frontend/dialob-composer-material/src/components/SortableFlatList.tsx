@@ -16,11 +16,7 @@ interface SortableFlatListProps {
 }
 
 export const SortableFlatList: React.FC<SortableFlatListProps> = ({ itemIds, onReorder, children }) => {
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: { distance: 5 },
-    })
-  );
+  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
 
   const handleDragEnd = ({ active, over }: DragEndEvent) => {
     if (over && active.id !== over.id) {

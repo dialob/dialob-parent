@@ -44,7 +44,7 @@ export const scrollToItem = (itemId: string, items: DialobItem[], activePage: Di
 export const scrollToTreeItem = (itemId: string) => {
   const tree = document.querySelector('#tree-scroll-container') as HTMLElement;
   const item = document.querySelector(`#tree-item-${itemId}`) as HTMLElement;
-  
+
   if (tree && item) {
     setTimeout(() => {
       const itemTop = item.offsetTop - tree.offsetTop;
@@ -72,7 +72,7 @@ export const scrollToAddedItem = (item: DialobItem) => {
 const scrollToDialogRow = (rowSelector: string, index?: number) => {
   const dialogContent = document.querySelector('.MuiDialogContent-root');
   if (dialogContent) {
-    // Double rAF + small delay lets complex table layouts finish rendering the new row first.
+    // Double requestAnimationFrame + small delay lets complex table layouts finish rendering the new row first
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         setTimeout(() => {

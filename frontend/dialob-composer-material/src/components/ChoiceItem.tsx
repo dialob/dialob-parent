@@ -26,14 +26,15 @@ export interface ChoiceItemProps {
   index: number,
   valueSetId?: string,
   isGlobal?: boolean,
+  sortableId: string,
+  style?: React.CSSProperties,
+  handleProps?: SortableHandleProps,
   onRuleEdit: (index: number, rule: string) => void,
   onTextEdit: (index: number, label: LocalizedString) => void,
   onDelete: (index: number) => void,
   onUpdateId: (index: number, id: string) => void,
   onInsertBelow: (index: number) => void,
   setNodeRef?: (node: HTMLElement | null) => void,
-  style?: React.CSSProperties,
-  handleProps?: SortableHandleProps,
 }
 
 type ExpandedField = 'id' | 'rule' | string | null;
@@ -164,8 +165,8 @@ const ChoiceItem: React.FC<ChoiceItemProps> = (props) => {
 
   const expandedBg =
     expandedField === 'id' ? alpha(theme.palette.warning.main, 0.06) :
-    expandedField === 'rule' ? alpha(theme.palette.primary.main, 0.06) :
-    undefined;
+      expandedField === 'rule' ? alpha(theme.palette.primary.main, 0.06) :
+        undefined;
 
   const colSpan = isGlobal ? 2 + languageNo : 3 + languageNo;
 

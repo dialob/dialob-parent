@@ -7,13 +7,13 @@ import { useEditor } from '../../editor';
 import { useErrorColorSx } from '../../utils/ErrorUtils';
 import {
   ContextTypeMenu, DefaultValueField, DeleteButton, DescriptionField,
-  NameField, PublishedSwitch, UsersField, SortableVariableRowProps
+  NameField, PublishedSwitch, UsersField, VariableProps
 } from './VariableComponents';
 import { DragHandle, DragHandleProps } from '../DragHandle';
 
 type ExpandedField = 'name' | 'defaultValue' | 'description' | null;
 
-const ContextVariableRow: React.FC<SortableVariableRowProps> = React.memo(function ContextVariableRow({
+const ContextVariableRow: React.FC<VariableProps> = React.memo(function ContextVariableRow({
   index, item, onClose, onInsertBelow, setNodeRef, style, handleProps,
 }) {
   const { editor } = useEditor();

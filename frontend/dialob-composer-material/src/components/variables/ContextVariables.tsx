@@ -3,33 +3,13 @@ import { IconButton, TableBody, TableCell, TableHead, TableRow, Typography } fro
 import { Add } from "@mui/icons-material";
 import { FormattedMessage } from "react-intl";
 import { BorderedTable } from "../TableEditorComponents";
-import ContextVariableRow from "./ContextVariableRow";
 import { isContextVariable } from "../../utils/ItemUtils";
 import { ContextVariable } from "../../types";
 import { useSave } from "../../dialogs/contexts/saving/useSave";
 import { SortableFlatList } from "../SortableFlatList";
-import { useSortableRow } from "../useSortableRow";
 import { scrollToVariableRow } from "../../utils/ScrollUtils";
+import { SortableContextVariableRow } from "./SortableContextVariableRow";
 
-const contextSortableId = (index: number) => `context-${index}`;
-
-const SortableContextVariableRow: React.FC<{
-  item: ContextVariable;
-  index: number;
-  sortableId: string;
-  onClose: () => void;
-  onInsertBelow: (index: number) => void;
-}> = ({ sortableId, ...rowProps }) => {
-  const { setNodeRef, style, handleProps } = useSortableRow(sortableId);
-  return (
-    <ContextVariableRow
-      {...rowProps}
-      setNodeRef={setNodeRef}
-      style={style}
-      handleProps={handleProps}
-    />
-  );
-};
 
 const ContextVariables: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const { savingState, createVariable, moveVariable } = useSave();
@@ -45,7 +25,7 @@ const ContextVariables: React.FC<{ onClose: () => void }> = ({ onClose }) => {
       );
   }, [savingState.variables]);
 
-  const itemIds = contextVariableRows.map((_, index) => contextSortableId(index));
+  const itemIds = contextVariableRows.map((_, index) => `context-${index}`);
 
   const handleAdd = () => {
     createVariable(true);

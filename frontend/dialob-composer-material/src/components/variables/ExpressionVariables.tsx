@@ -5,31 +5,11 @@ import { FormattedMessage } from "react-intl";
 import { BorderedTable } from "../TableEditorComponents";
 import { isContextVariable } from "../../utils/ItemUtils";
 import { Variable } from "../../types";
-import ExpressionVariableRow from "./ExpressionVariableRow";
 import { useSave } from "../../dialogs/contexts/saving/useSave";
 import { SortableFlatList } from "../SortableFlatList";
-import { useSortableRow } from "../useSortableRow";
 import { scrollToVariableRow } from "../../utils/ScrollUtils";
+import { SortableExpressionVariableRow } from "./SortableExpressionVariableRow";
 
-const expressionSortableId = (index: number) => `expression-${index}`;
-
-const SortableExpressionVariableRow: React.FC<{
-  item: Variable;
-  index: number;
-  sortableId: string;
-  onClose: () => void;
-  onInsertBelow: (index: number) => void;
-}> = ({ sortableId, ...rowProps }) => {
-  const { setNodeRef, style, handleProps } = useSortableRow(sortableId);
-  return (
-    <ExpressionVariableRow
-      {...rowProps}
-      setNodeRef={setNodeRef}
-      style={style}
-      handleProps={handleProps}
-    />
-  );
-};
 
 const ExpressionVariables: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const { savingState, createVariable, moveVariable } = useSave();
@@ -48,7 +28,7 @@ const ExpressionVariables: React.FC<{ onClose: () => void }> = ({ onClose }) => 
       );
   }, [savingState.variables, savingState.items]);
 
-  const itemIds = expressionVariableRows.map((_, index) => expressionSortableId(index));
+  const itemIds = expressionVariableRows.map((_, index) => `expression-${index}`);
 
   const handleAdd = () => {
     createVariable(false);

@@ -1,39 +1,13 @@
 import React from "react";
 import { TableBody } from "@mui/material";
-import ChoiceItem from "./ChoiceItem";
 import { LocalizedString, ValueSet, ValueSetEntry } from "../types";
 import { useSave } from "../dialogs/contexts/saving/useSave";
 import { SortableFlatList } from "./SortableFlatList";
-import { useSortableRow } from "./useSortableRow";
 import { createDefaultValueSetEntry } from "../utils/ValueSetUtils";
 import { arrayMove } from "@dnd-kit/sortable";
 import { scrollToChoiceItem } from "../utils/ScrollUtils";
+import { SortableChoiceItem } from "./SortableChoiceItem";
 
-
-const SortableChoiceItem: React.FC<{
-  entry: ValueSetEntry;
-  index: number;
-  sortableId: string;
-  valueSetId: string;
-  isGlobal?: boolean;
-  onRuleEdit: (index: number, rule: string) => void;
-  onTextEdit: (index: number, label: LocalizedString) => void;
-  onDelete: (index: number) => void;
-  onUpdateId: (index: number, id: string) => void;
-  onInsertBelow: (index: number) => void;
-}> = (props) => {
-  const { sortableId, ...itemProps } = props;
-  const { setNodeRef, style, handleProps } = useSortableRow(sortableId);
-
-  return (
-    <ChoiceItem
-      {...itemProps}
-      setNodeRef={setNodeRef}
-      style={style}
-      handleProps={handleProps}
-    />
-  );
-};
 
 const ChoiceList: React.FC<{
   valueSet?: ValueSet,
@@ -48,10 +22,7 @@ const ChoiceList: React.FC<{
     if (valueSet?.entries?.[index]) {
       const newEntry = { ...valueSet.entries[index], id };
       updateValueSetEntry(valueSet.id, index, newEntry);
-      updateValueSet?.({
-        ...valueSet,
-        entries: valueSet.entries.map((e, i) => i === index ? newEntry : e),
-      });
+      updateValueSet?.({ ...valueSet, entries: valueSet.entries.map((e, i) => i === index ? newEntry : e) });
     }
   }
 
@@ -59,10 +30,7 @@ const ChoiceList: React.FC<{
     if (valueSet?.entries?.[index]) {
       const newEntry = { ...valueSet.entries[index], label };
       updateValueSetEntry(valueSet.id, index, newEntry);
-      updateValueSet?.({
-        ...valueSet,
-        entries: valueSet.entries.map((e, i) => i === index ? newEntry : e),
-      });
+      updateValueSet?.({ ...valueSet, entries: valueSet.entries.map((e, i) => i === index ? newEntry : e) });
     }
   }
 
@@ -73,20 +41,14 @@ const ChoiceList: React.FC<{
         delete newEntry.when;
       }
       updateValueSetEntry(valueSet.id, index, newEntry);
-      updateValueSet?.({
-        ...valueSet,
-        entries: valueSet.entries.map((e, i) => i === index ? newEntry : e),
-      });
+      updateValueSet?.({ ...valueSet, entries: valueSet.entries.map((e, i) => i === index ? newEntry : e) });
     }
   }
 
   const onDeleteValueSetEntry = (index: number) => {
     if (valueSet?.entries?.[index]) {
       deleteValueSetEntry(valueSet.id, index);
-      updateValueSet?.({
-        ...valueSet,
-        entries: valueSet.entries.filter((_, i) => i !== index),
-      });
+      updateValueSet?.({ ...valueSet, entries: valueSet.entries.filter((_, i) => i !== index) });
     }
   }
 
@@ -112,10 +74,7 @@ const ChoiceList: React.FC<{
       return;
     }
     moveValueSetEntry(valueSet.id, fromIndex, toIndex);
-    updateValueSet?.({
-      ...valueSet,
-      entries: arrayMove([...valueSet.entries], fromIndex, toIndex),
-    });
+    updateValueSet?.({ ...valueSet, entries: arrayMove([...valueSet.entries], fromIndex, toIndex) });
   };
 
   if (!valueSet || entries.length === 0) {

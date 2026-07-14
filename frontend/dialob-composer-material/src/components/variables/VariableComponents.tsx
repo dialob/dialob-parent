@@ -27,14 +27,12 @@ const VARIABLE_TYPES: ContextVariableType[] = [
 export interface VariableProps {
   index: number;
   item: Variable | ContextVariable;
-  onClose: () => void;
-}
-
-export interface SortableVariableRowProps extends VariableProps {
-  onInsertBelow: (index: number) => void;
-  setNodeRef?: (node: HTMLElement | null) => void;
+  sortableId: string;
   style?: React.CSSProperties;
   handleProps?: SortableHandleProps;
+  onClose: () => void;
+  onInsertBelow: (index: number) => void;
+  setNodeRef?: (node: HTMLElement | null) => void;
 }
 
 export const DeleteButton: React.FC<{ variable: ContextVariable | Variable }> = ({ variable }) => {
@@ -125,7 +123,7 @@ export const DescriptionField: React.FC<{ variable: Variable | ContextVariable }
       value={description}
       onChange={handleChange}
       variant='standard'
-      InputProps={{ 
+      InputProps={{
         disableUnderline: true,
       }}
       onClear={handleClear}
@@ -199,8 +197,8 @@ export const DefaultValueField: React.FC<{ variable: ContextVariable }> = ({ var
       value={defaultValue}
       onChange={handleChange}
       variant='standard'
-      InputProps={{ 
-        disableUnderline: true, 
+      InputProps={{
+        disableUnderline: true,
       }}
       onClear={handleClear}
       fullWidth
