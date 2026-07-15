@@ -137,7 +137,7 @@ const SaveIdButton: React.FC<{
   )
 }
 
-const ItemOptionsDialogContent: React.FC<{
+interface ItemOptionsDialogContentProps {
   open: boolean;
   item: DialobItem;
   activeTab: OptionsTabType;
@@ -155,7 +155,9 @@ const ItemOptionsDialogContent: React.FC<{
   handleDelete: () => void;
   handleCloseChange: () => void;
   handleOpenHelp: () => void;
-}> = (props) => {
+}
+
+const ItemOptionsDialogContent: React.FC<ItemOptionsDialogContentProps> = (props) => {
   const {
     open, item, activeTab, setActiveTab, editMode, setEditMode, id, setId, idError, setIdError,
     isInputType, canHaveChoices, isLargeScreen, handleClose, handleDelete, handleCloseChange, handleOpenHelp,

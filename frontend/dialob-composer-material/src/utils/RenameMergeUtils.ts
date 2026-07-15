@@ -6,18 +6,12 @@ import {
   LocalizedString,
   ValidationRule,
   ValueSet,
-  ValueSetEntry,
   Variable,
 } from '../types';
 import { isContextVariable } from './ItemUtils';
 
-export const applyRenamesToRule = (expression: string, from: string, to: string): string =>
-  expression.replace(
-    new RegExp(`\\b${from.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'g'),
-    to
-  );
 
-export const mergeRuleField = (
+const mergeRuleField = (
   staged: string | undefined,
   baseline: string | undefined,
   api: string | undefined,
@@ -27,12 +21,12 @@ export const mergeRuleField = (
   const normalizedStaged = staged ?? '';
   const normalizedBaseline = baseline ?? '';
   if (normalizedStaged !== normalizedBaseline) {
-    return normalizedStaged === '' ? undefined : applyRenamesToRule(normalizedStaged, from, to);
+    return normalizedStaged === '' ? undefined : normalizedStaged.replace(new RegExp(`\\b${from.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'g'), to);
   }
   return api === '' ? undefined : api;
 };
 
-export const rewriteLabelPlaceholders = (
+const rewriteLabelPlaceholders = (
   label: LocalizedString | undefined,
   oldId: string,
   newId: string
@@ -124,9 +118,6 @@ export const mergeItemAfterRename = (
   return merged;
 };
 
-const findApiEntry = (apiVS: ValueSet | undefined, baselineEntry: ValueSetEntry | undefined, stagedEntry: ValueSetEntry): ValueSetEntry | undefined =>
-  apiVS?.entries?.find(e => e.id === (baselineEntry?.id ?? stagedEntry.id));
-
 export const mergeValueSetsAfterRename = (
   stagedValueSets: ValueSet[] | undefined,
   baselineValueSets: ValueSet[] | undefined,
@@ -150,7 +141,7 @@ export const mergeValueSetsAfterRename = (
       const baselineEntry = baselineVS?.entries?.[index]?.id === stagedEntry.id
         ? baselineVS.entries[index]
         : baselineVS?.entries?.find(e => e.id === stagedEntry.id);
-      const apiEntry = findApiEntry(apiVS, baselineEntry, stagedEntry);
+      const apiEntry = apiVS?.entries?.find(e => e.id === (baselineEntry?.id ?? stagedEntry.id));
       const mergedWhen = mergeRuleField(stagedEntry.when, baselineEntry?.when, apiEntry?.when, oldId, newId);
       const labelEdited = JSON.stringify(stagedEntry.label ?? {}) !== JSON.stringify(baselineEntry?.label ?? {});
 
