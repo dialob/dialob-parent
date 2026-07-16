@@ -24,6 +24,7 @@ import TranslationProgressDialog from '../components/translations/TranslationPro
 import { useHasTranslatableContent, useBulkTranslateValueSet } from '../components/translations';
 import { SavingProvider } from './contexts/saving/SavingProvider';
 import { useBackend } from '../backend/useBackend';
+import { applyEntryRenamesToSavingState } from '../utils/ValueSetEntryRenameUtils';
 
 interface GlobalValueSet {
   id: string;
@@ -33,19 +34,31 @@ interface GlobalValueSet {
 
 const SaveButton: React.FC = () => {
   const { form, applyListChanges } = useComposer();
-  const { savingState } = useSave();
+  const { savingState, syncAfterSave } = useSave();
 
   const hasChanges = React.useMemo(() => {
+    const hasEntryRenames = savingState.pendingEntryRenames && savingState.pendingEntryRenames.length > 0;
     return (savingState.valueSets && (JSON.stringify(savingState.valueSets) !== JSON.stringify(form.valueSets))) ||
       (savingState.composerMetadata?.globalValueSets && 
         (JSON.stringify(savingState.composerMetadata?.globalValueSets) !== JSON.stringify(form.metadata.composer?.globalValueSets))) ||
       (savingState.composerMetadata?.aiTranslations && 
-        (JSON.stringify(savingState.composerMetadata?.aiTranslations) !== JSON.stringify(form.metadata.composer?.aiTranslations)));
+        (JSON.stringify(savingState.composerMetadata?.aiTranslations) !== JSON.stringify(form.metadata.composer?.aiTranslations))) ||
+      hasEntryRenames;
   }, [savingState, form.valueSets, form.metadata.composer?.globalValueSets, form.metadata.composer?.aiTranslations]);
   
   const handleSave = () => {
     if (savingState.valueSets && savingState.composerMetadata?.globalValueSets) {
-      applyListChanges(savingState);
+      const stateToApply = applyEntryRenamesToSavingState(
+        savingState,
+        form.data,
+        form.variables,
+        form.valueSets
+      );
+      applyListChanges(stateToApply);
+      syncAfterSave({
+        valueSets: stateToApply.valueSets,
+        composerMetadata: stateToApply.composerMetadata,
+      });
     }
   }
 

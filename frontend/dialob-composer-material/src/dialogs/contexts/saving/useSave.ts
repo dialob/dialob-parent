@@ -125,6 +125,23 @@ export const useSave = () => {
     dispatch({ type: 'clearPendingRenames' });
   }
 
+  const recordEntryRename = (valueSetId: string, from: string, to: string) => {
+    dispatch({ type: 'recordEntryRename', valueSetId, from, to });
+  }
+
+  const clearPendingEntryRenames = () => {
+    dispatch({ type: 'clearPendingEntryRenames' });
+  }
+
+  const syncAfterSave = (saved: {
+    item?: DialobItem;
+    valueSets?: ValueSet[];
+    composerMetadata?: ComposerMetadata;
+    variables?: (ContextVariable | Variable)[];
+  }) => {
+    dispatch({ type: 'syncAfterSave', ...saved });
+  }
+
   const resetItems = (items: DialobItems) => {
     dispatch({ type: 'resetItems', items });
   }
@@ -190,6 +207,9 @@ export const useSave = () => {
     changeVariableId,
     updateVariableName,
     clearPendingRenames,
+    recordEntryRename,
+    clearPendingEntryRenames,
+    syncAfterSave,
     resetItems,
     resetVariables,
     applyIdRenameMerge,

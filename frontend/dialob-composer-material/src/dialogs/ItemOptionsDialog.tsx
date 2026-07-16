@@ -15,6 +15,7 @@ import { ChangeIdResult } from '../backend/types';
 import { validateId } from '../utils/ValidateUtils';
 import { useDocs } from '../utils/DocsUtils';
 import { SavingProvider } from './contexts/saving/SavingProvider';
+import { applyEntryRenamesToSavingState } from '../utils/ValueSetEntryRenameUtils';
 import { useSave } from './contexts/saving/useSave';
 import { DialobItem } from '../types';
 import { getCategoryItems } from '../utils/ConfigUtils';
@@ -35,23 +36,36 @@ export const StyledButtonContainer = styled(Box)(({ theme }) => ({
     
 const SaveItemButton: React.FC = () => {
   const { form, applyItemChanges } = useComposer();
-  const { savingState } = useSave();
+  const { savingState, syncAfterSave } = useSave();
   const { editor } = useEditor();
 
   const hasChanges = React.useMemo(() => {
+    const hasEntryRenames = savingState.pendingEntryRenames && savingState.pendingEntryRenames.length > 0;
     return (savingState.item && (JSON.stringify(savingState.item) !== JSON.stringify(form.data[savingState.item.id]))) ||
       (savingState.valueSets && (JSON.stringify(savingState.valueSets) !== JSON.stringify(form.valueSets))) ||
       (savingState.composerMetadata?.globalValueSets && 
         (JSON.stringify(savingState.composerMetadata.globalValueSets) !== JSON.stringify(form.metadata.composer?.globalValueSets))) ||
       (savingState.composerMetadata?.aiTranslations && 
-        (JSON.stringify(savingState.composerMetadata.aiTranslations) !== JSON.stringify(form.metadata.composer?.aiTranslations)));
+        (JSON.stringify(savingState.composerMetadata.aiTranslations) !== JSON.stringify(form.metadata.composer?.aiTranslations))) ||
+      hasEntryRenames;
   }, [savingState, form.data, form.valueSets, form.metadata.composer?.globalValueSets, form.metadata.composer?.aiTranslations]);
 
   const handleSave = () => {
     if (editor.activeItem && savingState.item && editor.activeItem.id !== savingState.item.id) {
       console.warn('Active item ID has changed, not applying item changes to avoid inconsistencies.');
     } else if (savingState.item) {
-      applyItemChanges(savingState);
+      const stateToApply = applyEntryRenamesToSavingState(
+        savingState,
+        form.data,
+        form.variables,
+        form.valueSets
+      );
+      applyItemChanges(stateToApply);
+      syncAfterSave({
+        item: stateToApply.item,
+        valueSets: stateToApply.valueSets,
+        composerMetadata: stateToApply.composerMetadata,
+      });
     }
   }
 

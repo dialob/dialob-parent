@@ -12,14 +12,18 @@ const ChoiceList: React.FC<{
   isGlobal?: boolean
 }> = ({ valueSet, updateValueSet, isGlobal }) => {
   const { form } = useComposer();
-  const { deleteValueSetEntry, updateValueSetEntry } = useSave();
+  const { deleteValueSetEntry, updateValueSetEntry, recordEntryRename } = useSave();
   const languageNo = form.metadata.languages?.length || 0;
 
   const updateValueSetEntryId = (entry: ValueSetEntry, id: string) => {
     if (valueSet && valueSet.entries) {
+      const oldId = entry.id;
       const newEntry = { ...entry, id };
       const idx = valueSet.entries.findIndex(e => e.id === entry.id);
       updateValueSetEntry(valueSet.id, idx, newEntry);
+      if (oldId !== id) {
+        recordEntryRename(valueSet.id, oldId, id);
+      }
       updateValueSet?.({ ...valueSet, entries: valueSet.entries.map(e => e.id === entry.id ? newEntry : e) });
     }
   }

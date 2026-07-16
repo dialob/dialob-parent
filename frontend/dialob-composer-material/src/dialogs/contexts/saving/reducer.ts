@@ -477,6 +477,63 @@ const clearPendingRenames = (state: SavingState): void => {
   state.pendingVariableRenames = [];
 }
 
+const recordEntryRename = (state: SavingState, valueSetId: string, from: string, to: string): void => {
+  if (from === to) {
+    return;
+  }
+  if (!state.pendingEntryRenames) {
+    state.pendingEntryRenames = [];
+  }
+
+  const chainIdx = state.pendingEntryRenames.findIndex(r => r.valueSetId === valueSetId && r.to === from);
+  if (chainIdx > -1) {
+    if (to === state.pendingEntryRenames[chainIdx].from) {
+      state.pendingEntryRenames.splice(chainIdx, 1);
+    } else {
+      state.pendingEntryRenames[chainIdx].to = to;
+    }
+    return;
+  }
+
+  const existingIdx = state.pendingEntryRenames.findIndex(r => r.valueSetId === valueSetId && r.from === from);
+  if (existingIdx > -1) {
+    if (to === from) {
+      state.pendingEntryRenames.splice(existingIdx, 1);
+    } else {
+      state.pendingEntryRenames[existingIdx].to = to;
+    }
+  } else {
+    state.pendingEntryRenames.push({ valueSetId, from, to });
+  }
+}
+
+const clearPendingEntryRenames = (state: SavingState): void => {
+  state.pendingEntryRenames = [];
+}
+
+const syncAfterSave = (
+  state: SavingState,
+  item?: DialobItem,
+  valueSets?: ValueSet[],
+  composerMetadata?: ComposerMetadata,
+  variables?: (ContextVariable | Variable)[]
+): void => {
+  if (item !== undefined) {
+    state.item = item;
+  }
+  if (valueSets !== undefined) {
+    state.valueSets = valueSets;
+  }
+  if (composerMetadata !== undefined) {
+    state.composerMetadata = composerMetadata;
+  }
+  if (variables !== undefined) {
+    state.variables = variables;
+  }
+  state.pendingEntryRenames = [];
+  state.items = undefined;
+}
+
 const resetItems = (state: SavingState, items: DialobItems): void => {
   state.items = items;
 }
@@ -712,6 +769,12 @@ export const itemReducer = (state: SavingState, action: SavingAction): SavingSta
       updateVariableName(state, action.currentName, action.originalName, action.to);
     } else if (action.type === 'clearPendingRenames') {
       clearPendingRenames(state);
+    } else if (action.type === 'recordEntryRename') {
+      recordEntryRename(state, action.valueSetId, action.from, action.to);
+    } else if (action.type === 'clearPendingEntryRenames') {
+      clearPendingEntryRenames(state);
+    } else if (action.type === 'syncAfterSave') {
+      syncAfterSave(state, action.item, action.valueSets, action.composerMetadata, action.variables);
     } else if (action.type === 'resetItems') {
       resetItems(state, action.items);
     } else if (action.type === 'resetVariables') {

@@ -43,6 +43,9 @@ export type SavingAction =
   | { type: 'changeVariableId', variables: (ContextVariable | Variable)[] }
   | { type: 'updateVariableName', currentName: string, originalName: string, to: string }
   | { type: 'clearPendingRenames' }
+  | { type: 'recordEntryRename', valueSetId: string, from: string, to: string }
+  | { type: 'clearPendingEntryRenames' }
+  | { type: 'syncAfterSave', item?: DialobItem, valueSets?: ValueSet[], composerMetadata?: ComposerMetadata, variables?: (ContextVariable | Variable)[] }
   | { type: 'resetItems', items: DialobItems }
   | { type: 'resetVariables', variables: (ContextVariable | Variable)[] }
   | { type: 'applyIdRenameMerge', mergedItem?: DialobItem, mergedValueSets?: ValueSet[], mergedItems?: DialobItems, mergedVariables?: (ContextVariable | Variable)[], mergedComposerMetadata?: ComposerMetadata }
