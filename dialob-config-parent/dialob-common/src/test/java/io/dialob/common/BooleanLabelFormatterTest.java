@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class BooleanLabelFormatterTest {
@@ -51,11 +52,45 @@ class BooleanLabelFormatterTest {
   }
 
   @Test
+  void shouldFallbackToEnglishForNullOrBlankLanguage() {
+    assertEquals("Yes", BooleanLabelFormatter.of(null).labelFor(true));
+    assertEquals("No", BooleanLabelFormatter.of(null).labelFor(false));
+    assertEquals("Yes", BooleanLabelFormatter.of("  ").labelFor(true));
+    assertEquals("No", BooleanLabelFormatter.of("  ").labelFor(false));
+  }
+
+  @Test
   void shouldIncludeComposerIsoLanguageCodes() {
     Map<String, BooleanLabelFormatter.Labels> labels = BooleanLabelFormatter.loadLabels();
     assertTrue(labels.size() >= 180);
     for (String code : new String[] {"en", "fi", "sv", "et", "ms", "de", "fr", "pl", "zh", "ar"}) {
       assertTrue(labels.containsKey(code), "Missing boolean labels for " + code);
     }
+  }
+
+  @Test
+  void shouldParseLabelsFromJson() {
+    String json = """
+      {
+        "en": {
+          "true": "Yes",
+          "false": "No"
+        },
+        "fi": {
+          "true": "Kyllä",
+          "false": "Ei"
+        }
+      }
+      """;
+    Map<String, BooleanLabelFormatter.Labels> labels = BooleanLabelFormatter.parseLabels(json);
+    assertEquals("Yes", labels.get("en").trueLabel());
+    assertEquals("No", labels.get("en").falseLabel());
+    assertEquals("Kyllä", labels.get("fi").trueLabel());
+    assertEquals("Ei", labels.get("fi").falseLabel());
+  }
+
+  @Test
+  void shouldRejectEmptyJson() {
+    assertThrows(IllegalStateException.class, () -> BooleanLabelFormatter.parseLabels("{}"));
   }
 }

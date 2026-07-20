@@ -33,7 +33,7 @@ public final class BooleanLabelFormatter {
   private static final String RESOURCE = "/io/dialob/common/boolean-labels.json";
 
   private static final Pattern ENTRY_PATTERN = Pattern.compile(
-    "\"([a-z]{2})\"\\s*:\\s*\\{\\s*\"true\"\\s*:\\s*\"((?:\\\\.|[^\"\\\\])*)\"\\s*,\\s*\"false\"\\s*:\\s*\"((?:\\\\.|[^\"\\\\])*)\"\\s*\\}"
+    "\"([a-z]{2})\"\\s*:\\s*\\{\\s*\"true\"\\s*:\\s*\"([^\"]*)\"\\s*,\\s*\"false\"\\s*:\\s*\"([^\"]*)\"\\s*\\}"
   );
 
   private static final Map<String, Labels> LABELS = loadLabels();
@@ -98,17 +98,12 @@ public final class BooleanLabelFormatter {
     Map<String, Labels> labels = new HashMap<>();
     Matcher matcher = ENTRY_PATTERN.matcher(json);
     while (matcher.find()) {
-      labels.put(matcher.group(1), new Labels(unescapeJson(matcher.group(2)), unescapeJson(matcher.group(3))));
+      labels.put(matcher.group(1), new Labels(matcher.group(2), matcher.group(3)));
     }
     if (labels.isEmpty()) {
       throw new IllegalStateException("No boolean labels parsed from resource");
     }
     return Collections.unmodifiableMap(labels);
-  }
-
-  @NonNull
-  private static String unescapeJson(@NonNull String value) {
-    return value.replace("\\\"", "\"").replace("\\\\", "\\");
   }
 
   record Labels(@NonNull String trueLabel, @NonNull String falseLabel) {}

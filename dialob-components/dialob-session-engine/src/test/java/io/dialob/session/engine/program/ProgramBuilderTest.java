@@ -1086,5 +1086,30 @@ class ProgramBuilderTest extends AbstractDialobProgramTest {
     Assertions.assertEquals("UNKNOWN_VARIABLE", ve.getMessage());
   }
 
+  @Test
+  void shouldDetectBooleanItems() {
+    final ProgramBuilder programBuilder = newProgramBuilder();
+    programBuilder.startProgram()
+      .setId("boolean-detection")
+      .addRoot()
+      .addItem("page1")
+      .build()
+      .addPage("page1")
+      .addItem("question1")
+      .addItem("question2")
+      .build()
+      .addQuestion("question1")
+      .setType("boolean")
+      .build()
+      .addQuestion("question2")
+      .setType("text")
+      .build()
+      .build();
+
+    assertTrue(programBuilder.isBooleanItem(IdUtils.toId("question1")));
+    assertFalse(programBuilder.isBooleanItem(IdUtils.toId("question2")));
+    assertFalse(programBuilder.isBooleanItem(IdUtils.toId("missing")));
+  }
+
 
 }
