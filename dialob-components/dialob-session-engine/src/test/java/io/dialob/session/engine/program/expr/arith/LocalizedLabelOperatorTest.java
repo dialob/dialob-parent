@@ -18,7 +18,9 @@ package io.dialob.session.engine.program.expr.arith;
 import io.dialob.session.engine.program.AbstractItemBuilder;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.program.ProgramBuilder;
+import io.dialob.session.engine.program.expr.FormatExpressionException;
 import io.dialob.session.engine.program.expr.OutputFormatter;
+import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.program.model.Label;
 import io.dialob.session.engine.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ItemId;
@@ -34,7 +36,9 @@ import java.math.BigDecimal;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 class LocalizedLabelOperatorTest {
@@ -334,6 +338,32 @@ class LocalizedLabelOperatorTest {
     verify(outputFormatter).format(Boolean.TRUE);
     verify(programBuilder).findItemBuilder("bool1");
     verifyNoMoreInteractions(programBuilder, context, outputFormatter);
+  }
+
+  @Test
+  void createFormatExpressionExpandsPlaceholdersLikeLabels() {
+    AbstractItemBuilder<?,ProgramBuilder> itemBuilder = Mockito.mock();
+    when(programBuilder.findItemBuilder("var1")).thenReturn(Optional.of(itemBuilder));
+    when(itemBuilder.getId()).thenReturn(IdUtils.toId("var1"));
+
+    Expression expression = LocalizedLabelOperator.createFormatExpression(programBuilder, "Otsikko {var1}");
+    assertInstanceOf(ConcatOperator.class, expression);
+    when(context.getItemValue(ref("var1"))).thenReturn("hello");
+    assertEquals("Otsikko hello", expression.eval(context));
+  }
+
+  @Test
+  void createFormatExpressionWithoutContentReturnsEmptyConstant() {
+    Expression expression = LocalizedLabelOperator.createFormatExpression(programBuilder, "");
+    assertInstanceOf(Constant.class, expression);
+    assertEquals("", expression.eval(context));
+  }
+
+  @Test
+  void createFormatExpressionThrowsOnUnknownItem() {
+    when(programBuilder.findItemBuilder("nope")).thenReturn(Optional.empty());
+    assertThrows(FormatExpressionException.class,
+      () -> LocalizedLabelOperator.createFormatExpression(programBuilder, "Value {nope}"));
   }
 
 }

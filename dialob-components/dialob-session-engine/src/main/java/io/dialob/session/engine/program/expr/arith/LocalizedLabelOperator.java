@@ -16,9 +16,11 @@
 package io.dialob.session.engine.program.expr.arith;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
+import io.dialob.rule.parser.api.CompilerErrorCode;
 import io.dialob.rule.parser.api.ValueType;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.program.ProgramBuilder;
+import io.dialob.session.engine.program.expr.FormatExpressionException;
 import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.program.model.Label;
 import io.dialob.session.engine.session.command.EventMatcher;
@@ -97,6 +99,21 @@ public record LocalizedLabelOperator(
     });
 
     return LocalizedLabelOperator.of(value);
+  }
+
+  public static Expression createFormatExpression(@NonNull ProgramBuilder programBuilder, @NonNull String template) {
+    final String formatKey = "__dialob_format__";
+    final LocalizedLabelOperator operator;
+    try {
+      operator = createLocalizedLabelOperator(programBuilder, Label.of(Collections.singletonMap(formatKey, template)));
+    } catch (NoSuchElementException e) {
+      throw new FormatExpressionException(CompilerErrorCode.UNKNOWN_FORMAT_ITEM);
+    }
+    Expression expression = operator.value().get(formatKey);
+    if (expression == null) {
+      return Constant.builder().value("").valueType(ValueType.STRING).build();
+    }
+    return expression;
   }
 
   public static LocalizedLabelOperator of(Map<String, Expression> value) {

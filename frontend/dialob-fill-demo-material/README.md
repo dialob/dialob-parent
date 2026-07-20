@@ -1,5 +1,60 @@
 # Dialob Material UI Fill: Generic App
 
+## Running the fill app locally (against the dev-env backend)
+
+To preview forms locally by clicking **Preview** in the Composer, the fill app
+and the backend `dialob-session` service need a few configuration changes.
+
+### 1. App endpoint and session id (`.env`)
+
+The app reads its backend endpoint and (optionally) a fixed session id from
+`frontend/dialob-fill-demo-material/.env`:
+
+```bash
+VITE_DIALOB_ENDPOINT=http://localhost:8084/session/dialob
+VITE_DIALOB_SESSION_ID=
+```
+
+- `VITE_DIALOB_ENDPOINT` points at the local `dialob-session` service.
+- `VITE_DIALOB_SESSION_ID` **must be left empty**. When empty, the app reads the
+  session id from the URL hash (e.g. `http://localhost:3001/#/<sessionId>`),
+  which is how Composer's Preview button opens a form. If it is set to a fixed
+  value (such as `00000000-0000-0000-0000-000000000000`), the app ignores the
+  hash and tries to load that id instead.
+
+### 2. Enable CORS on the session service (`dev-env/.env.session`)
+
+The browser blocks the fill app's requests unless the `dialob-session` service
+returns CORS headers for the app's origin. Activate the `cors` Spring profile
+alongside `jdbc`:
+
+```bash
+SPRING_PROFILES_ACTIVE=jdbc,cors
+```
+
+The `cors` profile loads `dev-env/dialob-session-config/application-cors.yml`,
+which whitelists the local dev origins (including `http://localhost:3001`).
+After changing this, recreate the `dialob-session` container so it picks up the
+new environment variable:
+
+```bash
+docker compose up -d --force-recreate dialob-session
+```
+
+### 3. Start the app
+
+The app serves on its own port; start it on `3001` (the origin whitelisted in
+the CORS config above):
+
+```bash
+pnpm start --port 3001 --strictPort
+```
+
+Then click **Preview** in the Composer (running on `5173`) to open the form in
+the fill app.
+
+---
+
 ## Building and deploying to demo.dialob.io
 
 ```bash

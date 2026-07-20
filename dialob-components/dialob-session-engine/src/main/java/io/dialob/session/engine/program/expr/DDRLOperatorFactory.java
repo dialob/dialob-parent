@@ -16,8 +16,11 @@
 package io.dialob.session.engine.program.expr;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
+import io.dialob.rule.parser.ParserUtil;
 import io.dialob.rule.parser.api.CompilerErrorCode;
 import io.dialob.rule.parser.api.ValueType;
+import io.dialob.session.engine.program.ProgramBuilder;
 import io.dialob.session.engine.program.expr.arith.*;
 import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.session.model.ItemId;
@@ -28,6 +31,17 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 public class DDRLOperatorFactory implements OperatorFactory {
+
+  @Nullable
+  private final ProgramBuilder programBuilder;
+
+  public DDRLOperatorFactory() {
+    this(null);
+  }
+
+  public DDRLOperatorFactory(@Nullable ProgramBuilder programBuilder) {
+    this.programBuilder = programBuilder;
+  }
 
   private static final DecimalOperators DECIMAL_OPERATORS = new DecimalOperators();
   private static final NumberOperators NUMBER_OPERATORS = new NumberOperators();
@@ -71,6 +85,9 @@ public class DDRLOperatorFactory implements OperatorFactory {
   @NonNull
   public Expression createOperator(@NonNull ValueType nodeValueType, @NonNull String operator, @NonNull List<Expression> arguments) {
     Expression expr;
+    if (ParserUtil.isFormatFunction(operator)) {
+      return createFormatOperator(arguments);
+    }
     final OperatorSymbol operatorSymbol = OperatorSymbol.mapOp(operator);
     if (operatorSymbol == null) {
       return createFunctionInvocation(nodeValueType, operator, arguments);
@@ -186,6 +203,21 @@ public class DDRLOperatorFactory implements OperatorFactory {
       throw new MatcherRegexErrorException(CompilerErrorCode.MATCHER_DYNAMIC_REGEX, null);
     }
     return patternExpr;
+  }
+
+  @NonNull
+  private Expression createFormatOperator(@NonNull List<Expression> arguments) {
+    if (arguments.size() != 1 || !(arguments.getFirst() instanceof Constant<?> constant) || constant.getValueType() != ValueType.STRING) {
+      throw new FormatExpressionException(CompilerErrorCode.FORMAT_ARGUMENT_MUST_BE_CONSTANT);
+    }
+    if (programBuilder == null) {
+      throw new FormatExpressionException(CompilerErrorCode.COMPILER_ERROR);
+    }
+    String template = (String) constant.value();
+    if (template == null) {
+      return Constant.builder().value("").valueType(ValueType.STRING).build();
+    }
+    return LocalizedLabelOperator.createFormatExpression(programBuilder, template);
   }
 
   @NonNull

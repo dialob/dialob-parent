@@ -255,6 +255,16 @@ The behaviour of these two operators can be seen in how questions are displayed 
 
 * **`isIban()` , `isNotIban()`**: Used for validating IBAN numbers. Can contain spaces.
 
+* **`format(*Text*)`**: Builds a string by interpolating item values into a template, using the same `{itemId}` placeholder syntax as note and question labels. The argument must be a string literal. Return type is *Text*. This is typically used in expression variables to concatenate strings together with answer values.
+
+  The template supports the same placeholder formats as labels:
+  * `{itemId}` inserts the value of the item (for choice items, the selected entry's label).
+  * `{itemId:key}` inserts the raw stored key of a choice item rather than its label.
+  * `{itemId:uppercase}` / `{itemId:lowercase}` change the case of the inserted value.
+  * `{itemId:#,##0.00}` formats a number with a custom decimal pattern.
+
+  Example expression variable value: `format('Hello {firstName}, your total is {total:#,##0} euros')`. The variable automatically recomputes whenever any referenced item value changes. Note that placeholders reference items by ID only; to interpolate a calculated value, define an expression variable for it and reference that variable's ID (for example `{sum}`, not `{q1 + q2}`).
+
 **NOTE**: Although the list of inbuilt functions can be extended via Java or Groovy, users should consider using service requests instead as an alternative to functions. This especially true in cases where the scope of functions is growing larger and more complex.  
 
 ---
@@ -279,7 +289,7 @@ Language specification follows ISO-639-1 two-character abbreviations. [See list 
 | `or`              |  `today()`          |                 |
 | `true`            |  `week`             |                 |
 | `valid`           |  `weeks`            |                 |
-|                   |  `year`             |                 |
+| `format`        |  `year`             |                 |
 |                   |  `years`            |                 |
 
 ---

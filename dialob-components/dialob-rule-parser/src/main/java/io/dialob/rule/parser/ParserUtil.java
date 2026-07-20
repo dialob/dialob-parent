@@ -21,6 +21,8 @@ import io.dialob.rule.parser.api.ValueType;
 
 public final class ParserUtil {
 
+  public static final String FORMAT_FUNCTION = "format";
+
   private ParserUtil() {}
 
   public static boolean isReducerOperator(@NonNull String reducer) {
@@ -29,6 +31,10 @@ public final class ParserUtil {
       || "maxOf".equals(reducer)
       || "allOf".equals(reducer)
       || "anyOf".equals(reducer);
+  }
+
+  public static boolean isFormatFunction(@NonNull String name) {
+    return FORMAT_FUNCTION.equals(name);
   }
 
   public static ValueType itemTypeToValueType(@NonNull String itemType) {

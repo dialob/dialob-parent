@@ -303,6 +303,56 @@ class DialobProgramFromFormCompilerTest extends AbstractDialobProgramTest {
     Mockito.verifyNoMoreInteractions(functionRegistry);
   }
 
+  @Test
+  void shouldExpandFormatFunctionInExpressionVariable() {
+    FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);
+    DialobSessionEvalContextFactory sessionContextFactory = new DialobSessionEvalContextFactory(functionRegistry, null);
+    DialobProgramFromFormCompiler compiler = new DialobProgramFromFormCompiler(functionRegistry);
+
+    DialobProgram dialobProgram = compiler.compileForm(new Form.Builder()
+      .id("123")
+      .name("123")
+      .putData("questionnaire", new FormItem.Builder()
+        .id("questionnaire")
+        .type("questionnaire")
+        .addItems("g")
+        .build())
+      .putData("g", new FormItem.Builder()
+        .id("g")
+        .type("group")
+        .addItems("q1", "q2")
+        .build())
+      .putData("q1", new FormItem.Builder()
+        .id("q1")
+        .type("text")
+        .build())
+      .putData("q2", new FormItem.Builder()
+        .id("q2")
+        .type("number")
+        .build())
+      .addVariables(new Variable.Builder()
+        .name("summary")
+        .context(false)
+        .expression("format('Hello {q1}, total {q2}')")
+        .build())
+      .metadata(new Form.Metadata.Builder()
+        .label("xxx")
+        .build())
+      .build());
+
+    DialobSession session = dialobProgram.createSession(sessionContextFactory, null, null, "fi", null);
+    assertNotNull(session);
+    DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session, false);
+
+    assertVariableEquals(session, "Hello null, total null", toRef("summary"));
+    dialobSessionUpdater.applyCommands(toCommands(answer(toRef("q1"), "World")));
+    assertVariableEquals(session, "Hello World, total null", toRef("summary"));
+    dialobSessionUpdater.applyCommands(toCommands(answer(toRef("q2"), "5")));
+    assertVariableEquals(session, "Hello World, total 5", toRef("summary"));
+    dialobSessionUpdater.applyCommands(toCommands(answer(toRef("q1"), null)));
+    assertVariableEquals(session, "Hello null, total 5", toRef("summary"));
+  }
+
 
 
   @Test
