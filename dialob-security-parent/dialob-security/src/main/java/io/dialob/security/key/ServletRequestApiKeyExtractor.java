@@ -25,6 +25,6 @@ public interface ServletRequestApiKeyExtractor {
   ApiKey extract(ServletRequest servletRequest);
 
   @NonNull
-  String getHeader();
+  String header();
 
 }

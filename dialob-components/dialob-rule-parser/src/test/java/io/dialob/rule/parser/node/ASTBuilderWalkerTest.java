@@ -737,6 +737,7 @@ class ASTBuilderWalkerTest {
 
   }
 
+  @SuppressWarnings("unchecked")
   public static <T extends ParserRuleContext> T mockParserRuleContext(T... reified) {
     T mock = mock(reified);
     try {

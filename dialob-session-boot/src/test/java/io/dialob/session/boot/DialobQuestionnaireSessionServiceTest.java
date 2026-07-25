@@ -118,7 +118,7 @@ class DialobQuestionnaireSessionServiceTest {
       doAnswer(invocation -> {
         FunctionRegistry.FunctionCallback cb = invocation.getArgument(0);
         List<?> args = invocation.getArgument(2);
-        String string = (String) args.get(0);
+        String string = (String) args.getFirst();
         if (string == null) {
           cb.succeeded(BigInteger.ZERO);
         } else {
@@ -2116,8 +2116,8 @@ class DialobQuestionnaireSessionServiceTest {
       Object args = invocation.getArgument(2);
       assertTrue(args instanceof List);
       List list = (List) args;
-      assertTrue(list.get(0) instanceof Map<?,?>);
-      Map<?, ?> map = (Map<?, ?>) list.get(0);
+      assertTrue(list.getFirst() instanceof Map<?,?>);
+      Map<?, ?> map = (Map<?, ?>) list.getFirst();
       callback.succeeded(map);
       return null;
     }).when(functionRegistry).invokeFunction(any(), eq("useObjectFunction"), any());
@@ -2375,6 +2375,7 @@ class DialobQuestionnaireSessionServiceTest {
     return assertion.extracting("item").filteredOn(instance -> instance != null && "questionnaire".equals(((ActionItem) instance).getType()));
   }
 
+  @SuppressWarnings("unchecked")
   private <T> Set<T> asSet(T... items) {
     return new HashSet<>(asList(items));
   }

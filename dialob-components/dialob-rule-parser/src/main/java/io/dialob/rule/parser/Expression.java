@@ -99,20 +99,15 @@ public class Expression implements ErrorLogger {
         .of(errorCode, span, args));
   }
 
-  static class StringOper implements Comparable<StringOper> {
-    final Span span;
-
-    StringOper(Span span) {
-      this.span = span;
-    }
+  record StringOper(Span span) implements Comparable<StringOper> {
 
 
     @Override
-    public int compareTo(@NonNull StringOper o) {
-      // We want reverse order
-      return o.span.startIndex() - span.startIndex();
+      public int compareTo(@NonNull StringOper o) {
+        // We want reverse order
+        return o.span.startIndex() - span.startIndex();
+      }
     }
-  }
 
   public Set<String> getAllIds() {
     final Set<String> ids = new HashSet<>();
@@ -151,32 +146,26 @@ public class Expression implements ErrorLogger {
     ast = ast.accept(visitor);
   }
 
-  private static class ErrorListener implements ANTLRErrorListener {
-
-    private final ErrorLogger errorLogger;
-
-    private ErrorListener(ErrorLogger errorLogger) {
-      this.errorLogger = errorLogger;
-    }
+  private record ErrorListener(ErrorLogger errorLogger) implements ANTLRErrorListener {
 
     @Override
-    public void syntaxError(Recognizer<?, ?> recognizer, Object o, int row, int column, String s, RecognitionException e) {
-      errorLogger.logError(CompilerErrorCode.SYNTAX_ERROR, Span.of(column,column));
-    }
+      public void syntaxError(Recognizer<?, ?> recognizer, Object o, int row, int column, String s, RecognitionException e) {
+        errorLogger.logError(CompilerErrorCode.SYNTAX_ERROR, Span.of(column, column));
+      }
 
-    @Override
-    public void reportAmbiguity(Parser parser, DFA dfa, int row, int column, boolean b, BitSet bitSet, ATNConfigSet atnConfigSet) {
-      errorLogger.logError(CompilerErrorCode.AMBIGUOUS_INPUT, Span.of(column,column));
-    }
+      @Override
+      public void reportAmbiguity(Parser parser, DFA dfa, int row, int column, boolean b, BitSet bitSet, ATNConfigSet atnConfigSet) {
+        errorLogger.logError(CompilerErrorCode.AMBIGUOUS_INPUT, Span.of(column, column));
+      }
 
-    @Override
-    public void reportAttemptingFullContext(Parser parser, DFA dfa, int row, int column, BitSet bitSet, ATNConfigSet atnConfigSet) {
-      errorLogger.logError(CompilerErrorCode.FULL_CONTEXT_ERROR, Span.of(column,column));
-    }
+      @Override
+      public void reportAttemptingFullContext(Parser parser, DFA dfa, int row, int column, BitSet bitSet, ATNConfigSet atnConfigSet) {
+        errorLogger.logError(CompilerErrorCode.FULL_CONTEXT_ERROR, Span.of(column, column));
+      }
 
-    @Override
-    public void reportContextSensitivity(Parser parser, DFA dfa, int i, int row, int column, ATNConfigSet atnConfigSet) {
-      errorLogger.logError(CompilerErrorCode.CONTEXT_SENSITIVE_ERROR, Span.of(column,column));
+      @Override
+      public void reportContextSensitivity(Parser parser, DFA dfa, int i, int row, int column, ATNConfigSet atnConfigSet) {
+        errorLogger.logError(CompilerErrorCode.CONTEXT_SENSITIVE_ERROR, Span.of(column, column));
+      }
     }
-  }
 }

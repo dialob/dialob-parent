@@ -28,7 +28,7 @@ class ApiKeyRequestMatcherTest {
   @Test
   void test() {
     ServletRequestApiKeyExtractor extractor = Mockito.mock(ServletRequestApiKeyExtractor.class);
-    when(extractor.getHeader()).thenReturn("my-header");
+    when(extractor.header()).thenReturn("my-header");
     ApiKeyRequestMatcher matcher = new ApiKeyRequestMatcher(extractor);
     HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
 
@@ -40,7 +40,7 @@ class ApiKeyRequestMatcherTest {
     Assertions.assertTrue(matcher.matches(request));
 
     verify(request).getHeader("my-header");
-    verify(extractor).getHeader();
+    verify(extractor).header();
     verifyNoMoreInteractions(extractor);
   }
 }

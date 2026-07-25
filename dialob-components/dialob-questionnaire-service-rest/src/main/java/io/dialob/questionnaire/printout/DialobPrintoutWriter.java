@@ -398,7 +398,7 @@ public class DialobPrintoutWriter {
     throw new IllegalStateException("Incorrect form, no questionnaire root found");
   }
 
-  private final class Ctx {
+  private static final class Ctx {
     final Form form;
     final String lang;
     final Map<String, Object> values = new LinkedHashMap<>();
