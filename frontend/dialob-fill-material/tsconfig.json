@@ -10,10 +10,7 @@
     "module": "ES2022",
     "moduleResolution": "bundler",
     "esModuleInterop": true,
-    "rootDirs": [
-      "src",
-      "stories"
-    ],
+    "rootDir": "src",
     "noImplicitAny": false,
     "allowJs": false,
     "skipLibCheck": true,
@@ -31,7 +28,7 @@
       "index.d.ts",
       "node_modules/@types"
     ],
-    "paths": {    
+    "paths": {
       "react": ["./node_modules/@types/react"]  // this can be removed when everything gets upgraded to react 19
     }
   },
