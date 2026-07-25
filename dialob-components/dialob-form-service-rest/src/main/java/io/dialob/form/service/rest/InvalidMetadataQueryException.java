@@ -15,11 +15,11 @@
  */
 package io.dialob.form.service.rest;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import tools.jackson.core.JacksonException;
 
 public class InvalidMetadataQueryException extends RuntimeException {
 
-  public InvalidMetadataQueryException(JsonProcessingException exception) {
+  public InvalidMetadataQueryException(JacksonException exception) {
     super(exception);
   }
 

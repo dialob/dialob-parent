@@ -34,7 +34,7 @@ public record NeOperator<T>(
 ) implements AbstractLogicalOperator {
 
   public static <T> NeOperator.Builder<T> builder() {
-    return new NeOperator.Builder<T>();
+    return new NeOperator.Builder<>();
   }
 
   public static final class Builder<T> extends NeOperatorBuilder<T> {}

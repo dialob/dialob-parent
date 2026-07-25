@@ -202,16 +202,12 @@
       <artifactId>dialob-questionnaire-service-rest</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
+      <groupId>tools.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-annotations</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.datatype</groupId>
-      <artifactId>jackson-datatype-jsr310</artifactId>
     </dependency>
     <dependency>
       <groupId>io.dialob</groupId>
@@ -283,7 +279,11 @@
       <groupId>org.slf4j</groupId>
       <artifactId>jul-to-slf4j</artifactId>
     </dependency>
-
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-security-oauth2-client</artifactId>
+    </dependency>
+    
     <dependency>
       <groupId>io.dialob</groupId>
       <artifactId>dialob-api</artifactId>
@@ -324,6 +324,11 @@
     <dependency>
       <groupId>com.redis</groupId>
       <artifactId>testcontainers-redis</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-webmvc</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

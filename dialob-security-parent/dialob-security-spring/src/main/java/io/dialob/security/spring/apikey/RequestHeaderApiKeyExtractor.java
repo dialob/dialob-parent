@@ -23,7 +23,7 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.lang.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.Base64;
@@ -31,13 +31,11 @@ import java.util.Objects;
 
 
 @Slf4j
-public class RequestHeaderApiKeyExtractor implements ServletRequestApiKeyExtractor {
+public record RequestHeaderApiKeyExtractor(String header) implements ServletRequestApiKeyExtractor {
 
   public static final String REQUEST_APIKEY_ATTRIBUTE = ApiKey.class.getCanonicalName();
 
   private static final int UUID_LENGTH = 16;
-
-  private final String header;
 
   public RequestHeaderApiKeyExtractor() {
     this("x-api-key");
@@ -94,7 +92,7 @@ public class RequestHeaderApiKeyExtractor implements ServletRequestApiKeyExtract
 
   @NonNull
   @Override
-  public String getHeader() {
+  public String header() {
     return header;
   }
 }

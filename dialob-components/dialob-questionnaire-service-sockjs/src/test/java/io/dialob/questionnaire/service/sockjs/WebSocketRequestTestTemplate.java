@@ -15,7 +15,7 @@
  */
 package io.dialob.questionnaire.service.sockjs;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.proto.Action;
 import io.dialob.api.proto.Actions;
@@ -31,7 +31,6 @@ import org.springframework.web.socket.sockjs.client.SockJsClient;
 import org.springframework.web.socket.sockjs.client.Transport;
 import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 
-import java.io.IOException;
 import java.net.URI;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -244,13 +243,9 @@ public class WebSocketRequestTestTemplate {
       return expect(name, webSocketMessage -> {
         TextMessage textMessage = (TextMessage) webSocketMessage;
         Actions actions;
-        try {
-          String message = textMessage.getPayload();
-          actions = objectMapper.readValue(message, Actions.class);
-          revision = actions.getRev();
-        } catch (IOException e) {
-          throw new RuntimeException(e);
-        }
+        String message = textMessage.getPayload();
+        actions = objectMapper.readValue(message, Actions.class);
+        revision = actions.getRev();
         expectConsumer.accept(actions);
       });
     }

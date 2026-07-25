@@ -34,6 +34,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -53,7 +54,8 @@ public class ApiKeyAuthenticationFilter extends OncePerRequestFilter {
 
   public ApiKeyAuthenticationFilter(final AuthenticationManager authenticationManager,
                                     final ServletRequestApiKeyExtractor keyRequestExtractor,
-                                    final RequestMatcher requestMatcher) {
+                                    final RequestMatcher requestMatcher,
+                                    final ObjectMapper objectMapper) {
     super();
     this.keyRequestExtractor = requireNonNull(keyRequestExtractor,
       "keyRequestExtractor may not be null");
@@ -61,7 +63,7 @@ public class ApiKeyAuthenticationFilter extends OncePerRequestFilter {
       "authenticationManager may not be null");
     this.requestMatcher = requireNonNull(requestMatcher,
       "requestMatcher may not be null");
-    this.authenticationEntryPoint = new ApiKeyAuthenticationEntryPoint();
+    this.authenticationEntryPoint = new ApiKeyAuthenticationEntryPoint(objectMapper);
   }
 
   @Override

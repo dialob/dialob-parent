@@ -16,7 +16,6 @@
 package io.dialob.security.spring.tenant;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
-import io.dialob.security.tenant.ResysSecurityConstants;
 import io.dialob.security.tenant.Tenant;
 import io.dialob.security.tenant.TenantContextHolderCurrentTenant;
 import jakarta.servlet.FilterChain;
@@ -31,7 +30,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Objects;
-import java.util.Optional;
 
 @Slf4j
 public class RequestParameterTenantScopeFilter extends OncePerRequestFilter {

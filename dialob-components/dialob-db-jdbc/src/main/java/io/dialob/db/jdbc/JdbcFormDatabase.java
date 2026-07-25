@@ -15,7 +15,6 @@
  */
 package io.dialob.db.jdbc;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.Form;
 import io.dialob.db.spi.exceptions.DocumentConflictException;
@@ -28,8 +27,9 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.transaction.support.TransactionTemplate;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
-import java.io.IOException;
 import java.io.Reader;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -79,7 +79,7 @@ public class JdbcFormDatabase extends JdbcBackendDatabase<Form> implements FormD
         sql.append(" and tenant_id = ?");
       }
       try {
-        return template.queryForObject(sql.toString(), sqlParameters.toArray(), rowMapper);
+        return template.queryForObject(sql.toString(), rowMapper, sqlParameters.toArray());
       } catch (EmptyResultDataAccessException e) {
         throw new DocumentNotFoundException(id + " not found");
       }
@@ -126,7 +126,7 @@ public class JdbcFormDatabase extends JdbcBackendDatabase<Form> implements FormD
         .rev(Integer.toString(objectRev))
         .metadata(new Form.Metadata.Builder().from(form.getMetadata()).created(created.toInstant()).tenantId(tenantId).build())
         .build();
-    } catch (IOException e) {
+    } catch (JacksonException e) {
       throw new DocumentCorruptedException("Could not read document " + toId(oid) + ":" + e.getMessage());
     }
   }
@@ -180,12 +180,8 @@ public class JdbcFormDatabase extends JdbcBackendDatabase<Form> implements FormD
           .label("");
 
         if (labels != null) {
-          try {
-            String[] labelArray = objectMapper.readValue(labels, String[].class);
-            metadataBuilder.addAllLabels(Arrays.stream(labelArray).toList());
-          } catch (Exception e) {
-            throw new RuntimeException("Unable to parse label array", e);
-          }
+          String[] labelArray = objectMapper.readValue(labels, String[].class);
+          metadataBuilder.addAllLabels(Arrays.stream(labelArray).toList());
         }
         consumer.accept(FormMetadataRow.of(toId(id), metadataBuilder.build()));
       }, params.toArray());

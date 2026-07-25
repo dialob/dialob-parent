@@ -15,7 +15,7 @@
  */
 package io.dialob.db.jdbc;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.form.service.api.FormVersionControlDatabase;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
-import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.postgresql.PostgreSQLContainer;
 import org.testcontainers.utility.DockerImageName;
 
 import java.sql.SQLException;
@@ -45,7 +45,7 @@ public interface AbstractPostgreSQLTest extends JdbcBackendTest {
   String SCHEMA = null;
 
   class Attrs {
-    PostgreSQLContainer container = new PostgreSQLContainer<>(DockerImageName.parse("postgres:13"))
+    PostgreSQLContainer container = new PostgreSQLContainer(DockerImageName.parse("postgres:17"))
       .withExposedPorts(PORT)
       .withStartupTimeout(Duration.ofMinutes(15))
       .withUsername("postgres")

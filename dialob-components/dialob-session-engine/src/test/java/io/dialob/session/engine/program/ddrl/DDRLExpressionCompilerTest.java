@@ -515,7 +515,7 @@ class DDRLExpressionCompilerTest {
       Object args = invocation.getArgument(2);
       assertTrue(args instanceof List<?>);
       List<?> list = (List<?>) args;
-      assertTrue(list.get(0) instanceof Map);
+      assertTrue(list.getFirst() instanceof Map);
       callback.succeeded(args);
       return null;
     }).when(functionRegistry).invokeFunction(any(), any(), any());

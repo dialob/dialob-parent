@@ -4,7 +4,7 @@ host: "http://localhost:${server.port}"
 server:
   max-http-request-header-size: 64KB
   port: 8080
-  use-forward-headers: true
+  forward-headers-strategy: NATIVE
   servlet:
     contextPath: "/session"
 
@@ -24,11 +24,11 @@ spring:
   application:
     name: ${project.artifactId:}
   jackson:
-    serialization:
-      WRITE_DATES_AS_TIMESTAMPS: false
-      WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS: false
-    deserialization:
-      READ_DATE_TIMESTAMPS_AS_NANOSECONDS: false
+    datatype:
+      datetime:
+        READ_DATE_TIMESTAMPS_AS_NANOSECONDS: false
+        WRITE_DATES_AS_TIMESTAMPS: false
+        WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS: false
   cloud:
     gcp:
       core:
@@ -74,10 +74,10 @@ info:
     number: "@buildNumber@"
 
 logging:
-  path: "./"
+  file.path: "./"
 
 
-endpoints.jmx.staticNames: 'application=session'
+management.endpoints.jmx.static-names: 'application=session'
 
 dialob:
   security:

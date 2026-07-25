@@ -15,12 +15,12 @@
  */
 package io.dialob.db.jdbc;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.db.spi.exceptions.DocumentCorruptedException;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.lang.Nullable;
+import org.jspecify.annotations.Nullable;
+import tools.jackson.core.JacksonException;
 
 import java.io.ByteArrayInputStream;
 import java.io.Reader;
@@ -36,7 +36,7 @@ public interface DatabaseHelper {
   default Object jsonObject(ObjectMapper objectMapper, Object document) {
     try {
       return new ByteArrayInputStream(objectMapper.writeValueAsBytes(document));
-    } catch (JsonProcessingException e) {
+    } catch (JacksonException e) {
       throw new DocumentCorruptedException("Could not write questionnaire");
     }
   }
@@ -67,7 +67,7 @@ public interface DatabaseHelper {
     return attr;
   }
 
-  default String serializeJson(ObjectMapper objectMapper, Object document) throws JsonProcessingException {
+  default String serializeJson(ObjectMapper objectMapper, Object document) throws JacksonException {
     return objectMapper.writeValueAsString(document);
   }
 

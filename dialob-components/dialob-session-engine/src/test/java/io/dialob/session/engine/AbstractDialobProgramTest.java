@@ -15,8 +15,7 @@
  */
 package io.dialob.session.engine;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import tools.jackson.databind.ObjectMapper;
 import io.dialob.api.proto.Action;
 import io.dialob.api.proto.ActionsFactory;
 import io.dialob.session.engine.session.model.*;
@@ -37,7 +36,7 @@ import static org.mockito.ArgumentMatchers.any;
 
 public abstract class AbstractDialobProgramTest {
 
-  ObjectMapper objectMapper = new ObjectMapper().registerModules(new JavaTimeModule());
+  ObjectMapper objectMapper = new ObjectMapper();
 
   public void assertInactive(DialobSession dialobSession, ItemId itemId) {
     assertFalse(dialobSession.getItemState(itemId).get().isActive());

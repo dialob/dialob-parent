@@ -132,6 +132,8 @@ public record ItemState(
         types[i] = Action.Type.values()[input.readInt()];
       }
       allowedActions = Set.of(types);
+    } else {
+      allowedActions = EnumSet.noneOf(Action.Type.class);
     }
     return new ItemState(
       id,

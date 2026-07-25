@@ -22,7 +22,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import static io.dialob.rule.parser.node.ASTBuilderWalker.DUMMY_VARIABLE_FINDER;
@@ -738,6 +737,7 @@ class ASTBuilderWalkerTest {
 
   }
 
+  @SuppressWarnings("unchecked")
   public static <T extends ParserRuleContext> T mockParserRuleContext(T... reified) {
     T mock = mock(reified);
     try {

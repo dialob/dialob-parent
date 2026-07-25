@@ -16,7 +16,7 @@
 package io.dialob.api.rest;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import tools.jackson.databind.annotation.JsonDeserialize;
 
 @JsonDeserialize(as = Response.ResposeRecord.class)
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
@@ -30,7 +30,13 @@ public interface Response extends ResponseStatus {
 
   String getReason();
 
-  record ResposeRecord(boolean ok, String error, String reason) implements Response {
+  record ResposeRecord(
+    boolean ok,
+    String error,
+    String reason
+  ) implements Response {
+
+
     @Override
     public String getError() {
       return error;

@@ -15,7 +15,6 @@
  */
 package io.dialob.db.s3;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import org.assertj.core.api.Assertions;
@@ -27,6 +26,7 @@ import software.amazon.awssdk.services.s3.model.ListObjectsV2Request;
 import software.amazon.awssdk.services.s3.model.ListObjectsV2Response;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.S3Object;
+import tools.jackson.databind.ObjectMapper;
 
 import java.time.Instant;
 import java.util.function.Consumer;

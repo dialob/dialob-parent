@@ -20,7 +20,6 @@ import io.dialob.session.engine.session.protobuf.StateWriter;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Mode;
 import nl.jqno.equalsverifier.Warning;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;

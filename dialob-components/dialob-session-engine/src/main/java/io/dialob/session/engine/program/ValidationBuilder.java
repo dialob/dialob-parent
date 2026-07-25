@@ -19,7 +19,6 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import io.dialob.api.form.FormValidationError;
 import io.dialob.rule.parser.api.ValueType;
-import io.dialob.session.engine.program.expr.arith.IsActiveOperator;
 import io.dialob.session.engine.program.expr.arith.IsDisabledOperator;
 import io.dialob.session.engine.program.expr.arith.Operators;
 import io.dialob.session.engine.program.model.Error;

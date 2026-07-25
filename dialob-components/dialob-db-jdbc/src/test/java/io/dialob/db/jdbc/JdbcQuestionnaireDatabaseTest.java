@@ -15,7 +15,7 @@
  */
 package io.dialob.db.jdbc;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.security.tenant.CurrentTenant;

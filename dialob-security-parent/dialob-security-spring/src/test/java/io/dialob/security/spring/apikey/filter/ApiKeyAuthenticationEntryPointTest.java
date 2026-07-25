@@ -15,14 +15,9 @@
  */
 package io.dialob.security.spring.apikey.filter;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.dialob.security.ErrorsResponse;
 import io.dialob.security.spring.apikey.ApiKeyAuthenticationException;
 import io.dialob.security.spring.filter.ApiKeyAuthenticationEntryPoint;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.Assertions;
@@ -30,6 +25,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.mock.web.DelegatingServletOutputStream;
 import org.springframework.security.core.AuthenticationException;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -40,13 +36,9 @@ import static org.mockito.Mockito.verify;
 class ApiKeyAuthenticationEntryPointTest {
 
   @Test
-  void shouldMakeJsonErrorResponse() throws IOException, ServletException {
-    final ObjectMapper objectMapper = new ObjectMapper()
-      .registerModule(new JavaTimeModule())
-      .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
-      .configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, false)
-      .configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
-    ApiKeyAuthenticationEntryPoint entryPoint = new ApiKeyAuthenticationEntryPoint();
+  void shouldMakeJsonErrorResponse() throws IOException {
+    final ObjectMapper objectMapper = new ObjectMapper();
+    ApiKeyAuthenticationEntryPoint entryPoint = new ApiKeyAuthenticationEntryPoint(objectMapper);
     HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
     HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
     AuthenticationException authException = new ApiKeyAuthenticationException("Invalid key");

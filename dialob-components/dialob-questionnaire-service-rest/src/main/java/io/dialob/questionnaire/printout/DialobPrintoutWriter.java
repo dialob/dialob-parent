@@ -34,8 +34,8 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 import io.dialob.api.form.Form;
 import io.dialob.api.form.FormItem;
@@ -91,7 +91,7 @@ public class DialobPrintoutWriter {
 
     try {
       return MAPPER.writeValueAsString(body);
-    } catch (JsonProcessingException e) {
+    } catch (JacksonException e) {
       throw new IllegalStateException("Failed to serialize printout for questionnaire " + questionnaire.getId(), e);
     }
   }
@@ -398,7 +398,7 @@ public class DialobPrintoutWriter {
     throw new IllegalStateException("Incorrect form, no questionnaire root found");
   }
 
-  private final class Ctx {
+  private static final class Ctx {
     final Form form;
     final String lang;
     final Map<String, Object> values = new LinkedHashMap<>();
