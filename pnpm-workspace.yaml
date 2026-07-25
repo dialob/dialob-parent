@@ -16,3 +16,7 @@
 
 packages:
   - "frontend/*"
+allowBuilds:
+  esbuild: true
+  eslint: true
+  unrs-resolver: true
