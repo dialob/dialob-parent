@@ -6,7 +6,7 @@ import { ConversionMenu, IdField, Indicators, NoteField, OptionsMenu, StyledTabl
 import { useEditor } from '../editor';
 import { useErrorColorSx } from '../utils/ErrorUtils';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
 const Note: React.FC<{ item: DialobItem } & Record<string, any>> = ({ item, ...props }) => {
   const theme = useTheme();
   const { editor } = useEditor();
