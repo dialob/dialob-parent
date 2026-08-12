@@ -17,6 +17,7 @@
 import { themes as prismThemes } from 'prism-react-renderer';
 import type { Config } from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
+import remarkBreaks from 'remark-breaks';
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
@@ -39,6 +40,15 @@ const config: Config = {
 
   onBrokenLinks: 'warn',
   onBrokenAnchors: 'ignore',
+
+  markdown: {
+    hooks: {
+      onBrokenMarkdownLinks: 'warn',
+      // Wiki pages may reference images using wiki-relative paths that don't
+      // exist in the Docusaurus static directory. Warn instead of failing the build.
+      onBrokenMarkdownImages: 'warn',
+    },
+  },
 
   i18n: {
     defaultLocale: 'en',
@@ -64,6 +74,7 @@ const config: Config = {
         docs: {
           sidebarPath: './sidebars.ts',
           routeBasePath: '/',
+          remarkPlugins: [remarkBreaks],
         },
         blog: false,
         theme: {

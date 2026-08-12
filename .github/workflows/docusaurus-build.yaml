@@ -6,13 +6,6 @@ on:
       - dev
       - main
 
-  pull_request:
-    paths:
-      - 'dialob-docusaurus/**'
-    branches:
-      - dev
-      - main
-
   workflow_dispatch:
 
 name: Docusaurus - Build - Documentation
@@ -21,6 +14,8 @@ jobs:
   build:
     name: Build Documentation
     runs-on: ubuntu-latest
+    outputs:
+      documentation: ${{ steps.distribution-packages.outputs.documentation }}
     defaults:
       run:
         working-directory: dialob-docusaurus
@@ -29,7 +24,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Setup Node.js
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v7
         with:
           node-version: '24'
           cache: 'npm'
@@ -42,7 +37,41 @@ jobs:
         run: npm run build
 
       - name: Upload build artifact
-        uses: actions/upload-artifact@v6
+        id: distribution-packages
+        uses: actions/upload-artifact@v7
         with:
-          name: docusaurus-build
+          name: documentation
           path: dialob-docusaurus/build
+
+  publish:
+    name: Publish documentation
+    permissions:
+      id-token: write
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v6
+      with:
+        aws-region: ${{ secrets.AWS_REGION }}
+        role-to-assume: ${{ secrets.ASSUME_ROLE }}
+        role-session-name: DialobDocusaurusBuild
+
+    - name: Download documentation artifact
+      id: download
+      uses: actions/download-artifact@v8
+      with:
+        name: 'documentation'
+        path: ${{ github.workspace }}/artifacts
+
+    - name: Publish documentation to S3
+      run: |
+        if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
+          EXPIRY_DATE=`date -I -d '30 days'`
+          echo "Pull request's upload expires on $EXPIRY_DATE"
+          EXPIRES="--expires $EXPIRY_DATE"
+        fi
+        TARGET=s3://${{ secrets.DOCUMENTATION_BUCKET }}/${{ github.ref_name }}
+        aws s3 sync $EXPIRES --acl public-read --delete --cache-control public,max-age=3600 $DOWNLOAD_PATH $TARGET
+      env:
+        DOWNLOAD_PATH: ${{ steps.download.outputs.download-path }}

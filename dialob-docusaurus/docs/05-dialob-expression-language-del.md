@@ -1,7 +1,7 @@
 ---
 id: 05-dialob-expression-language-del
 sidebar_position: 5
-title: Dialob Expression Language (DEL)
+title: "Dialob Expression Language (DEL)"
 ---
 
 # Basics of DEL
@@ -61,7 +61,7 @@ Here, `question1 < 25` is the "if" part of the DEL expression. The "then" part i
 
 A DEL expression can have several basic parts:
 
-* [Request ID](03-advanced-operations#request-ids-and-rules-for-writing-them) or reference to a request ID (not required to be used in `Required` fields)
+* [Request ID](https://github.com/digiexpress-io/digiexpress-parent/wiki/Dialob-composer:-03%E2%80%90Advanced-operations#request-ids-and-rules-for-writing-them) or reference to a request ID (not required to be used in `Required` fields)
 * [Logical operator](https://endjin.com/blog/2013/07/learning-to-program-a-beginners-guide-part-eight-working-with-logic)
 * [Reserved word](https://www.bouraspage.com/repository/algorithmic-thinking/what-are-reserved-words)
 * [Function](https://www.makeuseof.com/what-is-a-function-programming/)
@@ -151,8 +151,6 @@ Not all functions need to have anything entered into the parenthesis. For exampl
 
 ---
 
-<span id="del-operators"></span>
-
 # DEL operators
 
 ## Quick Summary
@@ -187,9 +185,9 @@ Below is a description of the basic DEL operators, which includes comparison ope
 
 * **!=**: **Not equal to** is valid with all default Response types
 
-* **&gt;**, **&lt;**: **Greater than** and **Less than** are valid with Integer, Decimal, Date and Time Response types
+* **>**, **&lt;**: **Greater than** and **Less than** are valid with Integer, Decimal, Date and Time Response types
 
-* **&gt;=**, **&lt;=**: **Greater than or Equal to**, and **Less than or Equal to** are valid with Integer, Decimal, Date and Time Response types
+* **>=**, **&lt;=**: **Greater than or Equal to**, and **Less than or Equal to** are valid with Integer, Decimal, Date and Time Response types
 
 ### Basic Keyword-based operators
 
@@ -219,8 +217,6 @@ The behaviour of these two operators can be seen in how questions are displayed 
   * `vatNumber is valid and list1 = "estonia"` will cause a response field to appear **only as long as** an entered VAT number is passing validation **and** "Estonia" is currently selected from a list. If either condition is altered, the field in which this validation/visibility rule is written will disappear until the conditions are met again.
 
 ---
-
-<span id="del-functions-and-reserved-words"></span>
 
 # DEL functions and reserved words
 

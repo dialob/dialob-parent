@@ -14,7 +14,7 @@ title: Introduction
 
 ## About the platform
 
-**Dialob** is a platform for creating and testing responsive dialogs and publishing them online. In the context of the Dialob platform, a dialog is both a form and a process. Creating with Dialob is a dynamic process wherein the word "dialog" is a representation of the constant communication between user inputs on the front-end and Dialob's back-end processes, resulting in a constant "dialogue" between the system and the user throughout the creation process.  In this way, Dialob constantly updates and saves user inputs on the back-end side and reflects those changes in near real time. The product and end result of the dialog process is a highly customizable form with validations, versioning, translation, and security built in, all tailored to a specific end-user requirement.
+**Dialob** is a platform for creating and testing responsive dialogs and publishing them online. In the context of the Dialob platform, a dialog is both a form and a process. Creating with Dialob is a dynamic process wherein the word “dialog” is a representation of the constant communication between user inputs on the front-end and Dialob’s back-end processes, resulting in a constant “dialogue” between the system and the user throughout the creation process.  In this way, Dialob constantly updates and saves user inputs on the back-end side and reflects those changes in near real time. The product and end result of the dialog process is a highly customizable form with validations, versioning, translation, and security built in, all tailored to a specific end-user requirement.
 
 The Dialob platform comes with a comprehensive set of tools targeted at non-technical users to enable the creation, testing, and deployment of responsive forms.  
 
@@ -31,6 +31,9 @@ The image below represents the Dialob structural hierarchy:
  * **Dialog repository**: Repository where dialogs and associated visibility rules are stored so that they can be fetched by the engine at run time.
 
  * **Dialog session repository**: Repository that tracks all the changes, dialog requests, and responses, of each unique dialog session. The gathered data provides a full audit trace of each dialog session and thus provides the baseline for further optimization of the online dialogs.
+
+**Dialob platform** is continuously improving it's functionalities evaluating new technologies like AI support as potential additions to Dialob for the purpose of improving its online dialog creation capabilities.
+
 
 ---
 
@@ -68,4 +71,3 @@ From the first moment, you can start taking advantage of Dialob's wide range of 
 * **Localisation**: Dialog questions and list items can be individually translated to / from English, Finnish, Swedish, or Estonian languages. In addition, custom languages can also be created.
 
 * **AI Translation**: Dialob Composer can integrate with an external AI translation service to automatically translate form content between languages. The AI translation feature can translate item labels, descriptions, validation messages, and choice lists while preserving markdown and expression language syntax. Human validation of AI translations is supported through visual indicators.
-

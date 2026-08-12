@@ -1,3 +1,5 @@
+/// <reference types="jest" />
+
 import { generateItemId, formReducer } from '../reducer';
 import testForm from './testForm.json';
 import cleanForm from './cleanForm.json';
