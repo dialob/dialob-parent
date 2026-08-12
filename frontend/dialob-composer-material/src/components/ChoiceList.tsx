@@ -4,6 +4,7 @@ import { LocalizedString, ValueSet, ValueSetEntry } from "../types";
 import { useSave } from "../dialogs/contexts/saving/useSave";
 import { SortableFlatList } from "./SortableFlatList";
 import { createDefaultValueSetEntry } from "../utils/ValueSetUtils";
+import { getPendingRenameSourceIds } from "../utils/ValueSetEntryRenameUtils";
 import { arrayMove } from "@dnd-kit/sortable";
 import { scrollToChoiceItem } from "../utils/ScrollUtils";
 import { SortableChoiceItem } from "./SortableChoiceItem";
@@ -14,7 +15,7 @@ const ChoiceList: React.FC<{
   updateValueSet?: (value: React.SetStateAction<ValueSet | undefined>) => void,
   isGlobal?: boolean
 }> = ({ valueSet, updateValueSet, isGlobal }) => {
-  const { deleteValueSetEntry, updateValueSetEntry, addValueSetEntry, moveValueSetEntry, recordEntryRename } = useSave();
+  const { savingState, deleteValueSetEntry, updateValueSetEntry, addValueSetEntry, moveValueSetEntry, recordEntryRename } = useSave();
   const entries = valueSet?.entries ?? [];
   const itemIds = entries.map((_, index) => `${valueSet?.id}-${index}`);
 
@@ -60,7 +61,10 @@ const ChoiceList: React.FC<{
     if (!valueSet) {
       return;
     }
-    const newEntry = createDefaultValueSetEntry(valueSet.entries);
+    const newEntry = createDefaultValueSetEntry(
+      valueSet.entries,
+      getPendingRenameSourceIds(savingState.pendingEntryRenames, valueSet.id)
+    );
     addValueSetEntry(valueSet.id, newEntry, index);
     const newEntries = valueSet.entries ? [...valueSet.entries] : [];
     newEntries.splice(index + 1, 0, newEntry);

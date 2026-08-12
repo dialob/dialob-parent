@@ -300,6 +300,13 @@ const deleteValueSetEntry = (state: SavingState, valueSetId: string, index: numb
       const deletedEntry = state.valueSets[vsIdx].entries![index];
       state.valueSets[vsIdx].entries!.splice(index, 1);
 
+      // Rename whose entry no longer exists must not rewrite form references, or an entry later reusing the old id would inherit the rename
+      if (state.pendingEntryRenames && deletedEntry) {
+        state.pendingEntryRenames = state.pendingEntryRenames.filter(
+          r => !(r.valueSetId === valueSetId && r.to === deletedEntry.id)
+        );
+      }
+
       // Clean up AI translation metadata for deleted valueset entry
       if (state.composerMetadata?.aiTranslations && deletedEntry) {
         const entryIdToDelete = `v:${valueSetId}:${index}:${deletedEntry.id}`;

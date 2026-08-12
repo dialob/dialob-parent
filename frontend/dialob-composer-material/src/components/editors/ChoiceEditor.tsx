@@ -20,6 +20,7 @@ import { scrollToChoiceItem } from '../../utils/ScrollUtils';
 import { ValueSet } from '../../types';
 import { useSave } from '../../dialogs/contexts/saving/useSave';
 import { createDefaultValueSetEntry } from '../../utils/ValueSetUtils';
+import { getPendingRenameSourceIds } from '../../utils/ValueSetEntryRenameUtils';
 import TranslateChoicesConfirmDialog from '../translations/TranslateChoicesConfirmDialog';
 import TranslationProgressDialog from '../translations/TranslationProgressDialog';
 import { useHasTranslatableContent, useBulkTranslateValueSet } from '../translations';
@@ -65,7 +66,10 @@ const ChoiceEditor: React.FC = () => {
 
   const handleAddValueSetEntry = () => {
     if (currentValueSet) {
-      const newEntry = createDefaultValueSetEntry(currentValueSet.entries);
+      const newEntry = createDefaultValueSetEntry(
+        currentValueSet.entries,
+        getPendingRenameSourceIds(savingState.pendingEntryRenames, currentValueSet.id)
+      );
       addValueSetEntry(currentValueSet.id, newEntry);
       scrollToChoiceItem();
     }

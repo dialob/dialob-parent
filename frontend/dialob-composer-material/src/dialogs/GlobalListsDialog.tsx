@@ -25,7 +25,7 @@ import TranslationProgressDialog from '../components/translations/TranslationPro
 import { useHasTranslatableContent, useBulkTranslateValueSet } from '../components/translations';
 import { SavingProvider } from './contexts/saving/SavingProvider';
 import { useBackend } from '../backend/useBackend';
-import { applyEntryRenamesToSavingState } from '../utils/ValueSetEntryRenameUtils';
+import { applyEntryRenamesToSavingState, getPendingRenameSourceIds } from '../utils/ValueSetEntryRenameUtils';
 
 interface GlobalValueSet {
   id: string;
@@ -185,7 +185,10 @@ const GlobalListsDialogContent: React.FC = () => {
 
   const addEntry = () => {
     if (currentValueSet) {
-      const newEntry = createDefaultValueSetEntry(currentValueSet.entries);
+      const newEntry = createDefaultValueSetEntry(
+        currentValueSet.entries,
+        getPendingRenameSourceIds(savingState.pendingEntryRenames, currentValueSet.id)
+      );
       addValueSetEntry(currentValueSet.id, newEntry);
       const newEntries = currentValueSet.entries ? [...currentValueSet.entries, newEntry] : [newEntry];
       setCurrentValueSet({ ...currentValueSet, entries: newEntries });

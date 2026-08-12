@@ -15,6 +15,13 @@ export type ValueSetEntryRename = {
   to: string;
 };
 
+// a new entry reusing one of these would inherit the pending rename on save
+export const getPendingRenameSourceIds = (
+  renames: ValueSetEntryRename[] | undefined,
+  valueSetId: string
+): string[] =>
+  (renames ?? []).filter(r => r.valueSetId === valueSetId).map(r => r.from);
+
 const LIST_ITEM_TYPES = new Set(['list', 'multichoice', 'survey', 'surveygroup', 'verticalSurveygroup']);
 
 const RULE_FIELDS = ['activeWhen', 'required', 'readOnlyWhen', 'canAddRowWhen', 'canRemoveRowWhen'] as const;
