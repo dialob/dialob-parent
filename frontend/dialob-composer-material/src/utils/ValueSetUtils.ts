@@ -1,13 +1,18 @@
 import { ValueSetEntry, TranslationMetadata } from '../types';
 
-export const createDefaultValueSetEntry = (existingEntries?: ValueSetEntry[]): ValueSetEntry => {
-  if (!existingEntries || existingEntries.length === 0) {
-    return { id: 'choice1', label: {} };
+export const createDefaultValueSetEntry = (
+  existingEntries?: ValueSetEntry[],
+  reservedIds?: string[]
+): ValueSetEntry => {
+  const used = new Set<string>([
+    ...(existingEntries ?? []).map(e => e.id),
+    ...(reservedIds ?? []),
+  ]);
+  let n = 1;
+  while (used.has(`choice${n}`)) {
+    n++;
   }
-  return {
-    id: 'choice' + (existingEntries.length + 1),
-    label: {},
-  };
+  return { id: `choice${n}`, label: {} };
 };
 
 const getValueSetEntryIdPart = (entryId: string, valueSetId: string): string | undefined => {

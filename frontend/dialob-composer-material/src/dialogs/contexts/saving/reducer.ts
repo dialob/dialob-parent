@@ -1,5 +1,5 @@
 import { produce } from "immer";
-import { ContextVariable, ContextVariableType, DialobItems, DialobItemTemplate, LocalizedString, TranslationMetadata, ValidationRule, ValueSetEntry, Variable } from "../../../types";
+import { ComposerMetadata, ContextVariable, ContextVariableType, DialobItem, DialobItems, DialobItemTemplate, LocalizedString, TranslationMetadata, ValidationRule, ValueSet, ValueSetEntry, Variable } from "../../../types";
 import { cleanLocalizedString, cleanString } from "../../../utils/StringUtils";
 import { SavingAction } from "./SavingAction";
 import { SavingState } from "./SavingContext";
@@ -50,12 +50,6 @@ const updateItem = (state: SavingState, attribute: string, value: any, language?
     } else {
       state.item[attribute] = value;
     }
-  }
-}
-
-const updateItemId = (state: SavingState, itemId: string): void => {
-  if (state.item) {
-    state.item.id = itemId;
   }
 }
 
@@ -306,6 +300,13 @@ const deleteValueSetEntry = (state: SavingState, valueSetId: string, index: numb
       const deletedEntry = state.valueSets[vsIdx].entries![index];
       state.valueSets[vsIdx].entries!.splice(index, 1);
 
+      // Rename whose entry no longer exists must not rewrite form references, or an entry later reusing the old id would inherit the rename
+      if (state.pendingEntryRenames && deletedEntry) {
+        state.pendingEntryRenames = state.pendingEntryRenames.filter(
+          r => !(r.valueSetId === valueSetId && r.to === deletedEntry.id)
+        );
+      }
+
       // Clean up AI translation metadata for deleted valueset entry
       if (state.composerMetadata?.aiTranslations && deletedEntry) {
         const entryIdToDelete = `v:${valueSetId}:${index}:${deletedEntry.id}`;
@@ -493,6 +494,63 @@ const clearPendingRenames = (state: SavingState): void => {
   state.pendingVariableRenames = [];
 }
 
+const recordEntryRename = (state: SavingState, valueSetId: string, from: string, to: string): void => {
+  if (from === to) {
+    return;
+  }
+  if (!state.pendingEntryRenames) {
+    state.pendingEntryRenames = [];
+  }
+
+  const chainIdx = state.pendingEntryRenames.findIndex(r => r.valueSetId === valueSetId && r.to === from);
+  if (chainIdx > -1) {
+    if (to === state.pendingEntryRenames[chainIdx].from) {
+      state.pendingEntryRenames.splice(chainIdx, 1);
+    } else {
+      state.pendingEntryRenames[chainIdx].to = to;
+    }
+    return;
+  }
+
+  const existingIdx = state.pendingEntryRenames.findIndex(r => r.valueSetId === valueSetId && r.from === from);
+  if (existingIdx > -1) {
+    if (to === from) {
+      state.pendingEntryRenames.splice(existingIdx, 1);
+    } else {
+      state.pendingEntryRenames[existingIdx].to = to;
+    }
+  } else {
+    state.pendingEntryRenames.push({ valueSetId, from, to });
+  }
+}
+
+const clearPendingEntryRenames = (state: SavingState): void => {
+  state.pendingEntryRenames = [];
+}
+
+const syncAfterSave = (
+  state: SavingState,
+  item?: DialobItem,
+  valueSets?: ValueSet[],
+  composerMetadata?: ComposerMetadata,
+  variables?: (ContextVariable | Variable)[]
+): void => {
+  if (item !== undefined) {
+    state.item = item;
+  }
+  if (valueSets !== undefined) {
+    state.valueSets = valueSets;
+  }
+  if (composerMetadata !== undefined) {
+    state.composerMetadata = composerMetadata;
+  }
+  if (variables !== undefined) {
+    state.variables = variables;
+  }
+  state.pendingEntryRenames = [];
+  state.items = undefined;
+}
+
 const resetItems = (state: SavingState, items: DialobItems): void => {
   state.items = items;
 }
@@ -641,14 +699,37 @@ const removeAITranslation = (state: SavingState, entryId: string, targetLanguage
   );
 }
 
+const applyIdRenameMerge = (
+  state: SavingState,
+  mergedItem?: DialobItem,
+  mergedValueSets?: ValueSet[],
+  mergedItems?: DialobItems,
+  mergedVariables?: (ContextVariable | Variable)[],
+  mergedComposerMetadata?: ComposerMetadata
+): void => {
+  if (mergedItem !== undefined) {
+    state.item = mergedItem;
+  }
+  if (mergedValueSets !== undefined) {
+    state.valueSets = mergedValueSets;
+  }
+  if (mergedItems !== undefined) {
+    state.items = mergedItems;
+  }
+  if (mergedVariables !== undefined) {
+    state.variables = mergedVariables;
+  }
+  if (mergedComposerMetadata !== undefined) {
+    state.composerMetadata = mergedComposerMetadata;
+  }
+}
+
 
 export const itemReducer = (state: SavingState, action: SavingAction): SavingState => {
 
   const newState = produce(state, state => {
     if (action.type === 'updateItem') {
       updateItem(state, action.attribute, action.value, action.language);
-    } else if (action.type === 'updateItemId') {
-      updateItemId(state, action.itemId);
     } else if (action.type === 'updateLocalizedString') {
       updateLocalizedString(state, action.attribute, action.value, action.index);
     } else if (action.type === 'changeItemType') {
@@ -705,10 +786,18 @@ export const itemReducer = (state: SavingState, action: SavingAction): SavingSta
       updateVariableName(state, action.currentName, action.originalName, action.to);
     } else if (action.type === 'clearPendingRenames') {
       clearPendingRenames(state);
+    } else if (action.type === 'recordEntryRename') {
+      recordEntryRename(state, action.valueSetId, action.from, action.to);
+    } else if (action.type === 'clearPendingEntryRenames') {
+      clearPendingEntryRenames(state);
+    } else if (action.type === 'syncAfterSave') {
+      syncAfterSave(state, action.item, action.valueSets, action.composerMetadata, action.variables);
     } else if (action.type === 'resetItems') {
       resetItems(state, action.items);
     } else if (action.type === 'resetVariables') {
       resetVariables(state, action.variables);
+    } else if (action.type === 'applyIdRenameMerge') {
+      applyIdRenameMerge(state, action.mergedItem, action.mergedValueSets, action.mergedItems, action.mergedVariables, action.mergedComposerMetadata);
     } else if (action.type === 'setMetadataValue') {
       setMetadataValue(state, action.attr, action.value);
     } else if (action.type === 'applyTranslations') {

@@ -749,12 +749,36 @@ const applyItemChanges = (state: ComposerState, newState: SavingState): void => 
   state.data[itemId] = newState.item;
   state.valueSets = newState.valueSets;
   state.metadata.composer = newState.composerMetadata;
+
+  if (newState.items) {
+    Object.keys(newState.items).forEach(patchItemId => {
+      if (state.data[patchItemId]) {
+        state.data[patchItemId] = newState.items![patchItemId];
+      }
+    });
+  }
+
+  if (newState.variables) {
+    state.variables = newState.variables;
+  }
 }
 
 const applyListChanges = (state: ComposerState, newState: SavingState): void => {
   // Apply changes from the SavingContext - used to apply changes made in the GlobalListsDialog
   state.valueSets = newState.valueSets;
   state.metadata.composer = newState.composerMetadata;
+
+  if (newState.items) {
+    Object.keys(newState.items).forEach(itemId => {
+      if (state.data[itemId]) {
+        state.data[itemId] = newState.items![itemId];
+      }
+    });
+  }
+
+  if (newState.variables) {
+    state.variables = newState.variables;
+  }
 }
 
 const applyVariableChanges = (state: ComposerState, newState: SavingState): void => {
