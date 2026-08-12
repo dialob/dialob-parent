@@ -640,6 +640,27 @@ test('Add valueset entry: empty', () => {
 });
 
 
+test('Add valueset entry after index', () => {
+  const action: ComposerAction = {
+    type: 'addValueSetEntry',
+    valueSetId: 'vs2',
+    insertAfterIndex: 1,
+    entry: {
+      id: 'inserted', label: { 'en': 'Inserted' }
+    }
+  };
+  const newState = formReducer(testForm, action);
+  expect(newState.valueSets).toBeDefined();
+  if (newState.valueSets) {
+    const vsIndex = newState.valueSets.findIndex(vs => vs.id === 'vs2');
+    expect(vsIndex).toBeGreaterThan(-1);
+    expect(newState.valueSets[vsIndex].entries).toBeDefined();
+    expect(newState.valueSets[vsIndex].entries!.length).toEqual(7);
+    expect(newState.valueSets[vsIndex].entries![2]).toStrictEqual({ id: 'inserted', label: { 'en': 'Inserted' } });
+    expect(newState.valueSets[vsIndex].entries![3].id).toEqual('prevention3');
+  }
+});
+
 test('Add valueset entry: filled', () => {
   const action: ComposerAction = {
     type: 'addValueSetEntry',
@@ -885,6 +906,21 @@ test('Create context variable', () => {
   }
 });
 
+test('Create context variable after index', () => {
+  const prefilledCompanyNameIndex = testForm.variables!.findIndex(v => v.name === 'prefilledCompanyName');
+  const action: ComposerAction = {
+    type: 'createVariable',
+    context: true,
+    insertAfterIndex: prefilledCompanyNameIndex
+  };
+  const newState = formReducer(testForm, action);
+  expect(newState.variables).toBeDefined();
+  if (newState.variables) {
+    expect(newState.variables[prefilledCompanyNameIndex + 1].name).toEqual('context1');
+    expect(newState.variables[prefilledCompanyNameIndex].name).toEqual('prefilledCompanyName');
+  }
+});
+
 test('Create expression variable', () => {
   const action: ComposerAction = {
     type: 'createVariable',
@@ -1003,28 +1039,40 @@ test('Delete variable', () => {
   }
 });
 
-test('Move variable (swap)', () => {
+test('Move variable within context subset', () => {
   expect(testForm.variables).toBeDefined();
-  const originIndex = testForm.variables.findIndex(v => v.name === 'prefilledCompanyName');
-  expect(originIndex).toBeGreaterThan(-1);
-  const origin = testForm.variables[originIndex];
-  const destinationIndex = testForm.variables.findIndex(v => v.name === 'prefilledCompanyID');
-  expect(destinationIndex).toBeGreaterThan(-1);
-  const destination = testForm.variables[destinationIndex];
   const action: ComposerAction = {
     type: 'moveVariable',
-    origin: origin,
-    destination: destination
-  }
+    name: 'companyExists',
+    toFilteredIndex: 0,
+    context: true
+  };
   const newState = formReducer(testForm, action);
   expect(newState.variables).toBeDefined();
   if (newState.variables) {
-    const nameIndex = newState.variables.findIndex(v => v.name === 'prefilledCompanyName');
-    expect(nameIndex).toBeGreaterThan(-1);
-    expect(nameIndex).toBe(destinationIndex);
-    const idIndex = newState.variables.findIndex(v => v.name === 'prefilledCompanyID');
-    expect(idIndex).toBeGreaterThan(-1);
-    expect(idIndex).toBe(originIndex);
+    const contextVars = newState.variables.filter(v => 'context' in v && v.context);
+    expect(contextVars[0].name).toEqual('companyExists');
+    expect(contextVars[1].name).toEqual('prefilledCompanyID');
+    expect(contextVars[2].name).toEqual('prefilledCompanyName');
+    expect(newState.variables.findIndex(v => v.name === 'companyMainBL')).toBe(0);
+  }
+});
+
+test('Move variable (swap)', () => {
+  expect(testForm.variables).toBeDefined();
+  const action: ComposerAction = {
+    type: 'moveVariable',
+    name: 'prefilledCompanyName',
+    toFilteredIndex: 0,
+    context: true
+  };
+  const newState = formReducer(testForm, action);
+  expect(newState.variables).toBeDefined();
+  if (newState.variables) {
+    const contextVars = newState.variables.filter(v => 'context' in v && v.context);
+    expect(contextVars[0].name).toEqual('prefilledCompanyName');
+    expect(contextVars[1].name).toEqual('prefilledCompanyID');
+    expect(contextVars[2].name).toEqual('companyExists');
   }
 });
 
