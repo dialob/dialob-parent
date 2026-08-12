@@ -71,15 +71,7 @@ jobs:
           echo "Pull request's upload expires on $EXPIRY_DATE"
           EXPIRES="--expires $EXPIRY_DATE"
         fi
-        for PROJECT in `ls -1 $DOWNLOAD_PATH`; do
-          mkdir temp
-          tar -C temp -xzvf $DOWNLOAD_PATH/$PROJECT
-          cd temp
-          CONTEXT=`find . -mindepth 2 -maxdepth 2 -type d`
-          TARGET=s3://${{ secrets.DOCUMENTATION_BUCKET }}/${CONTEXT#"./"}
-          aws s3 sync $EXPIRES --acl public-read --delete --cache-control public,max-age=3600 $CONTEXT $TARGET
-          cd ..
-          rm -Rf temp
-        done
+        TARGET=s3://${{ secrets.DOCUMENTATION_BUCKET }}/${{ github.ref_name }}
+        aws s3 sync $EXPIRES --acl public-read --delete --cache-control public,max-age=3600 $DOWNLOAD_PATH $TARGET
       env:
         DOWNLOAD_PATH: ${{ steps.download.outputs.download-path }}
