@@ -73,7 +73,7 @@ class ActiveDialobSessionUpdaterQueueTest {
     updater.queueCommand(command);
 
     assertEquals(1, updater.evalQueue.size());
-    assertEquals(command, updater.evalQueue.get(0));
+    assertEquals(command, updater.evalQueue.getFirst());
   }
 
   @Test

@@ -1,5 +1,5 @@
 import {
-  DialobItemTemplate, ValueSetEntry, ValidationRule, LocalizedString,
+  ComposerMetadata, DialobItem, DialobItemTemplate, ValueSet, ValueSetEntry, ValidationRule, LocalizedString,
   ContextVariableType,
   ContextVariable,
   Variable,
@@ -10,7 +10,6 @@ import { TranslationResult } from "../../../backend/types";
 export type SavingAction =
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   { type: 'updateItem', itemId: string, attribute: string, value: any, language?: string }
-  | { type: 'updateItemId', itemId: string }
   | { type: 'updateLocalizedString', itemId: string, attribute: string, value: LocalizedString, index?: number }
   | { type: 'changeItemType', itemId: string, config: DialobItemTemplate }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -24,7 +23,7 @@ export type SavingAction =
 
   | { type: 'createValueSet', itemId: string | null, entries?: ValueSetEntry[] }
   | { type: 'setValueSetEntries', valueSetId: string, entries: ValueSetEntry[] }
-  | { type: 'addValueSetEntry', valueSetId: string, entry?: ValueSetEntry }
+  | { type: 'addValueSetEntry', valueSetId: string, entry?: ValueSetEntry, insertAfterIndex?: number }
   | { type: 'updateValueSetEntry', valueSetId: string, index: number, entry: ValueSetEntry }
   | { type: 'updateValueSetEntryLabel', valueSetId: string, index: number, text: string | null | undefined, language: string }
   | { type: 'deleteValueSetentry', valueSetId: string, index: number }
@@ -33,19 +32,23 @@ export type SavingAction =
   | { type: 'deleteLocalValueSet', valueSetId: string }
   | { type: 'deleteGlobalValueSet', valueSetId: string }
 
-  | { type: 'createVariable', context: boolean }
+  | { type: 'createVariable', context: boolean, insertAfterIndex?: number }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   | { type: 'updateContextVariable', variableId: string, contextType?: ContextVariableType | string, defaultValue?: any }
   | { type: 'updateExpressionVariable', variableId: string, expression: string | undefined }
   | { type: 'updateVariablePublishing', variableId: string, published: boolean }
   | { type: 'updateVariableDescription', variableId: string, description: string | undefined }
   | { type: 'deleteVariable', variableId: string }
-  | { type: 'moveVariable', origin: ContextVariable | Variable, destination: ContextVariable | Variable }
+  | { type: 'moveVariable', name: string, toFilteredIndex: number, context: boolean }
   | { type: 'changeVariableId', variables: (ContextVariable | Variable)[] }
   | { type: 'updateVariableName', currentName: string, originalName: string, to: string }
   | { type: 'clearPendingRenames' }
+  | { type: 'recordEntryRename', valueSetId: string, from: string, to: string }
+  | { type: 'clearPendingEntryRenames' }
+  | { type: 'syncAfterSave', item?: DialobItem, valueSets?: ValueSet[], composerMetadata?: ComposerMetadata, variables?: (ContextVariable | Variable)[] }
   | { type: 'resetItems', items: DialobItems }
   | { type: 'resetVariables', variables: (ContextVariable | Variable)[] }
+  | { type: 'applyIdRenameMerge', mergedItem?: DialobItem, mergedValueSets?: ValueSet[], mergedItems?: DialobItems, mergedVariables?: (ContextVariable | Variable)[], mergedComposerMetadata?: ComposerMetadata }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   | { type: 'setMetadataValue', attr: string, value: any }
   | { type: 'applyTranslations', translations: TranslationResult[], sourceLanguage: string, targetLanguage: string }

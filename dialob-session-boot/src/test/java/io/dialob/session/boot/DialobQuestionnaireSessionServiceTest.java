@@ -15,9 +15,6 @@
  */
 package io.dialob.session.boot;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.common.collect.Maps;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.*;
@@ -65,6 +62,7 @@ import org.springframework.core.task.TaskExecutor;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.SerializationUtils;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -119,7 +117,7 @@ class DialobQuestionnaireSessionServiceTest {
       doAnswer(invocation -> {
         FunctionRegistry.FunctionCallback cb = invocation.getArgument(0);
         List<?> args = invocation.getArgument(2);
-        String string = (String) args.get(0);
+        String string = (String) args.getFirst();
         if (string == null) {
           cb.succeeded(BigInteger.ZERO);
         } else {
@@ -134,7 +132,7 @@ class DialobQuestionnaireSessionServiceTest {
 
     @Bean
     public ObjectMapper objectMapper() {
-      return new ObjectMapper().registerModules(new JavaTimeModule(), new Jdk8Module());
+      return new ObjectMapper();
     }
 
     @Bean
@@ -2117,8 +2115,8 @@ class DialobQuestionnaireSessionServiceTest {
       Object args = invocation.getArgument(2);
       assertTrue(args instanceof List);
       List list = (List) args;
-      assertTrue(list.get(0) instanceof Map<?,?>);
-      Map<?, ?> map = (Map<?, ?>) list.get(0);
+      assertTrue(list.getFirst() instanceof Map<?,?>);
+      Map<?, ?> map = (Map<?, ?>) list.getFirst();
       callback.succeeded(map);
       return null;
     }).when(functionRegistry).invokeFunction(any(), eq("useObjectFunction"), any());
@@ -2376,6 +2374,7 @@ class DialobQuestionnaireSessionServiceTest {
     return assertion.extracting("item").filteredOn(instance -> instance != null && "questionnaire".equals(((ActionItem) instance).getType()));
   }
 
+  @SuppressWarnings("unchecked")
   private <T> Set<T> asSet(T... items) {
     return new HashSet<>(asList(items));
   }

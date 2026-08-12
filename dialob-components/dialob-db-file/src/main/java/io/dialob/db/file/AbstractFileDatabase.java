@@ -15,7 +15,6 @@
  */
 package io.dialob.db.file;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.common.Constants;
 import io.dialob.db.spi.exceptions.DocumentCorruptedException;
@@ -23,6 +22,8 @@ import io.dialob.db.spi.exceptions.DocumentNotFoundException;
 import io.dialob.db.spi.spring.AbstractDocumentDatabase;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.File;
 import java.io.IOException;
@@ -77,7 +78,7 @@ public abstract class AbstractFileDatabase<F> extends AbstractDocumentDatabase<F
   public F loadFile(File file) {
     try {
       return objectMapper.readValue(file, getDocumentClass());
-    } catch (IOException e) {
+    } catch (JacksonException e) {
       LOGGER.error("File {} is corrupted.", file.getAbsoluteFile(), e);
     }
     return null;
@@ -125,7 +126,7 @@ public abstract class AbstractFileDatabase<F> extends AbstractDocumentDatabase<F
     }
     try {
       objectMapper.writeValue(fileRef(id(document)), document);
-    } catch (IOException e) {
+    } catch (JacksonException e) {
       LOGGER.error("Failed to write document {}", id, e);
       throw new DocumentCorruptedException("Cannot update document " + id);
     }

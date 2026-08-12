@@ -19,6 +19,8 @@ import { getErrorSeverity } from '../../utils/ErrorUtils';
 import { scrollToChoiceItem } from '../../utils/ScrollUtils';
 import { ValueSet } from '../../types';
 import { useSave } from '../../dialogs/contexts/saving/useSave';
+import { createDefaultValueSetEntry } from '../../utils/ValueSetUtils';
+import { getPendingRenameSourceIds } from '../../utils/ValueSetEntryRenameUtils';
 import TranslateChoicesConfirmDialog from '../translations/TranslateChoicesConfirmDialog';
 import TranslationProgressDialog from '../translations/TranslationProgressDialog';
 import { useHasTranslatableContent, useBulkTranslateValueSet } from '../translations';
@@ -40,7 +42,7 @@ const ChoiceEditor: React.FC = () => {
   const [uploadDialogOpen, setUploadDialogOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const [translateDialogOpen, setTranslateDialogOpen] = React.useState(false);
-  
+
   const sourceLanguage = editor.activeFormLanguage;
   const targetLanguages = formLanguages?.filter(lang => lang !== sourceLanguage) || [];
   const hasTranslatableContent = useHasTranslatableContent(currentValueSet, sourceLanguage, targetLanguages);
@@ -64,21 +66,12 @@ const ChoiceEditor: React.FC = () => {
 
   const handleAddValueSetEntry = () => {
     if (currentValueSet) {
-      if (!currentValueSet.entries) {
-        const newEntry = {
-          id: 'choice1',
-          label: {}
-        }
-        addValueSetEntry(currentValueSet.id, newEntry);
-        scrollToChoiceItem();
-      } else {
-        const newEntry = {
-          id: 'choice' + (currentValueSet.entries?.length + 1),
-          label: {},
-        };
-        addValueSetEntry(currentValueSet.id, newEntry);
-        scrollToChoiceItem();
-      }
+      const newEntry = createDefaultValueSetEntry(
+        currentValueSet.entries,
+        getPendingRenameSourceIds(savingState.pendingEntryRenames, currentValueSet.id)
+      );
+      addValueSetEntry(currentValueSet.id, newEntry);
+      scrollToChoiceItem();
     }
   }
 
@@ -139,7 +132,7 @@ const ChoiceEditor: React.FC = () => {
         type={dialogType}
         onClick={dialogType === 'global' ? convertToGlobalList : convertToLocalList}
         onClose={() => setDialogType(undefined)} />
-      
+
       <TranslateChoicesConfirmDialog
         open={translateDialogOpen}
         onConfirm={handleTranslateAllChoices}

@@ -34,7 +34,7 @@ public record EqOperator<T>(
 ) implements AbstractLogicalOperator {
 
   public static <T> EqOperator.Builder<T> builder() {
-    return new EqOperator.Builder<T>();
+    return new EqOperator.Builder<>();
   }
 
   public static final class Builder<T> extends EqOperatorBuilder<T> {}

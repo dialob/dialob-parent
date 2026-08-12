@@ -73,8 +73,8 @@ export const useComposer = () => {
     dispatch({ type: 'setValueSetEntries', valueSetId, entries });
   }
 
-  const addValueSetEntry = (valueSetId: string, entry?: ValueSetEntry) => {
-    dispatch({ type: 'addValueSetEntry', valueSetId, entry });
+  const addValueSetEntry = (valueSetId: string, entry?: ValueSetEntry, insertAfterIndex?: number) => {
+    dispatch({ type: 'addValueSetEntry', valueSetId, entry, insertAfterIndex });
   }
 
   const updateValueSetEntry = (valueSetId: string, index: number, entry: ValueSetEntry) => {
@@ -114,8 +114,8 @@ export const useComposer = () => {
     dispatch({ type: 'setContextValue', name, value });
   }
 
-  const createVariable = (context: boolean) => {
-    dispatch({ type: 'createVariable', context });
+  const createVariable = (context: boolean, insertAfterIndex?: number) => {
+    dispatch({ type: 'createVariable', context, insertAfterIndex });
   }
 
   const createScopedExpressionVariable = (rowgroupId: string, callbacks?: ComposerCallbacks) => {
@@ -143,8 +143,8 @@ export const useComposer = () => {
     dispatch({ type: 'deleteVariable', variableId });
   }
 
-  const moveVariable = (origin: ContextVariable | Variable, destination: ContextVariable | Variable) => {
-    dispatch({ type: 'moveVariable', origin, destination });
+  const moveVariable = (name: string, toFilteredIndex: number, context: boolean) => {
+    dispatch({ type: 'moveVariable', name, toFilteredIndex, context });
   }
 
   const addLanguage = (language: string, copyFrom?: string) => {

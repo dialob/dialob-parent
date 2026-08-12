@@ -94,8 +94,8 @@ public record DialobProgram(
       if (event instanceof RowGroupItemsInitEvent rowGroupItemsInitEvent) {
         return Stream.of((C) updateCommand.withTargetId(errorId.withItemId(rowGroupItemsInitEvent.getGroupId())));
       }
-      if (errorId.isPartial() && event instanceof TargetEvent targetEvent) {
-        return Stream.of((C) updateCommand.withTargetId(errorId.withItemId(errorId.itemId().withParent(targetEvent.targetId().getParent()))));
+      if (errorId.isPartial() && event instanceof TargetEvent(ItemId targetId)) {
+        return Stream.of((C) updateCommand.withTargetId(errorId.withItemId(errorId.itemId().withParent(targetId.getParent()))));
       }
     } else if (command instanceof UpdateCommand updateCommand) {
       if (event instanceof ItemAddedEvent itemAddedEvent) {

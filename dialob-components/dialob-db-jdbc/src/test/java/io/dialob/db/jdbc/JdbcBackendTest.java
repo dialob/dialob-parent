@@ -15,8 +15,7 @@
  */
 package io.dialob.db.jdbc;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import tools.jackson.databind.ObjectMapper;
 import io.dialob.form.service.api.FormVersionControlDatabase;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import io.dialob.security.tenant.CurrentTenant;
@@ -28,7 +27,7 @@ import java.util.function.Predicate;
 
 public interface JdbcBackendTest {
 
-  ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
+  ObjectMapper objectMapper = new ObjectMapper();
 
   Predicate<String> IS_ANY_TENANT_PREDICATE = tenantId -> ResysSecurityConstants.DEFAULT_TENANT.id().equals(tenantId);
 

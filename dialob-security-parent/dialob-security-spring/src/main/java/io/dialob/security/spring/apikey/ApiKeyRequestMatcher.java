@@ -28,7 +28,7 @@ public class ApiKeyRequestMatcher implements RequestMatcher {
   }
 
   public ApiKeyRequestMatcher(ServletRequestApiKeyExtractor extractor) {
-    this(extractor.getHeader());
+    this(extractor.header());
   }
 
   @Override

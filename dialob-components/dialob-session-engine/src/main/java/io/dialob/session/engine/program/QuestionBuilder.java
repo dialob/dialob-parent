@@ -28,7 +28,6 @@ import io.dialob.session.engine.program.model.FormItem;
 import io.dialob.session.engine.program.model.Label;
 import io.dialob.session.engine.session.command.EventMatchers;
 import io.dialob.session.engine.session.model.ItemId;
-import io.dialob.session.engine.session.model.ItemRef;
 import io.dialob.session.engine.session.model.ValueSetId;
 import io.dialob.session.engine.spi.AliasesProvider;
 import io.dialob.session.engine.spi.ExpressionCompiler;
@@ -39,7 +38,6 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import static io.dialob.session.engine.program.expr.arith.Operators.*;
-import static java.util.stream.Collectors.toMap;
 
 public class QuestionBuilder extends AbstractItemBuilder<QuestionBuilder,ProgramBuilder> implements ExpressionCompiler, BuilderParent, HasDefaultValue {
 

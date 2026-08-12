@@ -1,9 +1,11 @@
 import { produce } from "immer";
-import { ContextVariable, ContextVariableType, DialobItems, DialobItemTemplate, LocalizedString, TranslationMetadata, ValidationRule, ValueSetEntry, Variable } from "../../../types";
+import { ComposerMetadata, ContextVariable, ContextVariableType, DialobItem, DialobItems, DialobItemTemplate, LocalizedString, TranslationMetadata, ValidationRule, ValueSet, ValueSetEntry, Variable } from "../../../types";
 import { cleanLocalizedString, cleanString } from "../../../utils/StringUtils";
 import { SavingAction } from "./SavingAction";
 import { SavingState } from "./SavingContext";
 import { isContextVariable } from "../../../utils/ItemUtils";
+import { shiftValueSetTranslationIndices, syncValueSetTranslationIndices } from "../../../utils/ValueSetUtils";
+import { reorderVariableSubset } from "../../../utils/VariableUtils";
 import { TranslationResult } from "../../../backend/types";
 
 
@@ -48,12 +50,6 @@ const updateItem = (state: SavingState, attribute: string, value: any, language?
     } else {
       state.item[attribute] = value;
     }
-  }
-}
-
-const updateItemId = (state: SavingState, itemId: string): void => {
-  if (state.item) {
-    state.item.id = itemId;
   }
 }
 
@@ -258,13 +254,19 @@ const setValueSetEntries = (state: SavingState, valueSetId: string, entries: Val
   }
 }
 
-const addValueSetEntry = (state: SavingState, valueSetId: string, entry?: ValueSetEntry): void => {
+const addValueSetEntry = (state: SavingState, valueSetId: string, entry?: ValueSetEntry, insertAfterIndex?: number): void => {
   if (state.valueSets) {
     const vsIdx = state.valueSets.findIndex(vs => vs.id === valueSetId);
     if (vsIdx > -1) {
       const cleanedEntry: ValueSetEntry = entry ? { ...entry, label: cleanLocalizedString(entry.label) } : { id: '', label: {} };
       if (state.valueSets[vsIdx].entries !== undefined) {
-        state.valueSets[vsIdx].entries!.push(cleanedEntry);
+        if (insertAfterIndex !== undefined && insertAfterIndex >= -1) {
+          const insertIndex = insertAfterIndex + 1;
+          shiftValueSetTranslationIndices(state.composerMetadata?.aiTranslations, valueSetId, insertIndex, 1);
+          state.valueSets[vsIdx].entries!.splice(insertIndex, 0, cleanedEntry);
+        } else {
+          state.valueSets[vsIdx].entries!.push(cleanedEntry);
+        }
       } else {
         state.valueSets[vsIdx].entries = [cleanedEntry];
       }
@@ -298,6 +300,13 @@ const deleteValueSetEntry = (state: SavingState, valueSetId: string, index: numb
       const deletedEntry = state.valueSets[vsIdx].entries![index];
       state.valueSets[vsIdx].entries!.splice(index, 1);
 
+      // Rename whose entry no longer exists must not rewrite form references, or an entry later reusing the old id would inherit the rename
+      if (state.pendingEntryRenames && deletedEntry) {
+        state.pendingEntryRenames = state.pendingEntryRenames.filter(
+          r => !(r.valueSetId === valueSetId && r.to === deletedEntry.id)
+        );
+      }
+
       // Clean up AI translation metadata for deleted valueset entry
       if (state.composerMetadata?.aiTranslations && deletedEntry) {
         const entryIdToDelete = `v:${valueSetId}:${index}:${deletedEntry.id}`;
@@ -325,8 +334,10 @@ const moveValueSetEntry = (state: SavingState, valueSetId: string, from: number,
   if (state.valueSets) {
     const vsIdx = state.valueSets.findIndex(vs => vs.id === valueSetId);
     if (vsIdx > -1 && state.valueSets[vsIdx].entries !== undefined) {
-      const newIndex = to > state.valueSets[vsIdx].entries!.length ? state.valueSets[vsIdx].entries!.length - 1 : to;
-      state.valueSets[vsIdx].entries!.splice(newIndex, 0, state.valueSets[vsIdx].entries!.splice(from, 1)[0]);
+      const entries = state.valueSets[vsIdx].entries!;
+      const newIndex = to > entries.length ? entries.length - 1 : to;
+      entries.splice(newIndex, 0, entries.splice(from, 1)[0]);
+      syncValueSetTranslationIndices(state.composerMetadata?.aiTranslations, valueSetId, entries);
     }
   }
 }
@@ -367,7 +378,7 @@ const deleteGlobalValueSet = (state: SavingState, valueSetId: string): void => {
   }
 }
 
-const createVariable = (state: SavingState, context: boolean): void => {
+const createVariable = (state: SavingState, context: boolean, insertAfterIndex?: number): void => {
   const variableId = generateItemIdWithPrefix(state, context ? 'context' : 'var');
 
   const variable: ContextVariable | Variable = context ? {
@@ -381,6 +392,8 @@ const createVariable = (state: SavingState, context: boolean): void => {
 
   if (!Array.isArray(state.variables)) {
     state.variables = [variable];
+  } else if (insertAfterIndex !== undefined && insertAfterIndex >= -1) {
+    state.variables.splice(insertAfterIndex + 1, 0, variable);
   } else {
     state.variables.push(variable);
   }
@@ -437,11 +450,9 @@ const updateVariableDescription = (state: SavingState, variableId: string, descr
   }
 }
 
-const moveVariable = (state: SavingState, origin: ContextVariable | Variable, destination: ContextVariable | Variable): void => {
-  const originIdx = state.variables?.findIndex(v => v.name === origin.name);
-  const destinationIdx = state.variables?.findIndex(v => v.name === destination.name);
-  if (originIdx !== undefined && destinationIdx !== undefined && originIdx > -1 && destinationIdx > -1 && state.variables) {
-    [state.variables[originIdx], state.variables[destinationIdx]] = [state.variables[destinationIdx], state.variables[originIdx]];
+const moveVariable = (state: SavingState, name: string, toFilteredIndex: number, context: boolean): void => {
+  if (state.variables) {
+    reorderVariableSubset(state.variables, name, toFilteredIndex, context);
   }
 }
 
@@ -483,6 +494,63 @@ const clearPendingRenames = (state: SavingState): void => {
   state.pendingVariableRenames = [];
 }
 
+const recordEntryRename = (state: SavingState, valueSetId: string, from: string, to: string): void => {
+  if (from === to) {
+    return;
+  }
+  if (!state.pendingEntryRenames) {
+    state.pendingEntryRenames = [];
+  }
+
+  const chainIdx = state.pendingEntryRenames.findIndex(r => r.valueSetId === valueSetId && r.to === from);
+  if (chainIdx > -1) {
+    if (to === state.pendingEntryRenames[chainIdx].from) {
+      state.pendingEntryRenames.splice(chainIdx, 1);
+    } else {
+      state.pendingEntryRenames[chainIdx].to = to;
+    }
+    return;
+  }
+
+  const existingIdx = state.pendingEntryRenames.findIndex(r => r.valueSetId === valueSetId && r.from === from);
+  if (existingIdx > -1) {
+    if (to === from) {
+      state.pendingEntryRenames.splice(existingIdx, 1);
+    } else {
+      state.pendingEntryRenames[existingIdx].to = to;
+    }
+  } else {
+    state.pendingEntryRenames.push({ valueSetId, from, to });
+  }
+}
+
+const clearPendingEntryRenames = (state: SavingState): void => {
+  state.pendingEntryRenames = [];
+}
+
+const syncAfterSave = (
+  state: SavingState,
+  item?: DialobItem,
+  valueSets?: ValueSet[],
+  composerMetadata?: ComposerMetadata,
+  variables?: (ContextVariable | Variable)[]
+): void => {
+  if (item !== undefined) {
+    state.item = item;
+  }
+  if (valueSets !== undefined) {
+    state.valueSets = valueSets;
+  }
+  if (composerMetadata !== undefined) {
+    state.composerMetadata = composerMetadata;
+  }
+  if (variables !== undefined) {
+    state.variables = variables;
+  }
+  state.pendingEntryRenames = [];
+  state.items = undefined;
+}
+
 const resetItems = (state: SavingState, items: DialobItems): void => {
   state.items = items;
 }
@@ -496,18 +564,18 @@ const changeVariableId = (state: SavingState, variables: (ContextVariable | Vari
     // Build a map of old variable names to new variable names
     const oldNames = new Set(state.variables.map(v => v.name));
     const newNames = new Set(variables.map(v => v.name));
-    
+
     // Find names that exist in old but not in new (removed/renamed)
     const removedNames = Array.from(oldNames).filter(name => !newNames.has(name));
-    
+
     // Find names that exist in new but not in old (added/renamed to)
     const addedNames = Array.from(newNames).filter(name => !oldNames.has(name));
-    
+
     // If we have exactly one removed and one added, it's a rename
     if (removedNames.length === 1 && addedNames.length === 1) {
       const oldName = removedNames[0];
       const newName = addedNames[0];
-      
+
       // Update any rowgroup that contains the old name
       Object.values(state.items).forEach(item => {
         if (item.type === 'rowgroup' && item.items?.includes(oldName)) {
@@ -519,7 +587,7 @@ const changeVariableId = (state: SavingState, variables: (ContextVariable | Vari
       });
     }
   }
-  
+
   if (state.variables) {
     state.variables = variables;
   }
@@ -546,7 +614,7 @@ const applyTranslations = (state: SavingState, translations: TranslationResult[]
 
   translations.forEach(translation => {
     const parts = translation.id.split(':');
-    
+
     if (parts[0] === 'i' && state.item) {
       // Item translations: labels, descriptions, validations
       const itemId = parts[1];
@@ -579,7 +647,7 @@ const applyTranslations = (state: SavingState, translations: TranslationResult[]
       const valueSetId = parts[1];
       const entryIndex = parseInt(parts[2], 10);
       const valueSet = state.valueSets.find(vs => vs.id === valueSetId);
-      
+
       if (valueSet?.entries?.[entryIndex]) {
         valueSet.entries[entryIndex].label = {
           ...(valueSet.entries[entryIndex].label || {}),
@@ -606,12 +674,12 @@ const addAITranslation = (state: SavingState, entryId: string, sourceLanguage: s
   if (!state.composerMetadata.aiTranslations) {
     state.composerMetadata.aiTranslations = [];
   }
-  
+
   // Remove existing translation for this entry+target language if any
   state.composerMetadata.aiTranslations = state.composerMetadata.aiTranslations.filter(
     t => !(t.entryId === entryId && t.targetLanguage === targetLanguage)
   );
-  
+
   // Add new translation metadata
   state.composerMetadata.aiTranslations.push({
     entryId,
@@ -625,10 +693,35 @@ const removeAITranslation = (state: SavingState, entryId: string, targetLanguage
   if (!state.composerMetadata?.aiTranslations) {
     return;
   }
-  
+
   state.composerMetadata.aiTranslations = state.composerMetadata.aiTranslations.filter(
     t => !(t.entryId === entryId && t.targetLanguage === targetLanguage)
   );
+}
+
+const applyIdRenameMerge = (
+  state: SavingState,
+  mergedItem?: DialobItem,
+  mergedValueSets?: ValueSet[],
+  mergedItems?: DialobItems,
+  mergedVariables?: (ContextVariable | Variable)[],
+  mergedComposerMetadata?: ComposerMetadata
+): void => {
+  if (mergedItem !== undefined) {
+    state.item = mergedItem;
+  }
+  if (mergedValueSets !== undefined) {
+    state.valueSets = mergedValueSets;
+  }
+  if (mergedItems !== undefined) {
+    state.items = mergedItems;
+  }
+  if (mergedVariables !== undefined) {
+    state.variables = mergedVariables;
+  }
+  if (mergedComposerMetadata !== undefined) {
+    state.composerMetadata = mergedComposerMetadata;
+  }
 }
 
 
@@ -637,8 +730,6 @@ export const itemReducer = (state: SavingState, action: SavingAction): SavingSta
   const newState = produce(state, state => {
     if (action.type === 'updateItem') {
       updateItem(state, action.attribute, action.value, action.language);
-    } else if (action.type === 'updateItemId') {
-      updateItemId(state, action.itemId);
     } else if (action.type === 'updateLocalizedString') {
       updateLocalizedString(state, action.attribute, action.value, action.index);
     } else if (action.type === 'changeItemType') {
@@ -660,7 +751,7 @@ export const itemReducer = (state: SavingState, action: SavingAction): SavingSta
     } else if (action.type === 'setValueSetEntries') {
       setValueSetEntries(state, action.valueSetId, action.entries);
     } else if (action.type === 'addValueSetEntry') {
-      addValueSetEntry(state, action.valueSetId, action.entry);
+      addValueSetEntry(state, action.valueSetId, action.entry, action.insertAfterIndex);
     } else if (action.type === 'updateValueSetEntry') {
       updateValueSetEntry(state, action.valueSetId, action.index, action.entry);
     } else if (action.type === 'updateValueSetEntryLabel') {
@@ -676,29 +767,37 @@ export const itemReducer = (state: SavingState, action: SavingAction): SavingSta
     } else if (action.type === 'deleteGlobalValueSet') {
       deleteGlobalValueSet(state, action.valueSetId);
     } else if (action.type === 'createVariable') {
-      createVariable(state, action.context);
+      createVariable(state, action.context, action.insertAfterIndex);
     } else if (action.type === 'updateContextVariable') {
       updateContextVariable(state, action.variableId, action.contextType, action.defaultValue);
     } else if (action.type === 'updateExpressionVariable') {
       updateExpressionVariable(state, action.variableId, action.expression);
     } else if (action.type === 'updateVariablePublishing') {
       updateVariablePublishing(state, action.variableId, action.published);
-    } else if (action.type === 'updateVariableDescription') { 
+    } else if (action.type === 'updateVariableDescription') {
       updateVariableDescription(state, action.variableId, action.description);
     } else if (action.type === 'deleteVariable') {
       deleteVariable(state, action.variableId);
     } else if (action.type === 'moveVariable') {
-      moveVariable(state, action.origin, action.destination);
+      moveVariable(state, action.name, action.toFilteredIndex, action.context);
     } else if (action.type === 'changeVariableId') {
       changeVariableId(state, action.variables);
     } else if (action.type === 'updateVariableName') {
       updateVariableName(state, action.currentName, action.originalName, action.to);
     } else if (action.type === 'clearPendingRenames') {
       clearPendingRenames(state);
+    } else if (action.type === 'recordEntryRename') {
+      recordEntryRename(state, action.valueSetId, action.from, action.to);
+    } else if (action.type === 'clearPendingEntryRenames') {
+      clearPendingEntryRenames(state);
+    } else if (action.type === 'syncAfterSave') {
+      syncAfterSave(state, action.item, action.valueSets, action.composerMetadata, action.variables);
     } else if (action.type === 'resetItems') {
       resetItems(state, action.items);
     } else if (action.type === 'resetVariables') {
       resetVariables(state, action.variables);
+    } else if (action.type === 'applyIdRenameMerge') {
+      applyIdRenameMerge(state, action.mergedItem, action.mergedValueSets, action.mergedItems, action.mergedVariables, action.mergedComposerMetadata);
     } else if (action.type === 'setMetadataValue') {
       setMetadataValue(state, action.attr, action.value);
     } else if (action.type === 'applyTranslations') {

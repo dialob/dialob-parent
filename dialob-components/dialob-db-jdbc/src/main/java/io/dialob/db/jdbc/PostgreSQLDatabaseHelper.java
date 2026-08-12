@@ -15,13 +15,13 @@
  */
 package io.dialob.db.jdbc;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.db.spi.exceptions.DocumentCorruptedException;
 import org.apache.commons.lang3.StringUtils;
+import org.jspecify.annotations.Nullable;
 import org.postgresql.util.PGobject;
-import org.springframework.lang.Nullable;
+import tools.jackson.core.JacksonException;
 
 import java.nio.ByteBuffer;
 import java.sql.SQLException;
@@ -58,7 +58,7 @@ public class PostgreSQLDatabaseHelper extends AbstractDatabaseHelper {
       jsonObject.setType("jsonb");
       jsonObject.setValue(serializeJson(objectMapper, document));
       return jsonObject;
-    } catch (JsonProcessingException | SQLException e) {
+    } catch (JacksonException | SQLException e) {
       throw new DocumentCorruptedException("Could not write questionnaire");
     }
   }

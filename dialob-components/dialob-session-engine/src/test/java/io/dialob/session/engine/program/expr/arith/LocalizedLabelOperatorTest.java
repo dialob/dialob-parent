@@ -26,6 +26,7 @@ import io.dialob.session.engine.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ValueSetId;
 import io.dialob.session.engine.session.model.ValueSetState;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -42,6 +43,8 @@ import static org.mockito.Mockito.*;
 
 class LocalizedLabelOperatorTest {
 
+  private AutoCloseable mocks;
+
   @Mock
   ProgramBuilder programBuilder;
   @Mock
@@ -50,8 +53,8 @@ class LocalizedLabelOperatorTest {
   OutputFormatter outputFormatter;
 
   @BeforeEach
-  void beforeEach() {
-    MockitoAnnotations.initMocks(this);
+  public void beforeEach() {
+    mocks = MockitoAnnotations.openMocks(this);
     when(programBuilder.findValueSetIdForItem(any(ItemId.class))).thenReturn(Optional.empty());
     when(programBuilder.isBooleanItem(any(ItemId.class))).thenReturn(false);
     when(outputFormatter.format(any())).then(invocation -> String.valueOf(invocation.<Object>getArgument(0)));
@@ -133,6 +136,7 @@ class LocalizedLabelOperatorTest {
     verify(programBuilder).findItemBuilder(anyString());
     verifyNoMoreInteractions(programBuilder, context);
   }
+
   @Test
   void shouldExpandDecimalVariablesWithFormmater() {
     AbstractItemBuilder<?,ProgramBuilder> itemBuilder = mock();
@@ -148,6 +152,7 @@ class LocalizedLabelOperatorTest {
     verify(programBuilder).findItemBuilder(anyString());
     verifyNoMoreInteractions(programBuilder, context);
   }
+
   @Test
   void shouldExpandNumberlVariablesWithoutFormmater() {
     AbstractItemBuilder<?,ProgramBuilder> itemBuilder = mock();
@@ -166,6 +171,7 @@ class LocalizedLabelOperatorTest {
     verify(programBuilder).isBooleanItem(any(ItemId.class));
     verifyNoMoreInteractions(programBuilder, context);
   }
+
   @Test
   void shouldExpandDecimallVariablesWithoutFormmater() {
     AbstractItemBuilder<?,ProgramBuilder> itemBuilder = mock();
@@ -184,6 +190,7 @@ class LocalizedLabelOperatorTest {
     verify(programBuilder).isBooleanItem(any(ItemId.class));
     verifyNoMoreInteractions(programBuilder, context);
   }
+
   @Test
   void shouldInterpolateSelectionToValue() {
     AbstractItemBuilder<?,ProgramBuilder> itemBuilder = mock();
@@ -207,6 +214,7 @@ class LocalizedLabelOperatorTest {
     verify(valueSet).entries();
     verifyNoMoreInteractions(programBuilder, context, valueSet);
   }
+
   @Test
   void shouldInterpolateSelectionToLowerCaseValue() {
     AbstractItemBuilder<?,ProgramBuilder> itemBuilder = mock();
@@ -253,6 +261,7 @@ class LocalizedLabelOperatorTest {
     verify(valueSet).entries();
     verifyNoMoreInteractions(programBuilder, context, valueSet);
   }
+
   @Test
   void shouldInterpolateSelectionToKeyWhenFormatIsKey() {
     AbstractItemBuilder<?,ProgramBuilder> itemBuilder = mock();
@@ -284,9 +293,9 @@ class LocalizedLabelOperatorTest {
 
     ValueSetState valueSet = mock(ValueSetState.class);
     when(valueSet.entries()).thenReturn(List.of(
-        ValueSetState.Entry.of("x1","Choice 1"),
-        ValueSetState.Entry.of("x2","Choice 2")
-      )
+      ValueSetState.Entry.of("x1", "Choice 1"),
+      ValueSetState.Entry.of("x2", "Choice 2")
+    )
     );
     when(context.getValueSetState(new ValueSetId("vs1"))).thenReturn(Optional.of(valueSet));
 
@@ -363,6 +372,11 @@ class LocalizedLabelOperatorTest {
     when(programBuilder.findItemBuilder("nope")).thenReturn(Optional.empty());
     assertThrows(FormatExpressionException.class,
       () -> LocalizedLabelOperator.createFormatExpression(programBuilder, "Value {nope}"));
+  }
+
+  @AfterEach
+  void tearDown() throws Exception {
+    mocks.close();
   }
 
 }

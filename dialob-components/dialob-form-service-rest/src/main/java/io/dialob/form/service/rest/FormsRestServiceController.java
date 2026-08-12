@@ -15,15 +15,13 @@
  */
 package io.dialob.form.service.rest;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import io.dialob.api.form.Form;
 import io.dialob.api.form.FormPutResponse;
 import io.dialob.api.form.FormTag;
 import io.dialob.api.form.FormValidationError;
 import io.dialob.api.rest.Errors;
 import io.dialob.api.rest.Response;
-import io.dialob.common.ErrorCodes;
 import io.dialob.db.spi.exceptions.DocumentNotFoundException;
 import io.dialob.form.service.api.FormDatabase;
 import io.dialob.form.service.api.FormVersionControlDatabase;
@@ -48,6 +46,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import tools.jackson.core.JacksonException;
 
 import java.io.IOException;
 import java.net.URI;
@@ -126,7 +125,7 @@ public class FormsRestServiceController implements FormsRestService {
     if (StringUtils.isNotBlank(metadata)) {
       try {
         formMetadata = objectMapper.readValue(metadata, Form.Metadata.class);
-      } catch (JsonProcessingException e) {
+      } catch (JacksonException e) {
         throw new InvalidMetadataQueryException(e);
       }
     }
@@ -377,7 +376,7 @@ public class FormsRestServiceController implements FormsRestService {
     }
     try(var inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("forms/" + TEMPLATE_FORM_ID + ".json")) {
       templateForm = objectMapper.readValue(inputStream, Form.class);
-    } catch (IOException e) {
+    } catch (IOException|JacksonException e) {
       LOGGER.error("Couldn't read template form.", e);
     }
     return templateForm;

@@ -15,8 +15,7 @@
  */
 package io.dialob.db.jdbc;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import tools.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.questionnaire.Questionnaire;
 import io.dialob.db.spi.exceptions.DocumentConflictException;
@@ -45,8 +44,7 @@ import static org.mockito.Mockito.*;
 
 public abstract class JdbcBackendDatabaseTest {
 
-  ObjectMapper objectMapper = new ObjectMapper()
-    .registerModule(new JavaTimeModule());
+  ObjectMapper objectMapper = new ObjectMapper();
 
   JdbcBackendDatabase jdbcBackendDatabase(TransactionTemplate transactionTemplate, JdbcTemplate jdbcTemplate, DatabaseHelper databaseHelper, ObjectMapper objectMapper, String schema) {
     return jdbcBackendDatabase(transactionTemplate, new FixedCurrentTenant(""), jdbcTemplate, databaseHelper, objectMapper, schema);

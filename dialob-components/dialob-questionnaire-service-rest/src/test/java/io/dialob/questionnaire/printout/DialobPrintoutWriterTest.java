@@ -27,6 +27,7 @@ import io.dialob.api.questionnaire.VariableValue;
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
+import tools.jackson.databind.node.ObjectNode;
 
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -172,8 +173,8 @@ class DialobPrintoutWriterTest {
 
     String json = writer.writePrintout(form(List.of(vs1())), questionnaire("fi"), engine(), "fi", tz);
 
-    com.fasterxml.jackson.databind.JsonNode note =
-      new com.fasterxml.jackson.databind.ObjectMapper().readTree(json).path("items").path("byId").path("n1");
+    tools.jackson.databind.JsonNode note =
+      new tools.jackson.databind.ObjectMapper().readTree(json).path("items").path("byId").path("n1");
     assertThat(note.path("key").asText()).isEqualTo("Saldo: {popSavings} eur"); // raw template
     assertThat(note.path("label").asText()).isEqualTo("Saldo: 45 646 eur");      // engine label
   }
@@ -193,8 +194,8 @@ class DialobPrintoutWriterTest {
 
     String json = writer.writePrintout(form(List.of(vs1())), questionnaire("en"), engine(), "en", tz);
 
-    com.fasterxml.jackson.databind.JsonNode note =
-      new com.fasterxml.jackson.databind.ObjectMapper().readTree(json).path("items").path("byId").path("n1");
+    tools.jackson.databind.JsonNode note =
+      new tools.jackson.databind.ObjectMapper().readTree(json).path("items").path("byId").path("n1");
     assertThat(note.path("label").asText()).isEqualTo("Savings: 45,646, phone: 0401234567, hetu: 010168-0066");
   }
 
@@ -249,11 +250,11 @@ class DialobPrintoutWriterTest {
 
     String json = writer.writePrintout(form(List.of(vs1())), questionnaire("en"), engine(), "en", tz);
 
-    com.fasterxml.jackson.databind.JsonNode root = new com.fasterxml.jackson.databind.ObjectMapper().readTree(json);
-    com.fasterxml.jackson.databind.JsonNode note = root.path("items").path("byId").path("n1");
-    com.fasterxml.jackson.databind.JsonNode q1 = root.path("items").path("byId").path("q1");
-    assertThat(iterableFieldNames(note)).containsExactlyInAnyOrder("type", "hiddenPrint", "key", "label");
-    assertThat(iterableFieldNames(q1)).containsExactlyInAnyOrder("type", "label", "hiddenPrint", "key", "value");
+    tools.jackson.databind.JsonNode root = new tools.jackson.databind.ObjectMapper().readTree(json);
+    tools.jackson.databind.JsonNode note = root.path("items").path("byId").path("n1");
+    tools.jackson.databind.JsonNode q1 = root.path("items").path("byId").path("q1");
+    assertThat(iterableFieldNames((ObjectNode) note)).containsExactlyInAnyOrder("type", "hiddenPrint", "key", "label");
+    assertThat(iterableFieldNames((ObjectNode) q1)).containsExactlyInAnyOrder("type", "label", "hiddenPrint", "key", "value");
   }
 
   @Test
@@ -266,7 +267,7 @@ class DialobPrintoutWriterTest {
 
     String json = writer.writePrintout(form(List.of(vs1())), questionnaire("en"), engine(), "en", tz);
 
-    com.fasterxml.jackson.databind.JsonNode value = new com.fasterxml.jackson.databind.ObjectMapper()
+    tools.jackson.databind.JsonNode value = new tools.jackson.databind.ObjectMapper()
       .readTree(json).path("items").path("byId").path("multi").path("value");
     assertThat(value.isArray()).isTrue();
     assertThat(value.get(0).asText()).isEqualTo("Option A");
@@ -287,7 +288,7 @@ class DialobPrintoutWriterTest {
 
     String json = writer.writePrintout(form(List.of(vs1())), questionnaire("en"), engine(), "en", tz);
 
-    com.fasterxml.jackson.databind.JsonNode groups = new com.fasterxml.jackson.databind.ObjectMapper()
+    tools.jackson.databind.JsonNode groups = new tools.jackson.databind.ObjectMapper()
       .readTree(json).path("groups").path("byId");
     assertThat(groups.has("wrap")).isTrue();
     assertThat(groups.has("inner")).isTrue();
@@ -306,7 +307,7 @@ class DialobPrintoutWriterTest {
 
     String json = writer.writePrintout(form(List.of(vs1())), questionnaire("en"), engine(), "en", tz);
 
-    com.fasterxml.jackson.databind.JsonNode note = new com.fasterxml.jackson.databind.ObjectMapper()
+    tools.jackson.databind.JsonNode note = new tools.jackson.databind.ObjectMapper()
       .readTree(json).path("items").path("byId").path("n1").path("label");
     assertThat(note.asText()).isEqualTo("When: 2020-01-02, amount: 0, who: -");
   }
@@ -322,7 +323,7 @@ class DialobPrintoutWriterTest {
 
     String json = writer.writePrintout(form(List.of(vs1())), questionnaire("en"), engine(), "en", tz);
 
-    com.fasterxml.jackson.databind.JsonNode secret = new com.fasterxml.jackson.databind.ObjectMapper()
+    tools.jackson.databind.JsonNode secret = new tools.jackson.databind.ObjectMapper()
       .readTree(json).path("items").path("byId").path("secret");
     assertThat(secret.path("hiddenPrint").asBoolean()).isTrue();
   }
@@ -338,7 +339,7 @@ class DialobPrintoutWriterTest {
 
     String json = writer.writePrintout(form(List.of(vs1())), questionnaire("en"), engine(), "en", tz);
 
-    com.fasterxml.jackson.databind.JsonNode note = new com.fasterxml.jackson.databind.ObjectMapper()
+    tools.jackson.databind.JsonNode note = new tools.jackson.databind.ObjectMapper()
       .readTree(json).path("items").path("byId").path("n1").path("label");
     assertThat(note.asText()).isEqualTo("Owner: Acme");
   }
@@ -355,9 +356,7 @@ class DialobPrintoutWriterTest {
       .hasMessageContaining("no questionnaire root");
   }
 
-  private static List<String> iterableFieldNames(com.fasterxml.jackson.databind.JsonNode node) {
-    List<String> names = new ArrayList<>();
-    node.fieldNames().forEachRemaining(names::add);
-    return names;
+  private static List<String> iterableFieldNames(ObjectNode node) {
+    return new ArrayList<>(node.propertyNames());
   }
 }

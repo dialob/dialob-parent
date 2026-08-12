@@ -15,7 +15,7 @@
  */
 package io.dialob.form.service.api.repository;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import io.dialob.api.form.Form;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.json.JsonAssert;

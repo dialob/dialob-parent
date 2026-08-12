@@ -32,7 +32,7 @@ public record LeOperator<T extends Comparable<T>>(
 ) implements AbstractComparableRelationOperator<T> {
 
   public static <T extends Comparable<T>> LeOperator.Builder<T> builder() {
-    return new LeOperator.Builder<T>();
+    return new LeOperator.Builder<>();
   }
 
   public static final class Builder<T extends Comparable<T>> extends LeOperatorBuilder<T> {}
