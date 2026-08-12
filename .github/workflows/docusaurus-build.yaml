@@ -49,7 +49,6 @@ jobs:
       id-token: write
     needs: build
     runs-on: ubuntu-latest
-    if: ${{ needs.build.outputs.documentation != null && needs.build.outputs.documentation != '[]' }}
     steps:
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v6
