@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
 
 public final class BooleanLabelFormatter {
 
-  private static final String RESOURCE = "/io/dialob/common/boolean-labels.json";
+  private static final String RESOURCE = "/io/dialob/common/common-labels.json";
 
   private static final Pattern ENTRY_PATTERN = Pattern.compile(
     "\"([a-z]{2})\"\\s*:\\s*\\{\\s*\"true\"\\s*:\\s*\"([^\"]*)\"\\s*,\\s*\"false\"\\s*:\\s*\"([^\"]*)\"\\s*\\}"
@@ -84,12 +84,12 @@ public final class BooleanLabelFormatter {
   static Map<String, Labels> loadLabels() {
     try (InputStream in = BooleanLabelFormatter.class.getResourceAsStream(RESOURCE)) {
       if (in == null) {
-        throw new IllegalStateException("Missing boolean label resource: " + RESOURCE);
+        throw new IllegalStateException("Missing common label resource: " + RESOURCE);
       }
       String json = new String(in.readAllBytes(), StandardCharsets.UTF_8);
       return parseLabels(json);
     } catch (IOException e) {
-      throw new IllegalStateException("Failed to load boolean labels", e);
+      throw new IllegalStateException("Failed to load common labels", e);
     }
   }
 
