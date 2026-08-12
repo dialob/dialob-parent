@@ -54,7 +54,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -167,7 +166,7 @@ class DialobQuestionnaireSessionServiceTest {
     @Bean
     public CurrentTenant currentTenant() {
       final CurrentTenant currentTenant = mock(CurrentTenant.class);
-      Mockito.when(currentTenant.getId()).thenReturn("unitTest");
+      when(currentTenant.getId()).thenReturn("unitTest");
       return currentTenant;
     }
 
@@ -196,7 +195,7 @@ class DialobQuestionnaireSessionServiceTest {
 
     @Bean
     public QuestionnaireDatabase questionnaireDatabase() {
-      return Mockito.mock(QuestionnaireDatabase.class);
+      return mock(QuestionnaireDatabase.class);
     }
   }
 
@@ -233,7 +232,7 @@ class DialobQuestionnaireSessionServiceTest {
   private final String tenantId = "123";
 
   @BeforeEach
-  public void before() {
+  void before() {
     MockitoAnnotations.initMocks(this);
   }
 
@@ -245,7 +244,7 @@ class DialobQuestionnaireSessionServiceTest {
     String docId = UUID.randomUUID().toString();
     String formId = formDocument.getId();
 
-    Mockito.reset(questionnaireDatabase, formFinder);
+    reset(questionnaireDatabase, formFinder);
     when(questionnaireDatabase.save(anyString(), any(Questionnaire.class))).thenAnswer(invocation -> {
       Questionnaire questionnaire = (Questionnaire) invocation.getArguments()[1];
       return questionnaire.withId(docId);
@@ -267,7 +266,7 @@ class DialobQuestionnaireSessionServiceTest {
     String formId = formDocument.getId();
     questionnaire = new Questionnaire.Builder().from(questionnaire).id(docId).metadata(new Questionnaire.Metadata.Builder().from(questionnaire.getMetadata()).formId(formId).build()).build();
 
-    Mockito.reset(questionnaireDatabase, formFinder);
+    reset(questionnaireDatabase, formFinder);
     when(questionnaireDatabase.findOne(tenantId, docId)).thenReturn(questionnaire);
 
     when(formFinder.findForm(eq(formId), any())).thenReturn(formDocument);
@@ -539,7 +538,7 @@ class DialobQuestionnaireSessionServiceTest {
         .extracting("type", "ids", "item.id", "item.label").containsExactlyInAnyOrder(
           tuple(REMOVE_ERROR, null, null, null),
           tuple(ITEM, null, "question2", "Shown if previous ones are ok"),
-          tuple(ITEM, null, "question4", "Question1 is ok true"),
+          tuple(ITEM, null, "question4", "Question1 is ok Yes"),
           tuple(ITEM, null, "questionnaire", "is valid testing")
         ))
       .answer("question1", null)
@@ -547,7 +546,7 @@ class DialobQuestionnaireSessionServiceTest {
         .extracting("type", "ids", "item.id", "item.label", "error.description").containsExactlyInAnyOrder(
           tuple(REMOVE_ITEMS, List.of("question2"), null, null, null),
           tuple(ITEM, null, "questionnaire", "is valid testing", null),
-          tuple(ITEM, null, "question4", "Question1 is ok false", null),
+          tuple(ITEM, null, "question4", "Question1 is ok No", null),
           tuple(ERROR, null, null, null, "Fill in the missing information.")
         ))
       .answer("question1", "a")
@@ -555,7 +554,7 @@ class DialobQuestionnaireSessionServiceTest {
         .extracting("type", "ids", "item.id", "item.label").containsExactlyInAnyOrder(
           tuple(REMOVE_ERROR, null, null, null),
           tuple(ITEM, null, "question2", "Shown if previous ones are ok"),
-          tuple(ITEM, null, "question4", "Question1 is ok true"),
+          tuple(ITEM, null, "question4", "Question1 is ok Yes"),
           tuple(ITEM, null, "questionnaire", "is valid testing")
         ))
       .answer("question3", "1970-01-01")
@@ -2111,7 +2110,7 @@ class DialobQuestionnaireSessionServiceTest {
   @Test
   void objectAsAFunctionArgument() throws VariableNotDefinedException {
     when(functionRegistry.returnTypeOf("useObjectFunction", ObjectValueType.EMPTY_OBJECT)).thenReturn(ValueType.STRING);
-    Mockito.doAnswer(invocation -> {
+    doAnswer(invocation -> {
       FunctionRegistry.FunctionCallback callback = invocation.getArgument(0);
       Object args = invocation.getArgument(2);
       assertTrue(args instanceof List);
