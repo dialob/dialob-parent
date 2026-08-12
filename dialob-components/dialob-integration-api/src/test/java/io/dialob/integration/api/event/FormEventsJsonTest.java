@@ -15,17 +15,16 @@
  */
 package io.dialob.integration.api.event;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import io.dialob.security.tenant.Tenant;
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
+import tools.jackson.databind.ObjectMapper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
 class FormEventsJsonTest {
-  ObjectMapper objectMapper = new ObjectMapper().registerModule(new Jdk8Module());
+  ObjectMapper objectMapper = new ObjectMapper();
 
   @Test
   void shouldSerializeFormUpdatedIntoJsonAndBack() throws Exception {

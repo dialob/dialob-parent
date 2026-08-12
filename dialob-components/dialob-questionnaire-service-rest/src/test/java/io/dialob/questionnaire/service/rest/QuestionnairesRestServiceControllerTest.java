@@ -37,15 +37,13 @@ import org.hamcrest.Description;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.internal.hamcrest.HamcrestArgumentMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
@@ -67,8 +65,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {DatabaseExceptionMapper.class,
+@SpringJUnitConfig(classes = {DatabaseExceptionMapper.class,
   QuestionnairesRestServiceControllerTest.TestConfiguration.class,
   QuestionnairesRestServiceController.class,
   DialobRestAutoConfiguration.class})
@@ -460,18 +457,18 @@ class QuestionnairesRestServiceControllerTest {
 
     mockMvc.perform(post("/questionnaires")
         .content("{\"metadata\":{}}").contentType(MediaType.APPLICATION_JSON))
-      .andExpect(status().isUnprocessableEntity())
+      .andExpect(status().isUnprocessableContent())
       .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-      .andExpect(jsonPath("$.error", equalTo("Unprocessable Entity")))
+      .andExpect(jsonPath("$.error", equalTo("Unprocessable Content")))
       .andExpect(jsonPath("$.message", equalTo("metadata.formId: must not be null")))
       .andExpect(jsonPath("$.errors[0].context", equalTo("metadata.formId")))
       .andExpect(jsonPath("$.errors[0].error", equalTo("must not be null")));
 
     mockMvc.perform(post("/questionnaires")
         .content("{}").contentType(MediaType.APPLICATION_JSON))
-      .andExpect(status().isUnprocessableEntity())
+      .andExpect(status().isUnprocessableContent())
       .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-      .andExpect(jsonPath("$.error", equalTo("Unprocessable Entity")))
+      .andExpect(jsonPath("$.error", equalTo("Unprocessable Content")))
       .andExpect(jsonPath("$.message", equalTo("metadata: must not be null")))
       .andExpect(jsonPath("$.errors[0].context", equalTo("metadata")))
       .andExpect(jsonPath("$.errors[0].error", equalTo("must not be null")));

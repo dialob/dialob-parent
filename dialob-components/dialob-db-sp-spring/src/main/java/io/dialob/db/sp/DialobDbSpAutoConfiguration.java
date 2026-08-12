@@ -16,7 +16,7 @@
 package io.dialob.db.sp;
 
 import com.azure.storage.blob.BlobServiceClient;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.db.azure.blob.storage.FormAzureBlobStorageDatabase;
 import io.dialob.db.azure.blob.storage.QuestionnaireAzureBlobStorageDatabase;

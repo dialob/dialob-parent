@@ -8,6 +8,7 @@ export const RESERVED_WORDS: Completion[] = [
   { label: 'or', type: 'keyword' },
   { label: 'true', type: 'keyword' },
   { label: 'false', type: 'keyword' },
+  { label: 'format', type: 'function' },
   { label: 'matches', type: 'function' },
   { label: 'today', type: 'function' },
   { label: 'now', type: 'function' },

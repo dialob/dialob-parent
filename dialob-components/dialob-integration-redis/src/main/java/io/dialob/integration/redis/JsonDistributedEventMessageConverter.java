@@ -15,7 +15,7 @@
  */
 package io.dialob.integration.redis;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import io.dialob.integration.api.event.DistributedEvent;
 
 class JsonDistributedEventMessageConverter extends JsonMessageConverter<DistributedEvent> {

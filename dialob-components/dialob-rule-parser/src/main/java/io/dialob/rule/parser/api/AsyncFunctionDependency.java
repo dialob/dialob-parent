@@ -15,38 +15,24 @@
  */
 package io.dialob.rule.parser.api;
 
-import lombok.Getter;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.List;
 
-public class AsyncFunctionDependency implements Serializable {
+public record AsyncFunctionDependency(
+  String functionRefId,
+  List<String> argumentExpressions,
+  String functionName,
+  String canonicalFunctionName, ValueType valueType
+) implements Serializable {
 
-  @Getter
-  private final String functionRefId;
-  private final List<String> argumentExpressions;
-  @Getter
-  private final String functionName;
-  @Getter
-  private final String canonicalFunctionName;
-  @Getter
-  private final ValueType valueType;
-
-  public AsyncFunctionDependency(String functionRefId, String canonicalFunctionName, ValueType valueType, String functionName, List<String> argumentExpressions) {
+  public AsyncFunctionDependency {
     if (StringUtils.isBlank(functionRefId)) {
       throw new IllegalArgumentException("functionRefId may not be blank.");
     }
-    this.functionRefId = functionRefId;
-    this.functionName = functionName;
-    this.valueType = valueType;
-    this.argumentExpressions = argumentExpressions;
-    this.canonicalFunctionName = canonicalFunctionName;
-  }
-
-  public List<String> getArgumentExpressions() {
-    return Collections.unmodifiableList(argumentExpressions);
+    argumentExpressions = List.copyOf(argumentExpressions);
   }
 
   @Override
@@ -54,6 +40,7 @@ public class AsyncFunctionDependency implements Serializable {
     return functionRefId.hashCode();
   }
 
+  @NonNull
   @Override
   public String toString() {
     return functionRefId;

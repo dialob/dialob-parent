@@ -15,8 +15,7 @@
  */
 package io.dialob.session.engine.program;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import tools.jackson.databind.ObjectMapper;
 import io.dialob.api.form.Form;
 import io.dialob.rule.parser.api.RuleExpressionCompiler;
 import io.dialob.rule.parser.function.FunctionRegistry;
@@ -35,7 +34,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 class DialobRuleExpressionCompilerTest extends AbstractRuleExpressionCompilerTest {
 
-  final ObjectMapper mapper = new ObjectMapper().registerModules(new JavaTimeModule());
+  final ObjectMapper mapper = new ObjectMapper();
 
   private Form parseForm(String resource) throws IOException {
     return mapper.readValue(this.getClass().getResourceAsStream(resource), Form.class);

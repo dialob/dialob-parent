@@ -18,12 +18,15 @@ package io.dialob.session.engine.program.expr.arith;
 import io.dialob.session.engine.program.AbstractItemBuilder;
 import io.dialob.session.engine.program.EvalContext;
 import io.dialob.session.engine.program.ProgramBuilder;
+import io.dialob.session.engine.program.expr.FormatExpressionException;
 import io.dialob.session.engine.program.expr.OutputFormatter;
+import io.dialob.session.engine.program.model.Expression;
 import io.dialob.session.engine.program.model.Label;
 import io.dialob.session.engine.session.model.IdUtils;
 import io.dialob.session.engine.session.model.ItemId;
 import io.dialob.session.engine.session.model.ValueSetId;
 import io.dialob.session.engine.session.model.ValueSetState;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -34,10 +37,14 @@ import java.math.BigDecimal;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 class LocalizedLabelOperatorTest {
+
+  private AutoCloseable mocks;
 
   @Mock
   ProgramBuilder programBuilder;
@@ -48,7 +55,7 @@ class LocalizedLabelOperatorTest {
 
   @BeforeEach
   public void beforeEach() {
-    MockitoAnnotations.initMocks(this);
+    mocks = MockitoAnnotations.openMocks(this);
     when(programBuilder.findValueSetIdForItem(any(ItemId.class))).thenReturn(Optional.empty());
     when(outputFormatter.format(any())).then(invocation -> String.valueOf(invocation.<Object>getArgument(0)));
     when(context.getOutputFormatter()).thenReturn(outputFormatter);
@@ -127,6 +134,7 @@ class LocalizedLabelOperatorTest {
     verify(programBuilder).findItemBuilder(anyString());
     verifyNoMoreInteractions(programBuilder, context);
   }
+
   @Test
   void shouldExpandDecimalVariablesWithFormmater() {
     AbstractItemBuilder<?,ProgramBuilder> itemBuilder = Mockito.mock();
@@ -142,6 +150,7 @@ class LocalizedLabelOperatorTest {
     verify(programBuilder).findItemBuilder(anyString());
     verifyNoMoreInteractions(programBuilder, context);
   }
+
   @Test
   void shouldExpandNumberlVariablesWithoutFormmater() {
     AbstractItemBuilder<?,ProgramBuilder> itemBuilder = Mockito.mock();
@@ -159,6 +168,7 @@ class LocalizedLabelOperatorTest {
     verify(programBuilder).findValueSetIdForItem(any(ItemId.class));
     verifyNoMoreInteractions(programBuilder, context);
   }
+
   @Test
   void shouldExpandDecimallVariablesWithoutFormmater() {
     AbstractItemBuilder<?,ProgramBuilder> itemBuilder = Mockito.mock();
@@ -176,6 +186,7 @@ class LocalizedLabelOperatorTest {
     verify(programBuilder).findValueSetIdForItem(any(ItemId.class));
     verifyNoMoreInteractions(programBuilder, context);
   }
+
   @Test
   void shouldInterpolateSelectionToValue() {
     AbstractItemBuilder<?,ProgramBuilder> itemBuilder = Mockito.mock();
@@ -199,6 +210,7 @@ class LocalizedLabelOperatorTest {
     verify(valueSet).entries();
     verifyNoMoreInteractions(programBuilder, context, valueSet);
   }
+
   @Test
   void shouldInterpolateSelectionToLowerCaseValue() {
     AbstractItemBuilder<?,ProgramBuilder> itemBuilder = Mockito.mock();
@@ -245,6 +257,7 @@ class LocalizedLabelOperatorTest {
     verify(valueSet).entries();
     verifyNoMoreInteractions(programBuilder, context, valueSet);
   }
+
   @Test
   void shouldInterpolateSelectionToKeyWhenFormatIsKey() {
     AbstractItemBuilder<?,ProgramBuilder> itemBuilder = Mockito.mock();
@@ -276,9 +289,9 @@ class LocalizedLabelOperatorTest {
 
     ValueSetState valueSet = Mockito.mock(ValueSetState.class);
     when(valueSet.entries()).thenReturn(List.of(
-        ValueSetState.Entry.of("x1","Choice 1"),
-        ValueSetState.Entry.of("x2","Choice 2")
-      )
+      ValueSetState.Entry.of("x1", "Choice 1"),
+      ValueSetState.Entry.of("x2", "Choice 2")
+    )
     );
     when(context.getValueSetState(new ValueSetId("vs1"))).thenReturn(Optional.of(valueSet));
 
@@ -290,6 +303,37 @@ class LocalizedLabelOperatorTest {
     verify(programBuilder).findValueSetIdForItem(any(ItemId.class));
     verify(valueSet).entries();
     verifyNoMoreInteractions(programBuilder, context, valueSet);
+  }
+
+  @Test
+  void createFormatExpressionExpandsPlaceholdersLikeLabels() {
+    AbstractItemBuilder<?,ProgramBuilder> itemBuilder = Mockito.mock();
+    when(programBuilder.findItemBuilder("var1")).thenReturn(Optional.of(itemBuilder));
+    when(itemBuilder.getId()).thenReturn(IdUtils.toId("var1"));
+
+    Expression expression = LocalizedLabelOperator.createFormatExpression(programBuilder, "Otsikko {var1}");
+    assertInstanceOf(ConcatOperator.class, expression);
+    when(context.getItemValue(ref("var1"))).thenReturn("hello");
+    assertEquals("Otsikko hello", expression.eval(context));
+  }
+
+  @Test
+  void createFormatExpressionWithoutContentReturnsEmptyConstant() {
+    Expression expression = LocalizedLabelOperator.createFormatExpression(programBuilder, "");
+    assertInstanceOf(Constant.class, expression);
+    assertEquals("", expression.eval(context));
+  }
+
+  @Test
+  void createFormatExpressionThrowsOnUnknownItem() {
+    when(programBuilder.findItemBuilder("nope")).thenReturn(Optional.empty());
+    assertThrows(FormatExpressionException.class,
+      () -> LocalizedLabelOperator.createFormatExpression(programBuilder, "Value {nope}"));
+  }
+
+  @AfterEach
+  void tearDown() throws Exception {
+    mocks.close();
   }
 
 }

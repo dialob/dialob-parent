@@ -38,16 +38,15 @@ import io.dialob.settings.DialobSettings;
 import io.dialob.spring.boot.engine.DialobSessionEngineAutoConfiguration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.mockito.internal.verification.api.VerificationData;
 import org.mockito.invocation.Invocation;
 import org.mockito.verification.VerificationMode;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.web.server.autoconfigure.ServerProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -55,7 +54,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.AopTestUtils;
 
 import java.util.Iterator;
@@ -70,14 +68,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-@ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = MOCK,
   properties = {
     "tenantId=itest",
     "dialob.security.enabled=true",
     "dialob.db.database-type=none",
     "spring.autoconfigure.exclude[0]=org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration",
-    "spring.autoconfigure.exclude[1]=org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration",
+    "spring.autoconfigure.exclude[1]=org.springframework.boot.data.redis.autoconfigure.DataRedisAutoConfiguration",
     "spring.security.oauth2.client.registration[0].provider=own",
     "spring.security.oauth2.client.registration[0].clientId=cl1",
     "spring.security.oauth2.client.registration[0].clientSecret=xxx",
@@ -287,7 +284,7 @@ class QuestionnairesRestServiceControllerTest extends AbstractSecuredRestTests {
       .with(csrf()))
       .andExpect(status().isUnprocessableEntity())
       .andExpect(jsonPath("$.status").value(422))
-      .andExpect(jsonPath("$.error").value("Unprocessable Entity"))
+      .andExpect(jsonPath("$.error").value("Unprocessable Content"))
       .andExpect(jsonPath("$.message").value("Form do not have root"));
 
     verify(formDatabase).exists(tenantId, "invalid");
@@ -326,7 +323,7 @@ class QuestionnairesRestServiceControllerTest extends AbstractSecuredRestTests {
       .with(csrf()))
       .andExpect(status().isUnprocessableEntity())
       .andExpect(jsonPath("$.status").value(422))
-      .andExpect(jsonPath("$.error").value("Unprocessable Entity"))
+      .andExpect(jsonPath("$.error").value("Unprocessable Content"))
       .andExpect(jsonPath("$.message").value("Could not compile program invalid2 due 1 compilation errors."));
 
     verify(formDatabase).exists(tenantId, "invalid2");

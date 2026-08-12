@@ -15,7 +15,8 @@
  */
 package io.dialob.questionnaire.service.sockjs;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 import com.google.common.net.HttpHeaders;
 import com.google.common.net.InetAddresses;
 import edu.umd.cs.findbugs.annotations.NonNull;
@@ -39,11 +40,11 @@ import io.dialob.settings.DialobSettings;
 import io.dialob.settings.SessionSettings;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.task.TaskExecutionAutoConfiguration;
 import org.springframework.core.task.TaskExecutor;
-import org.springframework.lang.Nullable;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -207,7 +208,7 @@ public class QuestionnaireWebSocketHandler extends TextWebSocketHandler implemen
 
           }
         }
-      } catch (IOException e) {
+      } catch (JacksonException e) {
         LOGGER.info("unparseable message from client {} due error {}", id, e.getMessage());
         LOGGER.debug("message payload: {}", message.getPayload());
         return this;

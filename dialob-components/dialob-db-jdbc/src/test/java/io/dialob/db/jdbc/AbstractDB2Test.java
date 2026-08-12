@@ -15,7 +15,7 @@
  */
 package io.dialob.db.jdbc;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.form.service.api.FormVersionControlDatabase;
 import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
@@ -28,7 +28,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
-import org.testcontainers.containers.Db2Container;
+import org.testcontainers.db2.Db2Container;
 import org.testcontainers.junit.jupiter.Container;
 
 import java.time.Duration;

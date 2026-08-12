@@ -17,7 +17,7 @@ package io.dialob.db.azure.blob.storage;
 
 import com.azure.storage.blob.BlobClient;
 import com.azure.storage.blob.BlobContainerClient;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import io.dialob.api.form.Form;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

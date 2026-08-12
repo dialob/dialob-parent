@@ -52,8 +52,8 @@ export const useSave = () => {
     dispatch({ type: 'setValueSetEntries', valueSetId, entries });
   }
 
-  const addValueSetEntry = (valueSetId: string, entry?: ValueSetEntry) => {
-    dispatch({ type: 'addValueSetEntry', valueSetId, entry });
+  const addValueSetEntry = (valueSetId: string, entry?: ValueSetEntry, insertAfterIndex?: number) => {
+    dispatch({ type: 'addValueSetEntry', valueSetId, entry, insertAfterIndex });
   }
 
   const updateValueSetEntry = (valueSetId: string, index: number, entry: ValueSetEntry) => {
@@ -84,8 +84,8 @@ export const useSave = () => {
     dispatch({ type: 'deleteGlobalValueSet', valueSetId });
   }
 
-  const createVariable = (context: boolean) => {
-    dispatch({ type: 'createVariable', context });
+  const createVariable = (context: boolean, insertAfterIndex?: number) => {
+    dispatch({ type: 'createVariable', context, insertAfterIndex });
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -109,8 +109,8 @@ export const useSave = () => {
     dispatch({ type: 'deleteVariable', variableId });
   }
 
-  const moveVariable = (origin: ContextVariable | Variable, destination: ContextVariable | Variable) => {
-    dispatch({ type: 'moveVariable', origin, destination });
+  const moveVariable = (name: string, toFilteredIndex: number, context: boolean) => {
+    dispatch({ type: 'moveVariable', name, toFilteredIndex, context });
   }
 
   const changeVariableId = (variables: (ContextVariable | Variable)[]) => {

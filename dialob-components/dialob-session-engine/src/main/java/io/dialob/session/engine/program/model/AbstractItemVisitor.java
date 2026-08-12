@@ -21,12 +21,12 @@ public abstract class AbstractItemVisitor implements ProgramVisitor.ItemVisitor 
 
   @Override
   public void visitItem(@NonNull Item item) {
-    if (item instanceof VariableItem variableItem) {
-      visitVariableItem(variableItem);
-    } else if (item instanceof Group group) {
-      visitGroup(group);
-    } else if (item instanceof DisplayItem displayItem) {
-      visitDisplayItem(displayItem);
+    switch (item) {
+      case VariableItem variableItem -> visitVariableItem(variableItem);
+      case Group group -> visitGroup(group);
+      case DisplayItem displayItem -> visitDisplayItem(displayItem);
+      default -> {
+      }
     }
   }
 

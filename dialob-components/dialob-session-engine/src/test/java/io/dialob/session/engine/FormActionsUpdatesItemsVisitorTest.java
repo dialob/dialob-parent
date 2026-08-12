@@ -19,7 +19,6 @@ import io.dialob.api.proto.ActionItem;
 import io.dialob.api.proto.ValueSet;
 import io.dialob.api.questionnaire.Error;
 import io.dialob.questionnaire.service.api.FormActions;
-import io.dialob.session.engine.program.EvalResult;
 import io.dialob.session.engine.session.model.*;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -29,7 +28,6 @@ import java.util.Locale;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 class FormActionsUpdatesItemsVisitorTest {

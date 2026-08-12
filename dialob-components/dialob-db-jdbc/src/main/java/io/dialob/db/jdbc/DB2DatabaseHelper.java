@@ -15,11 +15,11 @@
  */
 package io.dialob.db.jdbc;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import io.dialob.db.spi.exceptions.DocumentCorruptedException;
 import org.springframework.jdbc.core.SqlParameterValue;
 import org.springframework.jdbc.core.support.SqlCharacterValue;
+import tools.jackson.core.JacksonException;
 
 import java.io.Reader;
 import java.sql.ResultSet;
@@ -55,7 +55,7 @@ public class DB2DatabaseHelper extends AbstractDatabaseHelper {
   public Object jsonObject(ObjectMapper objectMapper, Object document) {
     try {
       return new SqlParameterValue(Types.CLOB, new SqlCharacterValue(serializeJson(objectMapper, document)));
-    } catch (JsonProcessingException e) {
+    } catch (JacksonException e) {
       throw new DocumentCorruptedException("Could not write JSON object");
     }
   }
