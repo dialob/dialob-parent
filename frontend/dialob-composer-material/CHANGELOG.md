@@ -1,5 +1,14 @@
 # @dialob/dialob-composer-material
 
+## 0.0.20
+
+### Patch Changes
+
+- choice and variable list UX - added insert below button and drag-to-reorder, replacing the up/down arrows
+- fixed table layout and inline id editing in choice and variable lists
+- renaming an item or expression variable now updates the rules that reference it
+- renaming a choice entry id now propagates to default values, rules, validations and variable expressions
+
 ## 0.0.19
 
 ### Patch Changes
