@@ -105,7 +105,7 @@ public class Expression implements ErrorLogger {
     @Override
       public int compareTo(@NonNull StringOper o) {
         // We want reverse order
-        return o.span.startIndex() - span.startIndex();
+        return Integer.compare(o.span.startIndex(), span.startIndex());
       }
     }
 
