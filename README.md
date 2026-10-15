@@ -125,7 +125,7 @@ User-facing documentation is written in the [GitHub wiki](https://github.com/dia
 ### How it works
 
 - **Source of truth**: the GitHub wiki. Edit docs there as usual.
-- **Sync**: every wiki page save triggers the `Wiki - Sync to Docusaurus` GitHub Actions workflow ([`.github/workflows/wiki-sync.yaml`](.github/workflows/wiki-sync.yaml)), which clones the wiki, runs [`scripts/sync-wiki.sh`](scripts/sync-wiki.sh) to inject Docusaurus frontmatter and rewrite internal links, then commits the result to `dialob-docusaurus/docs/`.
+- **Sync**: every wiki page save triggers the `Wiki - Sync to Docusaurus` GitHub Actions workflow ([`.github/workflows/wiki-sync.yaml`](.github/workflows/wiki-sync.yaml)), which checks out the wiki, runs [`scripts/sync-wiki.sh`](scripts/sync-wiki.sh) to inject Docusaurus frontmatter and rewrite internal links, then opens (or updates) a `wiki-sync` pull request against `dev` with the changes to `dialob-docusaurus/docs/`.
 - **Build**: any change under `dialob-docusaurus/` triggers the `Docusaurus - Build - Documentation` workflow ([`.github/workflows/docusaurus-build.yaml`](.github/workflows/docusaurus-build.yaml)), which builds and uploads the static site as a build artifact.
 
 The sync can also be triggered manually from the Actions tab via **Run workflow**.

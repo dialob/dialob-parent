@@ -28,10 +28,12 @@ Every time a wiki page is saved, the `Wiki - Sync to Docusaurus` GitHub Actions 
 
 The workflow:
 
-1. Checks out this repository with a write token.
-2. Clones the wiki (`dialob-parent.wiki`) into a temporary `wiki/` directory.
+1. Checks out this repository.
+2. Checks out the wiki (`dialob-parent.wiki`) into a temporary `wiki/` directory.
 3. Runs [`scripts/sync-wiki.sh`](../scripts/sync-wiki.sh) from the repo root.
-4. Commits and pushes any changes to `dialob-docusaurus/docs/` with message `docs: sync wiki to Docusaurus [skip ci]`.
+4. If `dialob-docusaurus/docs/` changed, commits the changes to the `wiki-sync` branch and opens a pull request against `dev` (or updates the one already open). `dev` is protected, so the workflow cannot push to it directly.
+
+The repository setting **Settings > Actions > General > Allow GitHub Actions to create and approve pull requests** must be enabled for step 4 to work.
 
 ### What the sync script does
 
@@ -64,10 +66,10 @@ The script ([`sync-wiki.sh`](../scripts/sync-wiki.sh)) processes each of the 9 w
 
 | Workflow | Trigger | What it does |
 |---|---|---|
-| `Wiki - Sync to Docusaurus` | Wiki page saved (`gollum`) or manual dispatch | Syncs wiki → `docs/`, commits result |
+| `Wiki - Sync to Docusaurus` | Wiki page saved (`gollum`) or manual dispatch | Syncs wiki → `docs/`, opens or updates the `wiki-sync` PR |
 | `Docusaurus - Build - Documentation` | Push/PR touching `dialob-docusaurus/**` | Runs `npm run build`, uploads artifact |
 
-After the sync commit is pushed, the `Docusaurus - Build - Documentation` workflow triggers automatically because the commit touches `dialob-docusaurus/docs/`, which matches that workflow's path filter.
+When the sync PR is merged, the `Docusaurus - Build - Documentation` workflow runs on `dev` because the merge touches `dialob-docusaurus/docs/`. It does not run on the sync PR itself: GitHub does not start workflows from pull requests opened with the default `GITHUB_TOKEN`.
 
 ---
 
