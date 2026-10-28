@@ -1,4 +1,4 @@
-import { ConfirmationDialogType, EditorError, OptionsTabType, VariableTabType } from "./types";
+import { ConfirmationDialogType, EditorError, OptionsTabType, TreeItemDisplay, VariableTabType } from "./types";
 import { DialobItem } from "../types";
 
 export type EditorAction =
@@ -16,3 +16,4 @@ export type EditorAction =
   | { type: 'setConfirmationActiveItem', item?: DialobItem }
   | { type: 'toggleItemCollapsed', itemId: string }
   | { type: 'setMarkdownHelpDialogOpen', open: boolean }
+  | { type: 'setTreeItemDisplay', treeItemDisplay: TreeItemDisplay }

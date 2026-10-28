@@ -56,9 +56,7 @@ const ComposerLayoutView: React.FC = () => {
       <Box display='flex'>
         <MenuBar />
         <Drawer variant="permanent">
-          <Box sx={{ mt: `${MENU_HEIGHT}px`, ...SCROLL_SX }} id='tree-scroll-container'>
-            <NavigationPane />
-          </Box>
+          <NavigationPane />
         </Drawer>
         <Box sx={{ mt: `${MENU_HEIGHT}px`, width: 1 }}>
           <EditorArea />
