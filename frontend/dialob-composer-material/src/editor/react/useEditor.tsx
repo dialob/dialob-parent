@@ -1,7 +1,7 @@
 import { useContext } from "react"
 import { EditorContext } from "./EditorContext";
 import { DialobItem } from "../../types";
-import { ConfirmationDialogType, EditorError, OptionsTabType, VariableTabType } from "../types";
+import { ConfirmationDialogType, EditorError, OptionsTabType, TreeItemDisplay, VariableTabType } from "../types";
 
 export const useEditor = () => {
   const { state, dispatch } = useContext(EditorContext);
@@ -62,6 +62,10 @@ export const useEditor = () => {
     dispatch({ type: 'setMarkdownHelpDialogOpen', open });
   }
 
+  const setTreeItemDisplay = (treeItemDisplay: TreeItemDisplay): void => {
+    dispatch({ type: 'setTreeItemDisplay', treeItemDisplay });
+  }
+
   return {
     editor: state,
     setActivePage,
@@ -78,5 +82,6 @@ export const useEditor = () => {
     setConfirmationActiveItem,
     toggleItemCollapsed,
     setMarkdownHelpDialogOpen,
+    setTreeItemDisplay,
   };
 }

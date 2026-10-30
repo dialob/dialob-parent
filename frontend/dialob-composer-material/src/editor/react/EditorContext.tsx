@@ -2,11 +2,11 @@ import React, { Dispatch } from 'react';
 import { EditorAction } from '../actions';
 import { EditorState } from '../types';
 
-
 export const INITIAL_EDITOR: EditorState = {
   activeFormLanguage: 'en',
   errors: [],
   collapsedItems: {},
+  treeItemDisplay: 'label',
 };
 
 export const EditorContext = React.createContext<{ state: EditorState, dispatch: Dispatch<EditorAction> }>({
