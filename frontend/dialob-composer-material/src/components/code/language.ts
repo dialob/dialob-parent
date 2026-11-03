@@ -28,6 +28,8 @@ export const RESERVED_WORDS: Completion[] = [
   { label: 'answer', type: 'function' },
   { label: 'is', type: 'function' },
   { label: 'lengthOf', type: 'function' },
+  { label: 'calculateTimeDiff', type: 'function' },
+  { label: 'convertTimeDiff', type: 'function' },
   { label: 'valid', type: 'function' },
   { label: 'count', type: 'function' },
   { label: 'of', type: 'keyword' },

@@ -17,7 +17,11 @@ package io.dialob.rule.parser.function;
 
 import org.junit.jupiter.api.Test;
 
+import java.math.BigInteger;
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.Period;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -91,6 +95,66 @@ class DefaultFunctionsTest {
     assertEquals(LocalDate.of(2070, 1, 1), DefaultFunctions.birthDateFromHetu("010170E555D"));
     assertEquals(LocalDate.of(2070, 1, 1), DefaultFunctions.birthDateFromHetu("010170F555D"));
     assertNull(DefaultFunctions.birthDateFromHetu("010170G555D"));
+  }
+
+  @Test
+  void testCalculateTimeDiffDates() {
+    LocalDate earlier = LocalDate.of(2020, 1, 1);
+    LocalDate later = LocalDate.of(2020, 1, 3);
+    assertEquals(BigInteger.valueOf(48), DefaultFunctions.calculateTimeDiffDates(later, earlier, "hours"));
+    assertEquals(BigInteger.valueOf(48), DefaultFunctions.calculateTimeDiffDates(later, earlier, "Hours"));
+    assertEquals(BigInteger.valueOf(48), DefaultFunctions.calculateTimeDiffDates(later, earlier, "hr"));
+    assertEquals(BigInteger.valueOf(2), DefaultFunctions.calculateTimeDiffDates(later, earlier, "days"));
+    assertEquals(BigInteger.valueOf(-48), DefaultFunctions.calculateTimeDiffDates(earlier, later, "hours"));
+    assertEquals(BigInteger.valueOf(2), DefaultFunctions.calculateTimeDiffDates(earlier.plusDays(14), earlier, "weeks"));
+    assertEquals(BigInteger.valueOf(1), DefaultFunctions.calculateTimeDiffDates(LocalDate.of(2021, 6, 1), earlier, "years"));
+    assertEquals(BigInteger.valueOf(86400), DefaultFunctions.calculateTimeDiffDates(earlier.plusDays(1), earlier, "seconds"));
+    assertNull(DefaultFunctions.calculateTimeDiffDates(null, earlier, "hours"));
+    assertNull(DefaultFunctions.calculateTimeDiffDates(later, null, "hours"));
+    assertThrows(IllegalArgumentException.class, () -> DefaultFunctions.calculateTimeDiffDates(later, earlier, "fortnights"));
+    assertThrows(IllegalArgumentException.class, () -> DefaultFunctions.calculateTimeDiffDates(later, earlier, null));
+  }
+
+  @Test
+  void testCalculateTimeDiffTimes() {
+    LocalTime start = LocalTime.of(8, 0);
+    LocalTime end = LocalTime.of(9, 30);
+    assertEquals(BigInteger.valueOf(90), DefaultFunctions.calculateTimeDiffTimes(end, start, "minutes"));
+    assertEquals(BigInteger.valueOf(90), DefaultFunctions.calculateTimeDiffTimes(end, start, "min"));
+    assertEquals(BigInteger.valueOf(1), DefaultFunctions.calculateTimeDiffTimes(end, start, "hours"));
+    assertEquals(BigInteger.valueOf(-90), DefaultFunctions.calculateTimeDiffTimes(start, end, "minutes"));
+    assertEquals(BigInteger.valueOf(5400), DefaultFunctions.calculateTimeDiffTimes(end, start, "seconds"));
+    assertNull(DefaultFunctions.calculateTimeDiffTimes(null, start, "minutes"));
+    assertNull(DefaultFunctions.calculateTimeDiffTimes(end, null, "minutes"));
+    assertThrows(IllegalArgumentException.class, () -> DefaultFunctions.calculateTimeDiffTimes(end, start, "days"));
+    assertThrows(IllegalArgumentException.class, () -> DefaultFunctions.calculateTimeDiffTimes(end, start, "years"));
+  }
+
+  @Test
+  void testConvertTimeDiffPeriod() {
+    assertEquals(BigInteger.valueOf(336), DefaultFunctions.convertTimeDiffPeriod(Period.ofDays(14), "hours"));
+    assertEquals(BigInteger.valueOf(1440), DefaultFunctions.convertTimeDiffPeriod(Period.ofMonths(2), "hours"));
+    assertEquals(BigInteger.valueOf(840), DefaultFunctions.convertTimeDiffPeriod(Period.ofMonths(1).plusDays(5), "hours"));
+    assertEquals(BigInteger.valueOf(18), DefaultFunctions.convertTimeDiffPeriod(Period.of(1, 6, 0), "months"));
+    assertEquals(BigInteger.valueOf(1), DefaultFunctions.convertTimeDiffPeriod(Period.of(1, 6, 0), "years"));
+    assertEquals(BigInteger.valueOf(1), DefaultFunctions.convertTimeDiffPeriod(Period.ofDays(10), "weeks"));
+    assertEquals(BigInteger.valueOf(-336), DefaultFunctions.convertTimeDiffPeriod(Period.ofDays(-14), "hours"));
+    assertEquals(BigInteger.valueOf(48), DefaultFunctions.convertTimeDiffPeriod(Period.ofDays(2), "HR"));
+    assertNull(DefaultFunctions.convertTimeDiffPeriod(null, "hours"));
+    assertThrows(IllegalArgumentException.class, () -> DefaultFunctions.convertTimeDiffPeriod(Period.ofDays(1), "fortnights"));
+  }
+
+  @Test
+  void testConvertTimeDiffDuration() {
+    assertEquals(BigInteger.valueOf(1), DefaultFunctions.convertTimeDiffDuration(Duration.ofMinutes(90), "hours"));
+    assertEquals(BigInteger.valueOf(90), DefaultFunctions.convertTimeDiffDuration(Duration.ofMinutes(90), "minutes"));
+    assertEquals(BigInteger.valueOf(555), DefaultFunctions.convertTimeDiffDuration(Duration.ofHours(9).plusMinutes(15), "minutes"));
+    assertEquals(BigInteger.valueOf(2), DefaultFunctions.convertTimeDiffDuration(Duration.ofHours(48), "days"));
+    assertEquals(BigInteger.valueOf(1), DefaultFunctions.convertTimeDiffDuration(Duration.ofDays(10), "weeks"));
+    assertEquals(BigInteger.valueOf(-1), DefaultFunctions.convertTimeDiffDuration(Duration.ofMinutes(-90), "hours"));
+    assertNull(DefaultFunctions.convertTimeDiffDuration(null, "minutes"));
+    assertThrows(IllegalArgumentException.class, () -> DefaultFunctions.convertTimeDiffDuration(Duration.ofHours(1), "years"));
+    assertThrows(IllegalArgumentException.class, () -> DefaultFunctions.convertTimeDiffDuration(Duration.ofHours(1), "months"));
   }
 
 
