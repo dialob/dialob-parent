@@ -29,7 +29,9 @@ const SaveButton: React.FC = () => {
   const handleSave = async () => {
     if (!savingState.variables) return;
 
-    const renames = savingState.pendingVariableRenames ?? [];
+    // Only rename ids already on the form. A new variable's name is already updated here.
+    const persistedNames = new Set((form.variables ?? []).map(v => v.name));
+    const renames = (savingState.pendingVariableRenames ?? []).filter(r => persistedNames.has(r.from));
     let currentForm = form;
     let latestRev: string | undefined;
 
@@ -53,13 +55,16 @@ const SaveButton: React.FC = () => {
           expression
         );
 
-      // Build merged variables: user-staged properties take precedence, but for expressions
-      // we must reconcile user edits with backend-applied renames:
-      // - if the user edited the expression, apply rename substitutions to their staged version
-      // - if the user left it untouched, use the API result (rename already applied by the backend)
-      const mergedVariables: (ContextVariable | Variable)[] = (currentForm.variables ?? []).map(apiVar => {
-        const stagingVar = savingState.variables!.find(sv => sv.name === apiVar.name);
-        if (!stagingVar) return apiVar;
+      // Keep this dialog's variable list so new variables are not dropped.
+      // Use the saved expression only when the user did not edit it.
+      const mergedVariables: (ContextVariable | Variable)[] = savingState.variables.map(stagingVar => {
+        const apiVar = (currentForm.variables ?? []).find(v => v.name === stagingVar.name);
+        if (!apiVar) {
+          if ('expression' in stagingVar && stagingVar.expression) {
+            return { ...stagingVar, expression: applyRenamesToExpression(stagingVar.expression) };
+          }
+          return stagingVar;
+        }
 
         if ('expression' in apiVar) {
           // Resolve the original name before any pending rename to look up the baseline expression.
