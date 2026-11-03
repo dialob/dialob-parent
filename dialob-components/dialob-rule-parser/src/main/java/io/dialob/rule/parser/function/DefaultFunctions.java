@@ -161,14 +161,15 @@ public class DefaultFunctions {
     if (a == null || b == null) {
       return null;
     }
+    long days = ChronoUnit.DAYS.between(b, a);
     long amount = switch (TimeDiffUnit.from(unit)) {
       case YEARS -> ChronoUnit.YEARS.between(b, a);
       case MONTHS -> ChronoUnit.MONTHS.between(b, a);
       case WEEKS -> ChronoUnit.WEEKS.between(b, a);
-      case DAYS -> ChronoUnit.DAYS.between(b, a);
-      case HOURS -> ChronoUnit.HOURS.between(b.atStartOfDay(), a.atStartOfDay());
-      case MINUTES -> ChronoUnit.MINUTES.between(b.atStartOfDay(), a.atStartOfDay());
-      case SECONDS -> ChronoUnit.SECONDS.between(b.atStartOfDay(), a.atStartOfDay());
+      case DAYS -> days;
+      case HOURS -> days * 24L;
+      case MINUTES -> days * 24L * 60L;
+      case SECONDS -> days * 24L * 60L * 60L;
     };
     return BigInteger.valueOf(amount);
   }

@@ -141,7 +141,8 @@ class DefaultFunctionsTest {
     assertEquals(BigInteger.valueOf(-336), DefaultFunctions.convertTimeDiffPeriod(Period.ofDays(-14), "hours"));
     assertEquals(BigInteger.valueOf(48), DefaultFunctions.convertTimeDiffPeriod(Period.ofDays(2), "HR"));
     assertNull(DefaultFunctions.convertTimeDiffPeriod(null, "hours"));
-    assertThrows(IllegalArgumentException.class, () -> DefaultFunctions.convertTimeDiffPeriod(Period.ofDays(1), "fortnights"));
+    Period oneDay = Period.ofDays(1);
+    assertThrows(IllegalArgumentException.class, () -> DefaultFunctions.convertTimeDiffPeriod(oneDay, "fortnights"));
   }
 
   @Test
@@ -153,8 +154,9 @@ class DefaultFunctionsTest {
     assertEquals(BigInteger.valueOf(1), DefaultFunctions.convertTimeDiffDuration(Duration.ofDays(10), "weeks"));
     assertEquals(BigInteger.valueOf(-1), DefaultFunctions.convertTimeDiffDuration(Duration.ofMinutes(-90), "hours"));
     assertNull(DefaultFunctions.convertTimeDiffDuration(null, "minutes"));
-    assertThrows(IllegalArgumentException.class, () -> DefaultFunctions.convertTimeDiffDuration(Duration.ofHours(1), "years"));
-    assertThrows(IllegalArgumentException.class, () -> DefaultFunctions.convertTimeDiffDuration(Duration.ofHours(1), "months"));
+    Duration oneHour = Duration.ofHours(1);
+    assertThrows(IllegalArgumentException.class, () -> DefaultFunctions.convertTimeDiffDuration(oneHour, "years"));
+    assertThrows(IllegalArgumentException.class, () -> DefaultFunctions.convertTimeDiffDuration(oneHour, "months"));
   }
 
 
