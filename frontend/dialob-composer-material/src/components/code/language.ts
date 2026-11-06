@@ -14,6 +14,8 @@ export const RESERVED_WORDS: Completion[] = [
   { label: 'now', type: 'function' },
   { label: 'year', type: 'function' },
   { label: 'years', type: 'function' },
+  { label: 'month', type: 'function' },
+  { label: 'months', type: 'function' },
   { label: 'minute', type: 'function' },
   { label: 'minutes', type: 'function' },
   { label: 'second', type: 'function' },
