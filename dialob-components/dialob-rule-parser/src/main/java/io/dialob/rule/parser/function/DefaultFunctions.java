@@ -19,8 +19,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.IBANValidator;
 
 import java.math.BigInteger;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.Period;
+import java.time.temporal.ChronoUnit;
+import java.util.Locale;
 
 public class DefaultFunctions {
 
@@ -36,6 +40,10 @@ public class DefaultFunctions {
     functionRegistry.configureFunction("birthDateFromHetu", "birthDateFromHetu", DefaultFunctions.class, false);
     functionRegistry.configureFunction("isIban", "isIban", DefaultFunctions.class, false);
     functionRegistry.configureFunction("isNotIban", "isNotIban", DefaultFunctions.class, false);
+    functionRegistry.configureFunction("calculateTimeDiff", "calculateTimeDiffDates", DefaultFunctions.class, false);
+    functionRegistry.configureFunction("calculateTimeDiff", "calculateTimeDiffTimes", DefaultFunctions.class, false);
+    functionRegistry.configureFunction("convertTimeDiff", "convertTimeDiffPeriod", DefaultFunctions.class, false);
+    functionRegistry.configureFunction("convertTimeDiff", "convertTimeDiffDuration", DefaultFunctions.class, false);
   }
 
   public static boolean isIban(String iban) {
@@ -147,6 +155,93 @@ public class DefaultFunctions {
       // Exception means invalid hetu
     }
     return null;
+  }
+
+  public static BigInteger calculateTimeDiffDates(LocalDate a, LocalDate b, String unit) {
+    if (a == null || b == null) {
+      return null;
+    }
+    long days = ChronoUnit.DAYS.between(b, a);
+    long amount = switch (TimeDiffUnit.from(unit)) {
+      case YEARS -> ChronoUnit.YEARS.between(b, a);
+      case MONTHS -> ChronoUnit.MONTHS.between(b, a);
+      case WEEKS -> ChronoUnit.WEEKS.between(b, a);
+      case DAYS -> days;
+      case HOURS -> days * 24L;
+      case MINUTES -> days * 24L * 60L;
+      case SECONDS -> days * 24L * 60L * 60L;
+    };
+    return BigInteger.valueOf(amount);
+  }
+
+  public static BigInteger calculateTimeDiffTimes(LocalTime a, LocalTime b, String unit) {
+    if (a == null || b == null) {
+      return null;
+    }
+    long amount = switch (TimeDiffUnit.from(unit)) {
+      case HOURS -> ChronoUnit.HOURS.between(b, a);
+      case MINUTES -> ChronoUnit.MINUTES.between(b, a);
+      case SECONDS -> ChronoUnit.SECONDS.between(b, a);
+      default -> throw unsupportedUnit(unit, "a time");
+    };
+    return BigInteger.valueOf(amount);
+  }
+
+  public static BigInteger convertTimeDiffPeriod(Period period, String unit) {
+    if (period == null) {
+      return null;
+    }
+    long totalMonths = period.toTotalMonths();
+    long totalDays = totalMonths * 30L + period.getDays();
+    long amount = switch (TimeDiffUnit.from(unit)) {
+      case YEARS -> totalMonths / 12;
+      case MONTHS -> totalMonths;
+      case WEEKS -> totalDays / 7;
+      case DAYS -> totalDays;
+      case HOURS -> totalDays * 24L;
+      case MINUTES -> totalDays * 24L * 60L;
+      case SECONDS -> totalDays * 24L * 60L * 60L;
+    };
+    return BigInteger.valueOf(amount);
+  }
+
+  public static BigInteger convertTimeDiffDuration(Duration duration, String unit) {
+    if (duration == null) {
+      return null;
+    }
+    long amount = switch (TimeDiffUnit.from(unit)) {
+      case SECONDS -> duration.toSeconds();
+      case MINUTES -> duration.toMinutes();
+      case HOURS -> duration.toHours();
+      case DAYS -> duration.toDays();
+      case WEEKS -> duration.toDays() / 7;
+      default -> throw unsupportedUnit(unit, "a duration");
+    };
+    return BigInteger.valueOf(amount);
+  }
+
+  private static IllegalArgumentException unsupportedUnit(String unit, String valueKind) {
+    return new IllegalArgumentException("Unit '" + unit + "' is not supported for " + valueKind);
+  }
+
+  private enum TimeDiffUnit {
+    YEARS, MONTHS, WEEKS, DAYS, HOURS, MINUTES, SECONDS;
+
+    static TimeDiffUnit from(String unit) {
+      if (unit == null || unit.isBlank()) {
+        throw new IllegalArgumentException("Unit is required");
+      }
+      return switch (unit.trim().toLowerCase(Locale.ROOT)) {
+        case "year", "years" -> YEARS;
+        case "month", "months" -> MONTHS;
+        case "week", "weeks" -> WEEKS;
+        case "day", "days" -> DAYS;
+        case "hour", "hours", "hr" -> HOURS;
+        case "minute", "minutes", "min" -> MINUTES;
+        case "second", "seconds" -> SECONDS;
+        default -> throw new IllegalArgumentException("Unknown unit: " + unit);
+      };
+    }
   }
 
 }

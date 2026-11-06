@@ -4,8 +4,8 @@ import { EditorError } from '../../editor';
 import { IntlShape, useIntl } from 'react-intl';
 import { Diagnostic, linter } from '@codemirror/lint';
 import { LanguageSupport, StreamLanguage, StringStream } from '@codemirror/language';
-import { IGNORED_ITEM_TYPES, RESERVED_WORDS } from './language';
-import { Completion, completeFromList } from '@codemirror/autocomplete';
+import { RESERVED_WORDS } from './language';
+import { dialobAutocomplete } from './autocomplete';
 import { useComposer } from '../../dialob';
 import { ComposerState } from '../../types';
 
@@ -82,12 +82,8 @@ const dialobExpressionLanguage = StreamLanguage.define({
 });
 
 const getAutocompletions = (form: ComposerState) => {
-  const itemIds = Object.values(form.data).filter(item => !IGNORED_ITEM_TYPES.includes(item.type)).map(item => item.id);
-  const variableIds = form.variables ? form.variables.map(variable => variable.name) : [];
-  const ids = [...itemIds, ...variableIds];
-  const idCompletions: Completion[] = ids.map(id => ({ label: id, type: 'variable' }));
   return dialobExpressionLanguage.data.of({
-    autocomplete: completeFromList([...RESERVED_WORDS, ...idCompletions])
+    autocomplete: dialobAutocomplete(form)
   })
 }
 
