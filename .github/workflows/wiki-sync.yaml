@@ -10,11 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      pull-requests: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Checkout wiki
         uses: actions/checkout@v5
@@ -26,14 +25,13 @@ jobs:
       - name: Run sync script
         run: bash scripts/sync-wiki.sh
 
-      - name: Commit and push if changed
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add dialob-docusaurus/docs/
-          if git diff --staged --quiet; then
-            echo "No changes detected, skipping commit."
-          else
-            git commit -m "docs: sync wiki to Docusaurus"
-            git push
-          fi
+      - name: Create or update sync pull request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: wiki-sync
+          base: dev
+          add-paths: dialob-docusaurus/docs/
+          commit-message: "docs: sync wiki to Docusaurus"
+          title: "docs: sync wiki to Docusaurus"
+          body: Automated sync of the GitHub wiki into `dialob-docusaurus/docs/`.
+          delete-branch: true
