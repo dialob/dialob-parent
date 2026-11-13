@@ -1,5 +1,13 @@
 # @dialob/dialob-composer-material
 
+## 0.0.21
+
+### Patch Changes
+
+- added a label/id toggle to the navigation tree
+- new variables that are renamed before the first save are no longer lost
+- DEL editor support for the new date and time difference and conversion functions, with autocompletion for time units
+
 ## 0.0.20
 
 ### Patch Changes
