@@ -58,8 +58,8 @@ export const SortableTree: React.FC = () => {
 
   React.useEffect(() => {
     const availableLanguages = form.metadata.languages || [editor.activeFormLanguage];
-    setItems(buildTreeFromForm(form.data, editor.activeFormLanguage, config.itemEditors, editor.collapsedItems, availableLanguages, form.variables));
-  }, [form.data, form.variables, editor.activeFormLanguage, editor.collapsedItems, form.metadata.languages]);
+    setItems(buildTreeFromForm(form.data, editor.activeFormLanguage, config.itemEditors, editor.collapsedItems, availableLanguages, form.variables, editor.treeItemDisplay));
+  }, [form.data, form.variables, editor.activeFormLanguage, editor.collapsedItems, editor.treeItemDisplay, form.metadata.languages]);
 
   const flattenedItems = React.useMemo(() => {
     const flattenedTree = flattenTree(items);

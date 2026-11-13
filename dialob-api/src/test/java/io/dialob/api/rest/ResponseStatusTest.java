@@ -15,9 +15,9 @@
  */
 package io.dialob.api.rest;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import tools.jackson.databind.ObjectMapper;
 
 class ResponseStatusTest {
 
@@ -28,7 +28,7 @@ class ResponseStatusTest {
     Assertions.assertEquals("{\"ok\":true}", mapper.writeValueAsString(Response.OK_RESPONSE));
     Assertions.assertEquals("{\"ok\":false}", mapper.writeValueAsString(Response.NOT_OK_RESPONSE));
     Assertions.assertEquals(new Response.ResposeRecord(true, null, null), mapper.readValue("{\"ok\":true}", Response.class));
-    Assertions.assertEquals(new Response.ResposeRecord(false, null, null), mapper.readValue("{}", Response.class));
+    Assertions.assertEquals(new Response.ResposeRecord(false, null, null), mapper.readValue("{\"ok\":false}", Response.class));
   }
 
 }

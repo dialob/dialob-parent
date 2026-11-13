@@ -25,12 +25,10 @@ import io.dialob.questionnaire.service.api.session.QuestionnaireSessionService;
 import io.dialob.security.user.CurrentUserProvider;
 import io.dialob.settings.DialobSettingsAutoConfiguration;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,7 +39,6 @@ import static io.dialob.api.proto.Action.Type.SERVER_ERROR;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = {DialobSessionRestAutoConfiguration.class, DialobSettingsAutoConfiguration.class}, properties = {
   "dialob.session.rest.enabled=true"
 })

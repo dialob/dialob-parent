@@ -1,0 +1,37 @@
+on:
+  gollum:
+  workflow_dispatch:
+
+name: Wiki - Sync to Docusaurus
+
+jobs:
+  sync:
+    name: Sync Wiki to Docusaurus Docs
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Checkout wiki
+        uses: actions/checkout@v7
+        with:
+          repository: ${{ github.repository }}.wiki
+          path: wiki
+          persist-credentials: false
+
+      - name: Run sync script
+        run: bash scripts/sync-wiki.sh
+
+      - name: Create or update sync pull request
+        uses: peter-evans/create-pull-request@3ffccacd46053766916f087ce41d627c0b8cf2d1
+        with:
+          branch: wiki-sync
+          base: dev
+          add-paths: dialob-docusaurus/docs/
+          commit-message: "docs: sync wiki to Docusaurus"
+          title: "docs: sync wiki to Docusaurus"
+          body: Automated sync of the GitHub wiki into `dialob-docusaurus/docs/`.
+          delete-branch: true

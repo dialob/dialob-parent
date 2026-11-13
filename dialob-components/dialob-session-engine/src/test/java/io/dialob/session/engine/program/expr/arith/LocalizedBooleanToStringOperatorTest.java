@@ -1,0 +1,85 @@
+/*
+ * Copyright © 2015 - 2025 ReSys (info@dialob.io)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package io.dialob.session.engine.program.expr.arith;
+
+import io.dialob.rule.parser.api.ValueType;
+import io.dialob.session.engine.program.EvalContext;
+import io.dialob.session.engine.program.expr.OutputFormatter;
+import io.dialob.session.engine.session.model.IdUtils;
+import io.dialob.session.engine.session.model.ItemId;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+
+class LocalizedBooleanToStringOperatorTest {
+
+  @Mock
+  EvalContext context;
+  @Mock
+  OutputFormatter outputFormatter;
+
+  @BeforeEach
+  void beforeEach() {
+    MockitoAnnotations.openMocks(this);
+    when(context.getOutputFormatter()).thenReturn(outputFormatter);
+  }
+
+  @Test
+  void shouldReturnLocalizedLabelForBoolean() {
+    VariableReference reference = Operators.var(IdUtils.toId("bool1"), ValueType.BOOLEAN);
+    LocalizedBooleanToStringOperator operator = LocalizedBooleanToStringOperator.of(reference);
+    when(context.getLanguage()).thenReturn("fi");
+    when(context.getItemValue(itemId("bool1"))).thenReturn(Boolean.TRUE);
+    assertEquals("Kyllä", operator.eval(context));
+    verify(context).getLanguage();
+    verify(context).getItemValue(itemId("bool1"));
+    verifyNoMoreInteractions(context, outputFormatter);
+  }
+
+  @Test
+  void shouldReturnNullForNullValue() {
+    VariableReference reference = Operators.var(IdUtils.toId("bool1"), ValueType.BOOLEAN);
+    LocalizedBooleanToStringOperator operator = LocalizedBooleanToStringOperator.of(reference);
+    when(context.getItemValue(itemId("bool1"))).thenReturn(null);
+    assertNull(operator.eval(context));
+    verify(context).getItemValue(itemId("bool1"));
+    verifyNoMoreInteractions(context, outputFormatter);
+  }
+
+  @Test
+  void shouldDelegateNonBooleanValuesToOutputFormatter() {
+    VariableReference reference = Operators.var(IdUtils.toId("bool1"), ValueType.BOOLEAN);
+    LocalizedBooleanToStringOperator operator = LocalizedBooleanToStringOperator.of(reference);
+    when(context.getItemValue(itemId("bool1"))).thenReturn("legacy");
+    when(outputFormatter.format("legacy")).thenReturn("legacy");
+    assertEquals("legacy", operator.eval(context));
+    verify(context).getItemValue(itemId("bool1"));
+    verify(context).getOutputFormatter();
+    verify(outputFormatter).format("legacy");
+    verifyNoMoreInteractions(context, outputFormatter);
+  }
+
+  private ItemId itemId(String id) {
+    return IdUtils.toId(id);
+  }
+}

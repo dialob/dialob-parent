@@ -15,8 +15,7 @@
  */
 package io.dialob.session.engine.program;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import tools.jackson.databind.ObjectMapper;
 import io.dialob.api.form.Form;
 import io.dialob.api.form.FormItem;
 import io.dialob.api.form.FormValidationError;
@@ -37,7 +36,7 @@ import static org.mockito.Mockito.when;
 
 class DialobFormValidatorTest {
 
-  ObjectMapper objectMapper = new ObjectMapper().registerModules(new JavaTimeModule());
+  ObjectMapper objectMapper = new ObjectMapper();
 
   private Form loadForm(String formFile) {
     try {

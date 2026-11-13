@@ -36,6 +36,8 @@ Provide additional metadata and/or style classes to the individual form elements
 
 * Access Dialog options by clicking on the "Options" button in the Composer upper menu
 * Dialog options give you an overview of basic form data and several globally-applicable visibility and requirement options
+* Changes to the form name, labels, and visibility and requirement options are applied by clicking "Save"
+* Form statistics show the number of questions, notes, lists and variables in the form
 
 ---
 
@@ -75,6 +77,8 @@ This drop-down gives you multiple global options to apply to your questions.
 
 * **All answers required by default:**  Sets a global "required" rule across all questions. A Dialog cannot be completed until all questions have been answered. To make an exception to this rule for individual questions, write a requirement rule that returns `false` for each excepted question.
 
+Changes to the form name, labels, and the options above are not applied until you click "Save" at the bottom of the dialog.
+
 ---
 
 #### Technical name 
@@ -94,4 +98,7 @@ The version of the Composer UI currently used.
 
 #### Backend version 
 The version of the Composer backend currently used.
+
+#### Form statistics 
+An overview of the contents of the form: the total number of questions, the number of questions of each type, and the number of notes, unique lists, expression variables and context variables.
 

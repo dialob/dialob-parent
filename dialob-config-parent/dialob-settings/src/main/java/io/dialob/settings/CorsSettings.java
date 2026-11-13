@@ -56,9 +56,9 @@ public class CorsSettings {
       .to(configuration::setAllowedMethods);
     map.from(this::getExposedHeaders).whenNot(CollectionUtils::isEmpty)
       .to(configuration::setExposedHeaders);
-    map.from(this::getMaxAge).whenNonNull().as(Duration::getSeconds)
+    map.from(this::getMaxAge).as(Duration::getSeconds)
       .to(configuration::setMaxAge);
-    map.from(this::getAllowCredentials).whenNonNull()
+    map.from(this::getAllowCredentials)
       .to(configuration::setAllowCredentials);
     return Optional.of(configuration);
   }

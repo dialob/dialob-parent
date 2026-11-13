@@ -67,8 +67,8 @@ class DependencyResolverVisitor implements ProgramVisitor {
           groupId = group.id();
           if (group.isPrototype()) {
             final Expression itemsExpression = group.itemsExpression();
-            if (itemsExpression instanceof RowItemsExpression rowItemsExpression) {
-              updateCommandFactory.createRowGroupItemsFromPrototype(groupId, rowItemsExpression.itemIds());
+            if (itemsExpression instanceof RowItemsExpression(List<ItemId> itemIds)) {
+              updateCommandFactory.createRowGroupItemsFromPrototype(groupId, itemIds);
 
             }
             updateCommandFactory.createUpdateGroupItems(groupId, itemsExpression);

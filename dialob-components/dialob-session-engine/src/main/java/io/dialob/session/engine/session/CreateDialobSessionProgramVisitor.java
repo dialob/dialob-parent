@@ -285,9 +285,9 @@ public class CreateDialobSessionProgramVisitor implements ProgramVisitor {
           List<ItemId> rowItems = List.of();
           if (item instanceof Group group) {
             Expression expression = group.itemsExpression();
-            if (expression instanceof RowItemsExpression rowItemsExpression) {
+            if (expression instanceof RowItemsExpression(List<ItemId> itemIds)) {
               final Scope scope = Scope.of(itemIdToCreate, Set.of());
-              rowItems = rowItemsExpression.itemIds().stream().map(itemId -> scope.mapTo(itemId, true)).toList();
+              rowItems = itemIds.stream().map(itemId -> scope.mapTo(itemId, true)).toList();
             }
           }
           final Object newAnswer = initialValueResolver.apply(itemIdToCreate, item).orElse(null);

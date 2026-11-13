@@ -32,7 +32,7 @@ public record GeOperator<T extends Comparable<T>>(
 ) implements AbstractComparableRelationOperator<T> {
 
   public static <T extends Comparable<T>> GeOperator.Builder<T> builder() {
-    return new GeOperator.Builder<T>();
+    return new GeOperator.Builder<>();
   }
 
   public static final class Builder<T extends Comparable<T>> extends GeOperatorBuilder<T> {}

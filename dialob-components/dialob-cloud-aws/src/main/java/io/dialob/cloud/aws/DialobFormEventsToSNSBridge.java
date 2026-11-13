@@ -15,7 +15,7 @@
  */
 package io.dialob.cloud.aws;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import io.dialob.integration.api.event.FormDeletedEvent;
 import io.dialob.integration.api.event.FormTaggedEvent;
 import io.dialob.integration.api.event.FormUpdatedEvent;

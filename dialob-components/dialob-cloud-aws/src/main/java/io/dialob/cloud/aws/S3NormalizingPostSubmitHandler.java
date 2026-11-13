@@ -15,15 +15,15 @@
  */
 package io.dialob.cloud.aws;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.SerializationFeature;
 import io.dialob.questionnaire.service.api.AnswerSubmitHandler;
 import io.dialob.questionnaire.service.submit.AbstractNormalizingPostSubmitHandler;
 import lombok.extern.slf4j.Slf4j;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import tools.jackson.core.JacksonException;
 
 import java.util.Map;
 
@@ -63,7 +63,9 @@ public class S3NormalizingPostSubmitHandler extends AbstractNormalizingPostSubmi
 
   public S3NormalizingPostSubmitHandler(S3Client s3Client, ObjectMapper objectMapper) {
     this.s3Client = s3Client;
-    this.objectMapper = objectMapper.copy().configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true);
+    this.objectMapper = objectMapper.rebuild()
+      .configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true).build();
+    ;
   }
 
   /**
@@ -88,7 +90,7 @@ public class S3NormalizingPostSubmitHandler extends AbstractNormalizingPostSubmi
           .build(),
         RequestBody.fromBytes(objectMapper.writeValueAsBytes(entries))
       );
-    } catch (JsonProcessingException e) {
+    } catch (JacksonException e) {
       LOGGER.error("could not construct normalized document" ,e);
     }
   }

@@ -1,6 +1,6 @@
 import { produce } from 'immer';
 import { EditorAction } from './actions';
-import { ConfirmationDialogType, EditorError, EditorState, OptionsTabType, VariableTabType } from './types';
+import { ConfirmationDialogType, EditorError, EditorState, OptionsTabType, TreeItemDisplay, VariableTabType } from './types';
 import { DialobItem } from '../types';
 
 const setActivePage = (state: EditorState, page: DialobItem): void => {
@@ -60,6 +60,10 @@ const setMarkdownHelpDialogOpen = (state: EditorState, open: boolean): void => {
   state.markdownHelpDialogOpen = open;
 }
 
+const setTreeItemDisplay = (state: EditorState, treeItemDisplay: TreeItemDisplay): void => {
+  state.treeItemDisplay = treeItemDisplay;
+}
+
 export const editorReducer = (state: EditorState, action: EditorAction): EditorState => {
   const newState = produce(state, state => {
     if (action.type === 'setActivePage') {
@@ -90,6 +94,8 @@ export const editorReducer = (state: EditorState, action: EditorAction): EditorS
       toggleItemCollapsed(state, action.itemId);
     } else if (action.type === 'setMarkdownHelpDialogOpen') {
       setMarkdownHelpDialogOpen(state, action.open);
+    } else if (action.type === 'setTreeItemDisplay') {
+      setTreeItemDisplay(state, action.treeItemDisplay);
     }
   });
   return newState;

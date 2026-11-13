@@ -1,5 +1,28 @@
 # @dialob/dialob-composer-material
 
+## 0.0.21
+
+### Patch Changes
+
+- added a label/id toggle to the navigation tree
+- new variables that are renamed before the first save are no longer lost
+- DEL editor support for the new date and time difference and conversion functions, with autocompletion for time units
+
+## 0.0.20
+
+### Patch Changes
+
+- choice and variable list UX - added insert below button and drag-to-reorder, replacing the up/down arrows
+- fixed table layout and inline id editing in choice and variable lists
+- renaming an item or expression variable now updates the rules that reference it
+- renaming a choice entry id now propagates to default values, rules, validations and variable expressions
+
+## 0.0.19
+
+### Patch Changes
+
+- Format function support
+
 ## 0.0.18
 
 ### Patch Changes

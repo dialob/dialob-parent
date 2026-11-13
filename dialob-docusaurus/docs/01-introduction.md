@@ -14,7 +14,7 @@ title: Introduction
 
 ## About the platform
 
-**Dialob** is a platform for creating and testing responsive dialogs and publishing them online. In the context of the Dialob platform, a dialog is both a form and a process. Creating with Dialob is a dynamic process wherein the word "dialog" is a representation of the constant communication between user inputs on the front-end and Dialob's back-end processes, resulting in a constant "dialogue" between the system and the user throughout the creation process.  In this way, Dialob constantly updates and saves user inputs on the back-end side and reflects those changes in near real time. The product and end result of the dialog process is a highly customizable form with validations, versioning, translation, and security built in, all tailored to a specific end-user requirement.
+**Dialob** is a platform for creating and testing responsive dialogs and publishing them online. In the context of the Dialob platform, a dialog is both a form and a process. Creating with Dialob is a dynamic process wherein the word “dialog” is a representation of the constant communication between user inputs on the front-end and Dialob’s back-end processes, resulting in a constant “dialogue” between the system and the user throughout the creation process.  In this way, Dialob constantly updates and saves user inputs on the back-end side and reflects those changes in near real time. The product and end result of the dialog process is a highly customizable form with validations, versioning, translation, and security built in, all tailored to a specific end-user requirement.
 
 The Dialob platform comes with a comprehensive set of tools targeted at non-technical users to enable the creation, testing, and deployment of responsive forms.  
 
@@ -32,6 +32,9 @@ The image below represents the Dialob structural hierarchy:
 
  * **Dialog session repository**: Repository that tracks all the changes, dialog requests, and responses, of each unique dialog session. The gathered data provides a full audit trace of each dialog session and thus provides the baseline for further optimization of the online dialogs.
 
+**Dialob platform** is continuously improving it's functionalities evaluating new technologies like AI support as potential additions to Dialob for the purpose of improving its online dialog creation capabilities.
+
+
 ---
 
 ## Dialob features
@@ -40,7 +43,7 @@ From the first moment, you can start taking advantage of Dialob's wide range of 
 
 * **Logic-building**: Use rich yet simple logic-building expressions with _Dialob Expression Language (DEL)_ to control the flow of dialogs and, in turn, create a highly configurable end-user filling side.
 
-* **Complex validation and visibility rules with built-in functions, DEL, or Java regular expressions**: Using DEL, intricate and detailed forms with interconnected visibility and validation logic can be created, resulting in a fully-customizable and highly-specific user experiences. Dialob Composer can validate or hide/show any response field based on user inputs. Custom functions can also be created when needed.
+* **Complex validation and visibility rules with built-in functions, DEL, or Java regular expressions**: Using DEL, intricate and detailed forms with interconnected visibility and validation logic can be created, resulting in a fully-customizable and highly-specific user experiences. Dialob Composer can validate or hide/show any response field based on user inputs, make answers read only, and limit adding or removing rows in multi-row groups. Custom functions can also be created when needed.
 
 * **Constant communication between front and backend = Saving on the fly, data security**: Because Dialob Composer (frontend) is in constant contact with Dialob Manager (backend), changes are saved as they happen. There is no fear of losing work. This provides the additional benefit of security: Data cannot be manipulated on the front end, because the backend does all the heavy lifting.  
 
@@ -53,11 +56,15 @@ From the first moment, you can start taking advantage of Dialob's wide range of 
 
   * An expression variable is a user-created function that can be used to process inputs from dialog questions, and the product can be stored in a context variable. For example, an expression variable can be written to find the sum of two fields, (question1 and question2) which can then be stored in and later retrieved from a context variable (`question1 + question2 = {sum}`)
 
+  * Expression variables can also be scoped to multi-row groups, in which case they are calculated separately for each row, and they can build texts from answer values with the `format()` function.
+
 * **Pre-filling data**: Dialogs can be configured to populate the filling side with pre-selected data (questionnaires, context variables) where desired. This can be done in the integration layer of Dialob where Dialogs are instantiated.
 
 * **Full visual customisation options**:
   * **Look and feel customisability**: Dialogs can easily be adapted, themed, and styled to fit your needs.
-  * **Markdown editing**: Text outputs such as group descriptions, question-level additional information (help text), and note outputs can be styled with simple [Markdown](https://www.markdownguide.org/)
+  * **Markdown editing**: Text outputs such as group descriptions, question-level additional information (help text), and note outputs can be styled with simple [Markdown](https://www.markdownguide.org/), using a formatting toolbar and a side-by-side live preview. Tables and callouts are supported as well.
+
+* **Search**: Items and variables can be found quickly by ID, label, description, rules, or expressions using the search field in the Composer upper menu.
 
 * **Live testing**: In Preview mode, you see the form in its current state and test the functionality in real time from the perspective of the filling side.  
 
@@ -68,4 +75,3 @@ From the first moment, you can start taking advantage of Dialob's wide range of 
 * **Localisation**: Dialog questions and list items can be individually translated to / from English, Finnish, Swedish, or Estonian languages. In addition, custom languages can also be created.
 
 * **AI Translation**: Dialob Composer can integrate with an external AI translation service to automatically translate form content between languages. The AI translation feature can translate item labels, descriptions, validation messages, and choice lists while preserving markdown and expression language syntax. Human validation of AI translations is supported through visual indicators.
-

@@ -32,6 +32,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.Collections;
 
@@ -49,6 +50,11 @@ abstract class AbstractSecuredRestTests extends AbstractFormRepositoryTests {
 
   @Configuration(proxyBeanMethods = false)
   static class TestConfiguration {
+    @Bean
+    public ObjectMapper objectMapper() {
+      return new ObjectMapper();
+    }
+
     @Bean
     public GrantedAuthoritiesMapper grantedAuthoritiesMapper() {
       return new StreamingGrantedAuthoritiesMapper(Collections.emptyList());

@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { SavingContext } from './SavingContext';
-import { ContextVariable, ContextVariableType, DialobItems, DialobItemTemplate, LocalizedString, ValidationRule, ValueSetEntry, Variable } from '../../../types';
+import { ComposerMetadata, ContextVariable, ContextVariableType, DialobItem, DialobItems, DialobItemTemplate, LocalizedString, ValidationRule, ValueSet, ValueSetEntry, Variable } from '../../../types';
 import { TranslationResult } from '../../../backend/types';
 
 export const useSave = () => {
@@ -10,10 +10,6 @@ export const useSave = () => {
   const updateItem = (itemId: string, attribute: string, value: any, language?: string) => {
     dispatch({ type: 'updateItem', itemId, attribute, value, language });
   };
-
-  const updateItemId = (itemId: string) => {
-    dispatch({ type: 'updateItemId', itemId });
-  }
 
   const updateLocalizedString = (itemId: string, attribute: string, value: LocalizedString, index?: number) => {
     dispatch({ type: 'updateLocalizedString', itemId, attribute, value, index });
@@ -56,8 +52,8 @@ export const useSave = () => {
     dispatch({ type: 'setValueSetEntries', valueSetId, entries });
   }
 
-  const addValueSetEntry = (valueSetId: string, entry?: ValueSetEntry) => {
-    dispatch({ type: 'addValueSetEntry', valueSetId, entry });
+  const addValueSetEntry = (valueSetId: string, entry?: ValueSetEntry, insertAfterIndex?: number) => {
+    dispatch({ type: 'addValueSetEntry', valueSetId, entry, insertAfterIndex });
   }
 
   const updateValueSetEntry = (valueSetId: string, index: number, entry: ValueSetEntry) => {
@@ -88,8 +84,8 @@ export const useSave = () => {
     dispatch({ type: 'deleteGlobalValueSet', valueSetId });
   }
 
-  const createVariable = (context: boolean) => {
-    dispatch({ type: 'createVariable', context });
+  const createVariable = (context: boolean, insertAfterIndex?: number) => {
+    dispatch({ type: 'createVariable', context, insertAfterIndex });
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -113,8 +109,8 @@ export const useSave = () => {
     dispatch({ type: 'deleteVariable', variableId });
   }
 
-  const moveVariable = (origin: ContextVariable | Variable, destination: ContextVariable | Variable) => {
-    dispatch({ type: 'moveVariable', origin, destination });
+  const moveVariable = (name: string, toFilteredIndex: number, context: boolean) => {
+    dispatch({ type: 'moveVariable', name, toFilteredIndex, context });
   }
 
   const changeVariableId = (variables: (ContextVariable | Variable)[]) => {
@@ -129,12 +125,39 @@ export const useSave = () => {
     dispatch({ type: 'clearPendingRenames' });
   }
 
+  const recordEntryRename = (valueSetId: string, from: string, to: string) => {
+    dispatch({ type: 'recordEntryRename', valueSetId, from, to });
+  }
+
+  const clearPendingEntryRenames = () => {
+    dispatch({ type: 'clearPendingEntryRenames' });
+  }
+
+  const syncAfterSave = (saved: {
+    item?: DialobItem;
+    valueSets?: ValueSet[];
+    composerMetadata?: ComposerMetadata;
+    variables?: (ContextVariable | Variable)[];
+  }) => {
+    dispatch({ type: 'syncAfterSave', ...saved });
+  }
+
   const resetItems = (items: DialobItems) => {
     dispatch({ type: 'resetItems', items });
   }
 
   const resetVariables = (variables: (ContextVariable | Variable)[]) => {
     dispatch({ type: 'resetVariables', variables });
+  }
+
+  const applyIdRenameMerge = (merge: {
+    mergedItem?: DialobItem;
+    mergedValueSets?: ValueSet[];
+    mergedItems?: DialobItems;
+    mergedVariables?: (ContextVariable | Variable)[];
+    mergedComposerMetadata?: ComposerMetadata;
+  }) => {
+    dispatch({ type: 'applyIdRenameMerge', ...merge });
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -156,7 +179,6 @@ export const useSave = () => {
 
   return {
     updateItem,
-    updateItemId,
     updateLocalizedString,
     changeItemType,
     setItemProp,
@@ -185,8 +207,12 @@ export const useSave = () => {
     changeVariableId,
     updateVariableName,
     clearPendingRenames,
+    recordEntryRename,
+    clearPendingEntryRenames,
+    syncAfterSave,
     resetItems,
     resetVariables,
+    applyIdRenameMerge,
     setMetadataValue,
     applyTranslations,
     addAITranslation,

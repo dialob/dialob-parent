@@ -17,3 +17,6 @@ nohup.out
 *.tsbuildinfo
 
 dev-env/*.json
+
+# Wiki clone used by sync-wiki.sh (cloned at runtime, never committed)
+wiki/

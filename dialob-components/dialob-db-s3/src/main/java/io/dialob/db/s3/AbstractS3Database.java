@@ -15,8 +15,7 @@
  */
 package io.dialob.db.s3;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.db.spi.exceptions.DocumentCorruptedException;
 import io.dialob.db.spi.exceptions.DocumentNotFoundException;
@@ -29,8 +28,8 @@ import software.amazon.awssdk.core.exception.SdkClientException;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.*;
+import tools.jackson.core.JacksonException;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -95,7 +94,7 @@ public abstract class AbstractS3Database<F> extends AbstractDocumentDatabase<F> 
   public F loadFile(String objectName, InputStream inputStream) {
     try {
       return objectMapper.readValue(inputStream, getDocumentClass());
-    } catch (IOException e) {
+    } catch (JacksonException e) {
       LOGGER.error("Object {} is corrupted.", objectName, e);
     }
     return null;
@@ -171,7 +170,7 @@ public abstract class AbstractS3Database<F> extends AbstractDocumentDatabase<F> 
           .build(),
           RequestBody.fromBytes(objectMapper.writeValueAsBytes(document))
         );
-    } catch (JsonProcessingException | SdkClientException e) {
+    } catch (JacksonException | SdkClientException e) {
       LOGGER.error("Failed to write document {}", id, e);
       throw new DocumentCorruptedException("Cannot update document " + id);
     }

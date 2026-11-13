@@ -10,6 +10,7 @@ import CodeMirror from '../code/CodeMirror';
 import { validateId } from '../../utils/ValidateUtils';
 import { CodeEditorWithClear } from '../code/CodeEditorWithClear';
 import { ContextVariable, ContextVariableType, DialobItem, Variable } from '../../types';
+import { SortableHandleProps } from '../useSortableRow';
 import { useComposer } from '../../dialob';
 import { useSave } from '../../dialogs/contexts/saving/useSave';
 import { TextEditorWithClear } from '../editors/TextEditorWithClear';
@@ -26,7 +27,12 @@ const VARIABLE_TYPES: ContextVariableType[] = [
 export interface VariableProps {
   index: number;
   item: Variable | ContextVariable;
+  sortableId: string;
+  style?: React.CSSProperties;
+  handleProps?: SortableHandleProps;
   onClose: () => void;
+  onInsertBelow: (index: number) => void;
+  setNodeRef?: (node: HTMLElement | null) => void;
 }
 
 export const DeleteButton: React.FC<{ variable: ContextVariable | Variable }> = ({ variable }) => {
@@ -117,7 +123,7 @@ export const DescriptionField: React.FC<{ variable: Variable | ContextVariable }
       value={description}
       onChange={handleChange}
       variant='standard'
-      InputProps={{ 
+      InputProps={{
         disableUnderline: true,
       }}
       onClear={handleClear}
@@ -191,8 +197,8 @@ export const DefaultValueField: React.FC<{ variable: ContextVariable }> = ({ var
       value={defaultValue}
       onChange={handleChange}
       variant='standard'
-      InputProps={{ 
-        disableUnderline: true, 
+      InputProps={{
+        disableUnderline: true,
       }}
       onClear={handleClear}
       fullWidth

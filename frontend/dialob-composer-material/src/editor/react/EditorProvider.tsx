@@ -18,7 +18,7 @@ export const EditorProvider: React.FC<PropsWithChildren<ComposerProviderProps>> 
       dispatch({ type: 'setActiveFormLanguage', language: formLanguages[0] });
     }
   }, [form?.metadata.languages]);
-  
+
   return (
     <EditorContext.Provider value={{ state, dispatch }}>
       {children}

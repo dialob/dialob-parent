@@ -32,7 +32,7 @@ public record GtOperator<T extends Comparable<T>>(
 ) implements AbstractComparableRelationOperator<T> {
 
   public static <T extends Comparable<T>> GtOperator.Builder<T> builder() {
-    return new GtOperator.Builder<T>();
+    return new GtOperator.Builder<>();
   }
 
   public static final class Builder<T extends Comparable<T>> extends GtOperatorBuilder<T> {}

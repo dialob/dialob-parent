@@ -47,8 +47,8 @@ export class SyncQueue {
   public async pull(): Promise<void> {
     try {
       await this.runSyncFn(() => this.transport.getFullState(this.id));
-    } catch (e) {
-      this.handleError(e);
+    } catch (error: any) {
+      this.handleError(error);
     }
   }
 
@@ -140,8 +140,8 @@ export class SyncQueue {
       if (this.syncActionQueue.length > 0 && !this.syncTimer) {
         this.syncQueuedActions();
       }
-    } catch (e) {
-      this.handleError(e);
+    } catch (error: any) {
+      this.handleError(error);
       const newActions = this.syncActionQueue;
       this.syncActionQueue = syncedActions;
       for (const action of newActions) {
@@ -156,7 +156,7 @@ export class SyncQueue {
       }
 
       if (this.retryCount >= 3) {
-        this.listeners.error.forEach(l => l('SYNC-REPEATED', e));
+        this.listeners.error.forEach(l => l('SYNC-REPEATED', error));
       }
     }
   }

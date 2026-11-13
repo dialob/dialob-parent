@@ -16,7 +16,7 @@
 package io.dialob.api.questionnaire;
 
 import com.fasterxml.jackson.annotation.*;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import tools.jackson.databind.annotation.JsonDeserialize;
 import io.dialob.api.annotation.AllowNulls;
 import io.dialob.api.annotation.ApiType;
 import io.dialob.api.annotation.Nullable;

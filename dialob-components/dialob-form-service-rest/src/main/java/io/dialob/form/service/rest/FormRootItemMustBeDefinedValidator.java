@@ -18,7 +18,7 @@ package io.dialob.form.service.rest;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.Form;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.lang.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 

@@ -29,7 +29,7 @@ jobs:
 #          - linux/arm64
     steps:
     - name: Checkout code
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7
       with:
         ref: ${{ github.event.ref }}
         fetch-depth: 0
@@ -37,7 +37,7 @@ jobs:
     - uses: actions/setup-java@v5
       with:
         distribution: 'corretto'
-        java-version: '21'
+        java-version: '25'
         gpg-private-key: ${{ secrets.DIALOB_GPG_KEY }}
         gpg-passphrase: MAVEN_GPG_PASSPHRASE
         server-id: central

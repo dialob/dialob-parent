@@ -24,7 +24,6 @@ import org.mockito.Mockito;
 
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Stream;
 
 import static io.dialob.session.engine.session.command.EventMatchers.anyError;
 import static io.dialob.session.engine.session.command.EventMatchers.errorActivity;

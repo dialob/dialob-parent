@@ -17,8 +17,8 @@ package io.dialob.db.spi.spring;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import lombok.Getter;
+import org.jspecify.annotations.Nullable;
 import org.springframework.data.annotation.Version;
-import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 public abstract class AbstractDocumentDatabase<T> {

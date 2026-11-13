@@ -448,6 +448,8 @@ On the filling side, **after** the correct number of choices is made:
   * Boolean operations: `any of`, `all of`
   * Mathematical operations: `sum of`, `min of`, `max of`
   * Count the number of row items currently selected: `count(rowgroupId)`
+* Adding and removing rows can be limited with the "Add row when" and "Remove row when" rules
+* Expression variables can be scoped to a multi-row group, which makes them calculate a separate value for each row
 
 ---
 
@@ -508,6 +510,14 @@ Boolean operations: Applicable only to `boolean` types
 Counting the number of active row items:
 
 * `count(rowgroupId)`: The count function keeps track of the number of active rows in a multi-row group. Every time a new row item is added via the "Add" button, count is incremented by 1.
+
+Limiting the number of rows:
+
+* The "Add row when" and "Remove row when" rules in the "Rules" tab of the multi-row group control whether the user can add or remove rows. For example, `count(rowgroup1) < 5` as the "Add row when" rule allows at most 5 rows. See [Multi-row Group Rules](05-dialob-expression-language-del#multi-row-group-rules).
+
+Calculating values for each row:
+
+* Expression variables can be added directly to a multi-row group, in which case they are calculated separately for each row, using the answers of that row. See [Expression variables in multi-row groups](03-advanced-operations#expression-variables-in-multi-row-groups).
 
 ---
 

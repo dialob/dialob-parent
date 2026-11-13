@@ -60,7 +60,11 @@ Click the hamburger icon in the top-right corner of the response editor. Then se
 
 ### Editing lists
 
-Lists are shown as expandable rows, and when expanded the list items can be edited - namely the key, the localized text, and in case of local lists the visibility rules. If a visibility rule is present the eye icon will be blue, otherwise gray. Value sets for lists can also be downloaded as csv, edited, and then uploaded back to the list - this can be useful for long lists or when working with multiple languages.
+Lists are shown as tables, where each row is one list item. Each cell of a row - the key, the localized text for each language, and in case of local lists the visibility rule - has an edit icon. Clicking the edit icon expands an editor below the row for that particular field, and clicking it again collapses the editor. If a visibility rule is present the eye icon will be blue, otherwise gray. Value sets for lists can also be downloaded as csv, edited, and then uploaded back to the list - this can be useful for long lists or when working with multiple languages.
+
+Each row also has buttons for deleting the item and for inserting a new item directly below it. New items can also be added to the end of the list with the add button in the table header. To reorder list items, grab the drag handle next to these buttons and drag the row to the desired position.
+
+Changes to lists are applied when the dialog is saved. When the key of a list item is changed, the new key is also updated everywhere it is referenced in the form - in default values, visibility, requirement and validation rules, and in expression variables.
 
 <img width="1400" alt="03-03" src="https://github.com/user-attachments/assets/cfa864b1-d451-4fed-b45e-2f932d5df083" />
 
@@ -204,6 +208,8 @@ The versioning dialog is accessible via the "Version" menu, by clicking on "Mana
 This dialog also allows you to preview the dialog in the state it was in when the tag was created, by clicking on "Activate". You can switch back to the latest version by clicking on "Activate" next to "Latest version".
 
 Tags can be downloaded as JSON files using the download icon, or can be copied as new dialogs by clicking on the copy icon.
+
+The list of tags can be sorted by name, description, or creation date by clicking on the corresponding column header. Clicking the same header again switches between ascending and descending order. By default, the list is sorted by creation date, with the newest tags first.
 
 <img width="895" alt="03-13" src="https://github.com/user-attachments/assets/2a6d54d2-760c-48fc-a19e-837896494e8e" />
 
@@ -372,8 +378,6 @@ Simply click on the download icon in the top right of the Composer window.
 
 ---
 
-<span id="localisation"></span>
-
 # Localisation
 
 ## Quick Summary
@@ -385,6 +389,7 @@ Simply click on the download icon in the top right of the Composer window.
   * [Create Empty](#create-empty)
   * [Copy from Active](#copy-from-active)
 * Test your translations on the filling side by changing the active language either via the Translations dialog ("Manage languages" tab) OR via the language dropdown in the Composer upper menu
+* Set the language which is active by default when opening the form with the "Default active" switch in the "Manage languages" tab
 * Check for missing translations using the "Missing translations" tab in the Translations dialog
 
 ---
@@ -395,7 +400,7 @@ Dialob enables you to create multi-language forms via a simple Translation featu
 
 1. **Manage translation files**: This allows to donwload all current localized strings in a JSON file. The file can be used to translate the strings and then upload them back to Dialob. This is useful for sharing translations with external translators or for translating the strings in a more convenient way than in the Composer.
 
-2. **Manage languages**: This tab shows all current languages and allows you to manage them, as well as add new languages. Adding a new language via the "Add language" dropdown will create an empty language, while using the "Copy as new" button will copy the translations to the new language. This tab also allows switching the currently active language via the switch in each language row.
+2. **Manage languages**: This tab shows all current languages and allows you to manage them, as well as add new languages. Adding a new language via the "Add language" dropdown will create an empty language, while using the "Copy as new" button will copy the translations to the new language. This tab also allows switching the currently active language via the "Active" switch in each language row. The "Default active" switch sets the language that will be active by default whenever the form is opened in Composer. If no default is selected, English is used, or otherwise the first language in the form.
 
 3. **Missing translations**: This tab shows all missing translations for each language, grouped by the type of translation (item label, item description, validation message, valueset label). Clicking on a missing translation will take you to the item that needs to be translated.
 
@@ -675,7 +680,9 @@ Request IDs (unique variable names) are automatically generated by Dialob Compos
 
 ## How to change an ID 
 
-Changing an ID will update all references to this ID automatically.
+Changing an ID will update all references to this ID automatically. This includes logic rules and expression variables that refer to the item.
+
+The same applies to list item keys and expression variable IDs: when the key of a list item is changed, the new key is updated in default values, rules, validations and expression variables that refer to it, and when an expression variable is renamed, the rules referencing the variable are updated accordingly.
 
 ### Page ID
 
@@ -697,6 +704,7 @@ If a new ID conflicts with an existing one, the ID editing field will turn red, 
 
 * Context Variables are static/immutable variables, available across the entire dialog session
 * Expression Variables are user-defined functions, available across the entire dialog session
+* Expression Variables can also be scoped to a multi-row group, in which case they are calculated separately for each row
 * Custom variables are only available for use when their values are set. If the values are not set, they will not be present or usable in the session
 
 ---
@@ -742,6 +750,7 @@ Below are some examples to demonstrate what context variables can look like.
   * **Response ID in the current session**: Examples include default IDs such as `text1`, `date3`, `boolean2` or user-created IDs such as `isNewCustomer`, `postalCode2`, etc..
   * **Logical expression**: Example: `{date3 > date2}`, which can be read as "**If** date 3 is later (greater) than date 2, **then** return true".
   * **Mathematical operation**: Example: `{1 + 5 + 2 * (6 / 3)}`, which can be read as "6 divided by 3, 2 multiplied by 2, and then 1 plus 5.
+  * **Text built from answers**: Using the `format()` function, an expression variable can combine text with answer values. Example: `format('Hello {firstName}, your total is {total:#,##0} euros')`. Read more about `format()` in [DEL functions](05-dialob-expression-language-del#existing-del-functions).
 
 Below are some examples to demonstrate what expression variables can look like.
 
@@ -758,6 +767,9 @@ The next part outlines the use of context and expression variables.
 ## Quick Summary
 
 * Custom variables are created in the "Variables" menu item at the top of the Composer screen
+* Expression variables scoped to a multi-row group are created from the "Add item" menu of the multi-row group
+* Changes in the variables window are applied by clicking "Save"
+* Changing a variable's ID and then clicking "Save" keeps a new variable under that ID, and renames a variable that is already on the form
 * Custom variables have many use cases, including
   * Pre-filling data on a question 
   * Initialising a form filling session with prefilled data
@@ -774,6 +786,14 @@ The next part outlines the use of context and expression variables.
 Context variables and expression variables can be created in the "Variables" menu at the top of the Composer window. Selecting the "Variables" menu option will present you with the variables window. From here, you can choose to create context or expression variables via the tabs.
 
 <img width="1468" alt="03-31" src="https://github.com/user-attachments/assets/8dbaf25a-89f3-4fcd-9a63-2d4a80ea593d" />
+
+Variables are shown as tables, where each row is one variable. Editing works in the same way as with lists: each editable cell - the ID, the expression (or the default value for context variables), and the description - has an edit icon, which expands an editor for that field below the row. Clicking the edit icon again collapses the editor.
+
+Each row also has buttons for deleting the variable and for inserting a new variable directly below it, as well as a drag handle that can be used to reorder variables. The "Users" column shows how many items use the variable, and clicking the number lists those items, so that you can navigate directly to them.
+
+Changes made in the variables window are not applied until you click "Save". You can change a variable's ID before saving. A variable that is not on the form yet is saved under the ID you entered. Changing the ID of a variable that is already on the form renames that variable. When the ID of an expression variable is changed, rules referring to the variable are updated to use the new ID.
+
+**NOTE**: Expression variables which are scoped to a multi-row group are not shown in the variables window. They are managed directly within the multi-row group, as described in [Expression variables in multi-row groups](#expression-variables-in-multi-row-groups).
 
 ---
 
@@ -848,6 +868,7 @@ Next, we will create several expressions to perform operations on whatever integ
 * To edit the Expression field, clicking the Edit icon button, which will expand the code editing field below.
 * In code editor, write the ID(s) of the responses to process with the function as well as the mathematical / logical operators that will be used. 
 * Remember to leave "Published" unchecked unless your specific implementation requires it be checked.
+* Click "Save" to apply the changes.
 
 The expressions we will create are as follows:  
 
@@ -899,3 +920,40 @@ Finally, hit the Preview button and test your form to see if everything is worki
 
 **NOTE** A custom variable built using *question input data* becomes active only after all of its questions have been asked!
 This means that, for example, the expression variables created above in the previous cannot work until number1 and number2 have been answered on the filling side.
+
+---
+
+## Expression variables in multi-row groups
+
+### Quick Summary
+
+* Expression variables can be scoped to a multi-row group by creating them inside the group
+* A scoped expression variable is calculated separately for each row, using the answers given in that row
+* Scoped expression variables are shown at the top of the multi-row group, and as children of the multi-row group in the tree view
+* Scoped expression variables are edited and deleted directly in the multi-row group, not in the variables window
+
+---
+
+### Overview
+
+Regular expression variables are calculated once for the whole dialog session. In a multi-row group, however, it is often useful to calculate a value for each row separately - for example, the total price of a single row from its quantity and unit price. For this purpose, expression variables can be scoped to a multi-row group.
+
+Inside a scoped expression variable, items of the same multi-row group are referenced simply by their IDs. On the filling side, each row gets its own value of the variable, calculated from the answers given in that particular row. The variable can be used in the labels of the items in the same row with curly braces, for example `{rowTotal}`, as well as in their logic rules.
+
+---
+
+### Creating a scoped expression variable
+
+1. Create a multi-row group with the input fields needed for the calculation. In this example, the multi-row group contains two number inputs: `quantity` and `unitPrice`.
+2. Click "Add item" at the bottom of the multi-row group, and select "Expression Variable" from the top of the menu.
+3. The new variable appears at the top of the multi-row group, above the other items, with an automatically generated ID (for example `var1`) and an empty expression.
+4. Click on the variable's ID to change it, for example to `rowTotal`.
+5. Click on the variable's expression ("No expression defined") to open the variable editing dialog, and write the expression: `quantity * unitPrice`. Optionally add a description, and set the "Published" option as needed.
+6. Click "Save" to apply the changes.
+7. Use the variable within the row, for example in a note output inside the multi-row group: `Row total: {rowTotal}`.
+
+On the filling side, every row added to the multi-row group will now show the total of that specific row.
+
+To edit a scoped expression variable later, click on its ID or its expression in the multi-row group, which opens the variable editing dialog. To delete it, click the delete icon on the right side of the variable, or the "Delete" button in the variable editing dialog.
+
+**NOTE**: Like any other custom variable, a scoped expression variable becomes active only after all of the questions it uses have been answered in that row.

@@ -15,9 +15,6 @@
  */
 package io.dialob.session.boot;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.common.collect.Maps;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.*;
@@ -57,7 +54,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -66,6 +62,7 @@ import org.springframework.core.task.TaskExecutor;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.SerializationUtils;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -120,7 +117,7 @@ class DialobQuestionnaireSessionServiceTest {
       doAnswer(invocation -> {
         FunctionRegistry.FunctionCallback cb = invocation.getArgument(0);
         List<?> args = invocation.getArgument(2);
-        String string = (String) args.get(0);
+        String string = (String) args.getFirst();
         if (string == null) {
           cb.succeeded(BigInteger.ZERO);
         } else {
@@ -135,7 +132,7 @@ class DialobQuestionnaireSessionServiceTest {
 
     @Bean
     public ObjectMapper objectMapper() {
-      return new ObjectMapper().registerModules(new JavaTimeModule(), new Jdk8Module());
+      return new ObjectMapper();
     }
 
     @Bean
@@ -169,7 +166,7 @@ class DialobQuestionnaireSessionServiceTest {
     @Bean
     public CurrentTenant currentTenant() {
       final CurrentTenant currentTenant = mock(CurrentTenant.class);
-      Mockito.when(currentTenant.getId()).thenReturn("unitTest");
+      when(currentTenant.getId()).thenReturn("unitTest");
       return currentTenant;
     }
 
@@ -198,7 +195,7 @@ class DialobQuestionnaireSessionServiceTest {
 
     @Bean
     public QuestionnaireDatabase questionnaireDatabase() {
-      return Mockito.mock(QuestionnaireDatabase.class);
+      return mock(QuestionnaireDatabase.class);
     }
   }
 
@@ -235,7 +232,7 @@ class DialobQuestionnaireSessionServiceTest {
   private final String tenantId = "123";
 
   @BeforeEach
-  public void before() {
+  void before() {
     MockitoAnnotations.initMocks(this);
   }
 
@@ -247,7 +244,7 @@ class DialobQuestionnaireSessionServiceTest {
     String docId = UUID.randomUUID().toString();
     String formId = formDocument.getId();
 
-    Mockito.reset(questionnaireDatabase, formFinder);
+    reset(questionnaireDatabase, formFinder);
     when(questionnaireDatabase.save(anyString(), any(Questionnaire.class))).thenAnswer(invocation -> {
       Questionnaire questionnaire = (Questionnaire) invocation.getArguments()[1];
       return questionnaire.withId(docId);
@@ -269,7 +266,7 @@ class DialobQuestionnaireSessionServiceTest {
     String formId = formDocument.getId();
     questionnaire = new Questionnaire.Builder().from(questionnaire).id(docId).metadata(new Questionnaire.Metadata.Builder().from(questionnaire.getMetadata()).formId(formId).build()).build();
 
-    Mockito.reset(questionnaireDatabase, formFinder);
+    reset(questionnaireDatabase, formFinder);
     when(questionnaireDatabase.findOne(tenantId, docId)).thenReturn(questionnaire);
 
     when(formFinder.findForm(eq(formId), any())).thenReturn(formDocument);
@@ -541,7 +538,7 @@ class DialobQuestionnaireSessionServiceTest {
         .extracting("type", "ids", "item.id", "item.label").containsExactlyInAnyOrder(
           tuple(REMOVE_ERROR, null, null, null),
           tuple(ITEM, null, "question2", "Shown if previous ones are ok"),
-          tuple(ITEM, null, "question4", "Question1 is ok true"),
+          tuple(ITEM, null, "question4", "Question1 is ok Yes"),
           tuple(ITEM, null, "questionnaire", "is valid testing")
         ))
       .answer("question1", null)
@@ -549,7 +546,7 @@ class DialobQuestionnaireSessionServiceTest {
         .extracting("type", "ids", "item.id", "item.label", "error.description").containsExactlyInAnyOrder(
           tuple(REMOVE_ITEMS, List.of("question2"), null, null, null),
           tuple(ITEM, null, "questionnaire", "is valid testing", null),
-          tuple(ITEM, null, "question4", "Question1 is ok false", null),
+          tuple(ITEM, null, "question4", "Question1 is ok No", null),
           tuple(ERROR, null, null, null, "Fill in the missing information.")
         ))
       .answer("question1", "a")
@@ -557,7 +554,7 @@ class DialobQuestionnaireSessionServiceTest {
         .extracting("type", "ids", "item.id", "item.label").containsExactlyInAnyOrder(
           tuple(REMOVE_ERROR, null, null, null),
           tuple(ITEM, null, "question2", "Shown if previous ones are ok"),
-          tuple(ITEM, null, "question4", "Question1 is ok true"),
+          tuple(ITEM, null, "question4", "Question1 is ok Yes"),
           tuple(ITEM, null, "questionnaire", "is valid testing")
         ))
       .answer("question3", "1970-01-01")
@@ -2113,13 +2110,13 @@ class DialobQuestionnaireSessionServiceTest {
   @Test
   void objectAsAFunctionArgument() throws VariableNotDefinedException {
     when(functionRegistry.returnTypeOf("useObjectFunction", ObjectValueType.EMPTY_OBJECT)).thenReturn(ValueType.STRING);
-    Mockito.doAnswer(invocation -> {
+    doAnswer(invocation -> {
       FunctionRegistry.FunctionCallback callback = invocation.getArgument(0);
       Object args = invocation.getArgument(2);
       assertTrue(args instanceof List);
       List list = (List) args;
-      assertTrue(list.get(0) instanceof Map<?,?>);
-      Map<?, ?> map = (Map<?, ?>) list.get(0);
+      assertTrue(list.getFirst() instanceof Map<?,?>);
+      Map<?, ?> map = (Map<?, ?>) list.getFirst();
       callback.succeeded(map);
       return null;
     }).when(functionRegistry).invokeFunction(any(), eq("useObjectFunction"), any());
@@ -2377,6 +2374,7 @@ class DialobQuestionnaireSessionServiceTest {
     return assertion.extracting("item").filteredOn(instance -> instance != null && "questionnaire".equals(((ActionItem) instance).getType()));
   }
 
+  @SuppressWarnings("unchecked")
   private <T> Set<T> asSet(T... items) {
     return new HashSet<>(asList(items));
   }

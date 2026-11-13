@@ -15,13 +15,13 @@
  */
 package io.dialob.cloud.aws;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import software.amazon.awssdk.services.sns.SnsAsyncClient;
 import software.amazon.awssdk.services.sns.model.MessageAttributeValue;
 import software.amazon.awssdk.services.sns.model.PublishRequest;
+import tools.jackson.core.JacksonException;
 
 import java.util.Map;
 
@@ -55,7 +55,7 @@ public class AbstractEventsToSNSBridge {
           LOGGER.error("Failed to publish", throwable);
         }
       });
-    } catch (JsonProcessingException e) {
+    } catch (JacksonException e) {
       LOGGER.error("Could not publish event: {}", message, e);
     }
   }

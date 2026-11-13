@@ -15,7 +15,6 @@
  */
 package io.dialob.db.spi.spring;
 
-import com.fasterxml.jackson.databind.exc.InvalidDefinitionException;
 import io.dialob.api.rest.Errors;
 import io.dialob.db.spi.exceptions.*;
 import jakarta.validation.ConstraintViolation;
@@ -25,6 +24,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import tools.jackson.databind.exc.InvalidDefinitionException;
 
 import java.util.Set;
 
@@ -175,10 +175,10 @@ class DatabaseExceptionMapperTest {
 
     ResponseEntity<Errors> response = mapper.handleDocumentCorruptedException(exception);
 
-    assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, response.getStatusCode());
+    assertEquals(HttpStatus.UNPROCESSABLE_CONTENT, response.getStatusCode());
     assertNotNull(response.getBody());
     assertEquals(422, response.getBody().getStatus());
-    assertEquals("Unprocessable Entity", response.getBody().getError());
+    assertEquals("Unprocessable Content", response.getBody().getError());
     assertEquals("Document corrupted", response.getBody().getMessage());
   }
 

@@ -1,0 +1,734 @@
+{
+  "aa": {
+    "true": "Yeey",
+    "false": "Mool"
+  },
+  "ab": {
+    "true": "Ааи",
+    "false": "Мап"
+  },
+  "ae": {
+    "true": "Yes",
+    "false": "No"
+  },
+  "af": {
+    "true": "Ja",
+    "false": "Nee"
+  },
+  "ak": {
+    "true": "Aane",
+    "false": "Daabi"
+  },
+  "am": {
+    "true": "አዎ",
+    "false": "አይ"
+  },
+  "an": {
+    "true": "Si",
+    "false": "No"
+  },
+  "ar": {
+    "true": "نعم",
+    "false": "لا"
+  },
+  "as": {
+    "true": "হয়",
+    "false": "নহয়"
+  },
+  "av": {
+    "true": "Хъийи",
+    "false": "Ун"
+  },
+  "ay": {
+    "true": "Jïsa",
+    "false": "Jani"
+  },
+  "az": {
+    "true": "Bəli",
+    "false": "Xeyr"
+  },
+  "ba": {
+    "true": "Эйе",
+    "false": "Юҡ"
+  },
+  "be": {
+    "true": "Так",
+    "false": "Не"
+  },
+  "bg": {
+    "true": "Да",
+    "false": "Не"
+  },
+  "bi": {
+    "true": "Yes",
+    "false": "No"
+  },
+  "bm": {
+    "true": "Awɔ",
+    "false": "Ayi"
+  },
+  "bn": {
+    "true": "হ্যাঁ",
+    "false": "না"
+  },
+  "bo": {
+    "true": "རེད",
+    "false": "མ་རེད"
+  },
+  "br": {
+    "true": "Ya",
+    "false": "Ket"
+  },
+  "bs": {
+    "true": "Da",
+    "false": "Ne"
+  },
+  "ca": {
+    "true": "Sí",
+    "false": "No"
+  },
+  "ce": {
+    "true": "ХӀаъ",
+    "false": "ХӀан-хӀа"
+  },
+  "ch": {
+    "true": "Hunggok",
+    "false": "Tåmpo"
+  },
+  "co": {
+    "true": "I",
+    "false": "Innò"
+  },
+  "cr": {
+    "true": "Yes",
+    "false": "No"
+  },
+  "cs": {
+    "true": "Ano",
+    "false": "Ne"
+  },
+  "cu": {
+    "true": "Yes",
+    "false": "No"
+  },
+  "cv": {
+    "true": "Ҫапла",
+    "false": "Ҫук"
+  },
+  "cy": {
+    "true": "Ie",
+    "false": "Na"
+  },
+  "da": {
+    "true": "Ja",
+    "false": "Nej"
+  },
+  "de": {
+    "true": "Ja",
+    "false": "Nein"
+  },
+  "dv": {
+    "true": "އާނ",
+    "false": "ނޫން"
+  },
+  "dz": {
+    "true": "ཨིན",
+    "false": "མིན"
+  },
+  "ee": {
+    "true": "Ɛ̃",
+    "false": "Ao"
+  },
+  "el": {
+    "true": "Ναι",
+    "false": "Όχι"
+  },
+  "en": {
+    "true": "Yes",
+    "false": "No"
+  },
+  "eo": {
+    "true": "Jes",
+    "false": "Ne"
+  },
+  "es": {
+    "true": "Sí",
+    "false": "No"
+  },
+  "et": {
+    "true": "Jah",
+    "false": "Ei"
+  },
+  "eu": {
+    "true": "Bai",
+    "false": "Ez"
+  },
+  "fa": {
+    "true": "بله",
+    "false": "خیر"
+  },
+  "ff": {
+    "true": "Eey",
+    "false": "Alaa"
+  },
+  "fi": {
+    "true": "Kyllä",
+    "false": "Ei"
+  },
+  "fj": {
+    "true": "Io",
+    "false": "Sega"
+  },
+  "fo": {
+    "true": "Ja",
+    "false": "Nei"
+  },
+  "fr": {
+    "true": "Oui",
+    "false": "Non"
+  },
+  "fy": {
+    "true": "Ja",
+    "false": "Nee"
+  },
+  "ga": {
+    "true": "Tá",
+    "false": "Níl"
+  },
+  "gd": {
+    "true": "Tha",
+    "false": "Chan eil"
+  },
+  "gl": {
+    "true": "Si",
+    "false": "Non"
+  },
+  "gn": {
+    "true": "Heẽ",
+    "false": "Aháni"
+  },
+  "gu": {
+    "true": "હા",
+    "false": "ના"
+  },
+  "gv": {
+    "true": "Ta",
+    "false": "Cha nel"
+  },
+  "ha": {
+    "true": "Ee",
+    "false": "A'a"
+  },
+  "he": {
+    "true": "כן",
+    "false": "לא"
+  },
+  "hi": {
+    "true": "हाँ",
+    "false": "नहीं"
+  },
+  "ho": {
+    "true": "Yes",
+    "false": "No"
+  },
+  "hr": {
+    "true": "Da",
+    "false": "Ne"
+  },
+  "ht": {
+    "true": "Wi",
+    "false": "Non"
+  },
+  "hu": {
+    "true": "Igen",
+    "false": "Nem"
+  },
+  "hy": {
+    "true": "Այո",
+    "false": "Ոչ"
+  },
+  "hz": {
+    "true": "Ee",
+    "false": "Ahee"
+  },
+  "ia": {
+    "true": "Si",
+    "false": "No"
+  },
+  "id": {
+    "true": "Ya",
+    "false": "Tidak"
+  },
+  "ie": {
+    "true": "Yes",
+    "false": "No"
+  },
+  "ig": {
+    "true": "Ee",
+    "false": "Mba"
+  },
+  "ii": {
+    "true": "ꉬ",
+    "false": "ꀋꉬ"
+  },
+  "ik": {
+    "true": "Ii",
+    "false": "Aaka"
+  },
+  "io": {
+    "true": "Yes",
+    "false": "No"
+  },
+  "is": {
+    "true": "Já",
+    "false": "Nei"
+  },
+  "it": {
+    "true": "Sì",
+    "false": "No"
+  },
+  "iu": {
+    "true": "ᐄ",
+    "false": "ᐊᐃ"
+  },
+  "ja": {
+    "true": "はい",
+    "false": "いいえ"
+  },
+  "jv": {
+    "true": "Ya",
+    "false": "Ora"
+  },
+  "ka": {
+    "true": "დიახ",
+    "false": "არა"
+  },
+  "kg": {
+    "true": "Ee",
+    "false": "Te"
+  },
+  "ki": {
+    "true": "Ii",
+    "false": "Athii"
+  },
+  "kj": {
+    "true": "Ee",
+    "false": "Ahee"
+  },
+  "kk": {
+    "true": "Иә",
+    "false": "Жоқ"
+  },
+  "kl": {
+    "true": "Aap",
+    "false": "Naagga"
+  },
+  "km": {
+    "true": "បាទ",
+    "false": "ទេ"
+  },
+  "kn": {
+    "true": "ಹೌದು",
+    "false": "ಇಲ್ಲ"
+  },
+  "ko": {
+    "true": "예",
+    "false": "아니요"
+  },
+  "kr": {
+    "true": "Ee",
+    "false": "Kal"
+  },
+  "ks": {
+    "true": "آ",
+    "false": "نہ"
+  },
+  "ku": {
+    "true": "Erê",
+    "false": "Na"
+  },
+  "kv": {
+    "true": "Да",
+    "false": "Нок"
+  },
+  "kw": {
+    "true": "Ya",
+    "false": "Na"
+  },
+  "ky": {
+    "true": "Ооба",
+    "false": "Жок"
+  },
+  "la": {
+    "true": "Ita",
+    "false": "Non"
+  },
+  "lb": {
+    "true": "Jo",
+    "false": "Nee"
+  },
+  "lg": {
+    "true": "Yee",
+    "false": "Nedda"
+  },
+  "li": {
+    "true": "Jao",
+    "false": "Nei"
+  },
+  "ln": {
+    "true": "Iyo",
+    "false": "Te"
+  },
+  "lo": {
+    "true": "ແມ່",
+    "false": "ບໍ່"
+  },
+  "lt": {
+    "true": "Taip",
+    "false": "Ne"
+  },
+  "lu": {
+    "true": "Ee",
+    "false": "Te"
+  },
+  "lv": {
+    "true": "Jā",
+    "false": "Nē"
+  },
+  "mg": {
+    "true": "Eny",
+    "false": "Tsia"
+  },
+  "mh": {
+    "true": "Elle",
+    "false": "Jab"
+  },
+  "mi": {
+    "true": "Āe",
+    "false": "Kāo"
+  },
+  "mk": {
+    "true": "Да",
+    "false": "Не"
+  },
+  "ml": {
+    "true": "അതെ",
+    "false": "ഇല്ല"
+  },
+  "mn": {
+    "true": "Тийм",
+    "false": "Үгүй"
+  },
+  "mr": {
+    "true": "हो",
+    "false": "नाही"
+  },
+  "ms": {
+    "true": "Ya",
+    "false": "Tidak"
+  },
+  "mt": {
+    "true": "Iva",
+    "false": "Le"
+  },
+  "my": {
+    "true": "ဟုတ်ကဲ့",
+    "false": "မဟုတ်ပါ"
+  },
+  "na": {
+    "true": "E",
+    "false": "Bok"
+  },
+  "nb": {
+    "true": "Ja",
+    "false": "Nei"
+  },
+  "nd": {
+    "true": "Yebo",
+    "false": "Hatshi"
+  },
+  "ne": {
+    "true": "हो",
+    "false": "होइन"
+  },
+  "ng": {
+    "true": "Ee",
+    "false": "Ahee"
+  },
+  "nl": {
+    "true": "Ja",
+    "false": "Nee"
+  },
+  "nn": {
+    "true": "Ja",
+    "false": "Nei"
+  },
+  "no": {
+    "true": "Ja",
+    "false": "Nei"
+  },
+  "nr": {
+    "true": "Yebo",
+    "false": "Hatshi"
+  },
+  "nv": {
+    "true": "Aoo'",
+    "false": "Doo"
+  },
+  "ny": {
+    "true": "Inde",
+    "false": "Ayayi"
+  },
+  "oc": {
+    "true": "Òc",
+    "false": "Non"
+  },
+  "oj": {
+    "true": "Ehe",
+    "false": "Gaawiin"
+  },
+  "om": {
+    "true": "Eeyyee",
+    "false": "Lakki"
+  },
+  "or": {
+    "true": "ହଁ",
+    "false": "ନା"
+  },
+  "os": {
+    "true": "О",
+    "false": "Н"
+  },
+  "pa": {
+    "true": "ਹਾਂ",
+    "false": "ਨਹੀਂ"
+  },
+  "pi": {
+    "true": "Yes",
+    "false": "No"
+  },
+  "pl": {
+    "true": "Tak",
+    "false": "Nie"
+  },
+  "ps": {
+    "true": "هو",
+    "false": "نه"
+  },
+  "pt": {
+    "true": "Sim",
+    "false": "Não"
+  },
+  "qu": {
+    "true": "Arí",
+    "false": "Manam"
+  },
+  "rm": {
+    "true": "Gea",
+    "false": "Na"
+  },
+  "rn": {
+    "true": "Ego",
+    "false": "Oya"
+  },
+  "ro": {
+    "true": "Da",
+    "false": "Nu"
+  },
+  "ru": {
+    "true": "Да",
+    "false": "Нет"
+  },
+  "rw": {
+    "true": "Yego",
+    "false": "Oya"
+  },
+  "sa": {
+    "true": "आम्",
+    "false": "न"
+  },
+  "sc": {
+    "true": "Eja",
+    "false": "Nono"
+  },
+  "sd": {
+    "true": "ها",
+    "false": "نه"
+  },
+  "se": {
+    "true": "Juo",
+    "false": "Ii"
+  },
+  "sg": {
+    "true": "En",
+    "false": "Ape"
+  },
+  "si": {
+    "true": "ඔව්",
+    "false": "නැත"
+  },
+  "sk": {
+    "true": "Áno",
+    "false": "Nie"
+  },
+  "sl": {
+    "true": "Da",
+    "false": "Ne"
+  },
+  "sm": {
+    "true": "Ioe",
+    "false": "Leai"
+  },
+  "sn": {
+    "true": "Hongu",
+    "false": "Kwete"
+  },
+  "so": {
+    "true": "Haa",
+    "false": "Maya"
+  },
+  "sq": {
+    "true": "Po",
+    "false": "Jo"
+  },
+  "sr": {
+    "true": "Да",
+    "false": "Не"
+  },
+  "ss": {
+    "true": "Yebo",
+    "false": "Bhatshi"
+  },
+  "st": {
+    "true": "Ee",
+    "false": "Tjhe"
+  },
+  "su": {
+    "true": "Enya",
+    "false": "henteu"
+  },
+  "sv": {
+    "true": "Ja",
+    "false": "Nej"
+  },
+  "sw": {
+    "true": "Ndiyo",
+    "false": "Hapana"
+  },
+  "ta": {
+    "true": "ஆம்",
+    "false": "இல்லை"
+  },
+  "te": {
+    "true": "అవును",
+    "false": "కాదు"
+  },
+  "tg": {
+    "true": "Бале",
+    "false": "Не"
+  },
+  "th": {
+    "true": "ใช่",
+    "false": "ไม่"
+  },
+  "ti": {
+    "true": "እወ",
+    "false": "ኣይፋል"
+  },
+  "tk": {
+    "true": "Hawa",
+    "false": "Ýok"
+  },
+  "tl": {
+    "true": "Oo",
+    "false": "Hindi"
+  },
+  "tn": {
+    "true": "Ee",
+    "false": "Nnyaa"
+  },
+  "to": {
+    "true": "Io",
+    "false": "Ikai"
+  },
+  "tr": {
+    "true": "Evet",
+    "false": "Hayır"
+  },
+  "ts": {
+    "true": "Ina",
+    "false": "E-e"
+  },
+  "tt": {
+    "true": "Әйе",
+    "false": "Юк"
+  },
+  "tw": {
+    "true": "Aane",
+    "false": "Daabi"
+  },
+  "ty": {
+    "true": "E",
+    "false": "Aita"
+  },
+  "ug": {
+    "true": "ھەئە",
+    "false": "ياق"
+  },
+  "uk": {
+    "true": "Так",
+    "false": "Ні"
+  },
+  "ur": {
+    "true": "ہاں",
+    "false": "نہیں"
+  },
+  "uz": {
+    "true": "Ha",
+    "false": "Yo'q"
+  },
+  "ve": {
+    "true": "Ndi",
+    "false": "Hai"
+  },
+  "vi": {
+    "true": "Có",
+    "false": "Không"
+  },
+  "vo": {
+    "true": "Yes",
+    "false": "No"
+  },
+  "wa": {
+    "true": "Oyi",
+    "false": "Nén"
+  },
+  "wo": {
+    "true": "Waaw",
+    "false": "Déedéet"
+  },
+  "xh": {
+    "true": "Ewe",
+    "false": "Hayi"
+  },
+  "yi": {
+    "true": "יא",
+    "false": "ניין"
+  },
+  "yo": {
+    "true": "Bẹ́ẹ̀ni",
+    "false": "Bẹ́ẹ̀kọ́"
+  },
+  "za": {
+    "true": "Miz",
+    "false": "Miz youq"
+  },
+  "zh": {
+    "true": "是",
+    "false": "否"
+  },
+  "zu": {
+    "true": "Yebo",
+    "false": "Cha"
+  }
+}

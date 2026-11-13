@@ -34,7 +34,6 @@ import java.time.LocalTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 class FunctionRegistryImplTest {
@@ -143,6 +142,10 @@ class FunctionRegistryImplTest {
     assertSame(ValueType.INTEGER, functionRegistry.returnTypeOf("lengthOf", ValueType.STRING));
     assertSame(ValueType.INTEGER, functionRegistry.returnTypeOf("count", ValueType.arrayOf(ValueType.INTEGER)));
     assertSame(ValueType.INTEGER, functionRegistry.returnTypeOf("count", ValueType.arrayOf(ValueType.STRING)));
+    assertSame(ValueType.INTEGER, functionRegistry.returnTypeOf("calculateTimeDiff", ValueType.DATE, ValueType.DATE, ValueType.STRING));
+    assertSame(ValueType.INTEGER, functionRegistry.returnTypeOf("calculateTimeDiff", ValueType.TIME, ValueType.TIME, ValueType.STRING));
+    assertSame(ValueType.INTEGER, functionRegistry.returnTypeOf("convertTimeDiff", ValueType.PERIOD, ValueType.STRING));
+    assertSame(ValueType.INTEGER, functionRegistry.returnTypeOf("convertTimeDiff", ValueType.DURATION, ValueType.STRING));
 
     org.assertj.core.api.Assertions.assertThatThrownBy(() -> functionRegistry.returnTypeOf("lengthOf")).isInstanceOf(VariableNotDefinedException.class);
   }

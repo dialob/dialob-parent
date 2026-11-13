@@ -17,7 +17,6 @@ package io.dialob.session.engine.session.command;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.session.engine.session.command.event.Event;
-import org.immutables.value.Value;
 
 import java.io.Serializable;
 import java.util.List;

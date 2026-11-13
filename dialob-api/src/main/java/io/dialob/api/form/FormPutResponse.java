@@ -16,7 +16,7 @@
 package io.dialob.api.form;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import tools.jackson.databind.annotation.JsonDeserialize;
 import io.dialob.api.annotation.ApiType;
 import io.dialob.api.annotation.Nullable;
 import io.dialob.api.rest.HasId;

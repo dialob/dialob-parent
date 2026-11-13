@@ -15,7 +15,8 @@
  */
 package io.dialob.db.jdbc;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.dialob.api.form.FormTag;
 import io.dialob.api.questionnaire.Questionnaire;
@@ -28,13 +29,12 @@ import io.dialob.questionnaire.service.api.QuestionnaireDatabase;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.mutable.MutableObject;
+import org.jspecify.annotations.Nullable;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.lang.Nullable;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import java.io.IOException;
 import java.io.Reader;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -77,7 +77,7 @@ public class JdbcQuestionnaireDatabase extends JdbcBackendDatabase<Questionnaire
         .status(Questionnaire.Metadata.Status.valueOf(status.trim()))
         .build());
       return builder.build();
-    } catch (IOException e) {
+    } catch (JacksonException e) {
       LOGGER.error("Error reading document {}: {}", Utils.toString(oid), e.getMessage(), e);
       throw new DocumentCorruptedException("Could not read document " + Utils.toString(oid) + ":" + e.getMessage());
     }

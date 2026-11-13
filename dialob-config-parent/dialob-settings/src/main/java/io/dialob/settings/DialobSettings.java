@@ -15,6 +15,7 @@
  */
 package io.dialob.settings;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -35,37 +36,50 @@ public class DialobSettings {
     AZURE_BLOB_STORAGE
   }
 
+  @Valid
   private SessionSettings session = new SessionSettings();
 
+  @Valid
   private DatabaseSettings db = new DatabaseSettings();
 
+  @Valid
   private DatabaseSettings formDatabase = new DatabaseSettings();
 
+  @Valid
   private DatabaseSettings questionnaireDatabase = new DatabaseSettings();
 
+  @Valid
   private TenantSettings tenant = new TenantSettings();
 
+  @Valid
   private ApiSettings api = new ApiSettings();
 
+  @Valid
   private SecuritySettings security = new SecuritySettings();
 
   private Map<String,SubmitHandlerSettings> submitHandlers = new HashMap<>();
 
+  @Valid
   private DialobAssetsSettings assets = new DialobAssetsSettings();
 
+  @Valid
   private AwsSettings aws = new AwsSettings();
 
+  @Valid
   private AzureSettings azure = new AzureSettings();
 
+  @Valid
   private GcpSettings gcp = new GcpSettings();
 
   Map<String, Tags> tags = new HashMap<>();
 
+  @Valid
   private FunctionSettings function = new FunctionSettings();
 
   @Data
   public static class DialobAssetsSettings {
 
+    @Valid
     private DialobAssetsServiceSettings service = new DialobAssetsServiceSettings();
 
   }
@@ -84,14 +98,19 @@ public class DialobSettings {
   public static class DatabaseSettings {
 
     @NotNull
-    private DatabaseType databaseType;
+    @Valid
+    private DatabaseType databaseType = DatabaseType.NONE;
 
+    @Valid
     private JdbcSettings jdbc = new JdbcSettings();
 
+    @Valid
     private FileSettings file = new FileSettings();
 
+    @Valid
     private S3Settings s3 = new S3Settings();
 
+    @Valid
     private AzureBlobStorageSettings azureBlobStorage = new AzureBlobStorageSettings();
 
 
@@ -137,6 +156,7 @@ public class DialobSettings {
       URL_PARAM
     }
 
+    @Valid
     private Mode mode = Mode.FIXED;
 
     private String fixedId = "00000000-0000-0000-0000-000000000000";
@@ -192,6 +212,7 @@ public class DialobSettings {
 
     }
 
+    @Valid
     CorsSettings cors = new CorsSettings();
   }
 
@@ -206,6 +227,7 @@ public class DialobSettings {
 
     private boolean enabled;
 
+    @Valid
     private AuthenticationMethod authenticationMethod = AuthenticationMethod.OAUTH2;
 
     private Map<String,Set<String>> groupPermissions = new HashMap<>();
@@ -227,8 +249,10 @@ public class DialobSettings {
 
     private String region = "eu-central-1";
 
+    @Valid
     private SnsSettings sns = new SnsSettings();
 
+    @Valid
     ElbSettings elb = new ElbSettings();
 
     @Data
@@ -261,6 +285,7 @@ public class DialobSettings {
 
     boolean enabled = false;
 
+    @Valid
     BlobStorage blobStorage = new BlobStorage();
 
     @Data
@@ -274,6 +299,7 @@ public class DialobSettings {
   public static class GcpSettings {
     boolean enabled = false;
 
+    @Valid
     private PubSubSettings pubsub = new PubSubSettings();
 
     @Data

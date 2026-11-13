@@ -39,6 +39,7 @@ import org.springframework.security.web.servlet.util.matcher.PathPatternRequestM
 import org.springframework.security.web.util.matcher.AndRequestMatcher;
 import org.springframework.security.web.util.matcher.AnyRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,16 +60,20 @@ public class ApiServiceSecurityConfigurer extends AbstractApiSecurityConfigurer 
 
   private RequestMatcher apiKeyRequestMatcher;
 
+  private final ObjectMapper objectMapper;
+
   public ApiServiceSecurityConfigurer(@NonNull DialobSettings settings,
                                       @NonNull ServletRequestApiKeyExtractor keyRequestExtractor,
                                       @NonNull TenantAccessEvaluator tenantPermissionEvaluator,
                                       @NonNull AuthenticationStrategy authenticationStrategy,
                                       @NonNull AuthenticationManager authenticationManager,
-                                      @NonNull Environment env) {
+                                      @NonNull Environment env,
+                                      @NonNull ObjectMapper objectMapper) {
     super(settings.getApi().getContextPath(), tenantPermissionEvaluator, authenticationStrategy, settings.getTenant().getMode());
     this.keyRequestExtractor = keyRequestExtractor;
     this.authenticationManager = authenticationManager;
     this.allRequests = env.acceptsProfiles(Profiles.of("!ui"));
+    this.objectMapper = objectMapper;
   }
 
   protected RequestMatcher apiKeyRequestMatcher() {
@@ -126,7 +131,8 @@ public class ApiServiceSecurityConfigurer extends AbstractApiSecurityConfigurer 
       .addFilterBefore(new ApiKeyAuthenticationFilter(
           authenticationManager,
           keyRequestExtractor,
-          apiKeyRequestMatcher()),
+          apiKeyRequestMatcher(),
+          objectMapper),
         AnonymousAuthenticationFilter.class);
   }
 

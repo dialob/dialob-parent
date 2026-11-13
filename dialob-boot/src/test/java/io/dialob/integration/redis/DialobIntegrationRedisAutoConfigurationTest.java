@@ -15,14 +15,14 @@
  */
 package io.dialob.integration.redis;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.dialob.integration.api.Constants;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
-import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
+import org.springframework.boot.data.redis.autoconfigure.DataRedisAutoConfiguration;
 import org.springframework.boot.test.context.runner.WebApplicationContextRunner;
 import org.springframework.integration.redis.channel.SubscribableRedisChannel;
+import tools.jackson.databind.ObjectMapper;
 
 class DialobIntegrationRedisAutoConfigurationTest implements ProvideTestRedis {
 
@@ -30,7 +30,7 @@ class DialobIntegrationRedisAutoConfigurationTest implements ProvideTestRedis {
   void shouldSetupRedisChannelWhenRedisIsAvailable() {
     new WebApplicationContextRunner()
       .withConfiguration(AutoConfigurations.of(
-        RedisAutoConfiguration.class,
+        DataRedisAutoConfiguration.class,
         DialobIntegrationRedisAutoConfiguration.class
        ))
       .withBean(ObjectMapper.class)

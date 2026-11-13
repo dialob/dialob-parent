@@ -27,7 +27,7 @@ export type ComposerAction =
 
   | { type: 'createValueSet', itemId: string | null, entries?: ValueSetEntry[] }
   | { type: 'setValueSetEntries', valueSetId: string, entries: ValueSetEntry[] }
-  | { type: 'addValueSetEntry', valueSetId: string, entry?: ValueSetEntry }
+  | { type: 'addValueSetEntry', valueSetId: string, entry?: ValueSetEntry, insertAfterIndex?: number }
   | { type: 'updateValueSetEntry', valueSetId: string, index: number, entry: ValueSetEntry }
   | { type: 'updateValueSetEntryLabel', valueSetId: string, index: number, text: string | null | undefined, language: string }
   | { type: 'deleteValueSetentry', valueSetId: string, index: number }
@@ -40,7 +40,7 @@ export type ComposerAction =
   | { type: 'setMetadataValue', attr: string, value: any }
   | { type: 'setContextValue', name: string, value: string }
 
-  | { type: 'createVariable', context: boolean }
+  | { type: 'createVariable', context: boolean, insertAfterIndex?: number }
   | { type: 'createScopedExpressionVariable', rowgroupId: string, callbacks?: ComposerCallbacks }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   | { type: 'updateContextVariable', variableId: string, contextType?: ContextVariableType | string, defaultValue?: any }
@@ -48,7 +48,7 @@ export type ComposerAction =
   | { type: 'updateVariablePublishing', variableId: string, published: boolean }
   | { type: 'updateVariableDescription', variableId: string, description: string | undefined }
   | { type: 'deleteVariable', variableId: string }
-  | { type: 'moveVariable', origin: ContextVariable | Variable, destination: ContextVariable | Variable }
+  | { type: 'moveVariable', name: string, toFilteredIndex: number, context: boolean }
 
   | { type: 'addLanguage', language: string, copyFrom?: string }
   | { type: 'deleteLanguage', language: string }

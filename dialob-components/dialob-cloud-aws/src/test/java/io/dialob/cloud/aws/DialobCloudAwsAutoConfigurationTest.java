@@ -15,7 +15,7 @@
  */
 package io.dialob.cloud.aws;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import io.dialob.settings.DialobSettings;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;

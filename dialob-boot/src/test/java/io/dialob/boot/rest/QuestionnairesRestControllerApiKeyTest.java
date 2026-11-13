@@ -41,8 +41,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -54,10 +52,10 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.AopTestUtils;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.Base64;
 import java.util.Collections;
@@ -70,15 +68,14 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
-@ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = RANDOM_PORT, properties = {
   "spring.aop.proxy-target-class=false",
   "tenantId=localhost",
-  "spring.jackson.deserialization.READ_DATE_TIMESTAMPS_AS_NANOSECONDS=false",
-  "spring.jackson.serialization.WRITE_DATES_AS_TIMESTAMPS=false",
-  "spring.jackson.serialization.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS=false",
+  "spring.jackson.datatype.datetime.READ_DATE_TIMESTAMPS_AS_NANOSECONDS=false",
+  "spring.jackson.datatype.datetime.WRITE_DATES_AS_TIMESTAMPS=false",
+  "spring.jackson.datatype.datetime.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS=false",
   "spring.autoconfigure.exclude[0]=org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration",
-  "spring.autoconfigure.exclude[1]=org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration",
+  "spring.autoconfigure.exclude[1]=org.springframework.boot.data.redis.autoconfigure.DataRedisAutoConfiguration",
   "dialob.security.enabled=true",
   "dialob.security.authenticationMethod=NONE",
   "dialob.db.database-type=none"
@@ -105,6 +102,12 @@ class QuestionnairesRestControllerApiKeyTest {
 
   @org.springframework.boot.test.context.TestConfiguration
   public static class TestConfiguration {
+
+    @Bean
+    public ObjectMapper objectMapper() {
+      return new ObjectMapper();
+    }
+
     @Bean
     public GrantedAuthoritiesMapper grantedAuthoritiesMapper() {
       return new StreamingGrantedAuthoritiesMapper(Collections.emptyList());
@@ -112,17 +115,17 @@ class QuestionnairesRestControllerApiKeyTest {
 
     @Bean
     public QuestionnaireDatabase questionnaireDatabase() {
-      return Mockito.mock(QuestionnaireDatabase.class);
+      return mock();
     }
 
     @Bean
     public FormDatabase formDatabase() {
-      return Mockito.mock(FormDatabase.class);
+      return mock();
     }
 
     @Bean
     public ListenerMock listenerMock() {
-      return Mockito.mock(ListenerMock.class);
+      return mock();
     }
 
     @Bean

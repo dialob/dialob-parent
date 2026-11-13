@@ -27,7 +27,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @Configuration(proxyBeanMethods = false)
 @EnableAutoConfiguration(excludeName = {
-  "org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration",
+  "org.springframework.boot.data.redis.autoconfigure.DataRedisAutoConfiguration",
 })
 @EnableScheduling
 @EnableAsync

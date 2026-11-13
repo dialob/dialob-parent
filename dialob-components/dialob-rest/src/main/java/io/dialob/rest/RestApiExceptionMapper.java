@@ -45,8 +45,8 @@ public class RestApiExceptionMapper {
     BindingResult bindingResult = exception.getBindingResult();
     List<String> messages = new ArrayList<>();
     Errors.Builder errorsBuilder = new Errors.Builder()
-      .status(HttpStatus.UNPROCESSABLE_ENTITY.value())
-      .error(HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase());
+      .status(HttpStatus.UNPROCESSABLE_CONTENT.value())
+      .error(HttpStatus.UNPROCESSABLE_CONTENT.getReasonPhrase());
 
     for (ObjectError objectError : bindingResult.getAllErrors()) {
       var builder = new Errors.Error.Builder()
@@ -70,7 +70,7 @@ public class RestApiExceptionMapper {
   }
 
   @ExceptionHandler
-  public ResponseEntity<?> valueInstantiationExceptionHandler(@NonNull com.fasterxml.jackson.databind.exc.ValueInstantiationException exception) {
+  public ResponseEntity<?> valueInstantiationExceptionHandler(@NonNull tools.jackson.databind.exc.ValueInstantiationException exception) {
     Errors.Builder builder = new Errors.Builder();
     Throwable cause = exception.getCause();
     String message = exception.getMessage();
@@ -84,10 +84,10 @@ public class RestApiExceptionMapper {
           .build());
       message = cve.getConstraintViolations().stream().map(cv -> cv.getPropertyPath() + ": " + cv.getMessage()).collect(Collectors.joining("\n"));
     }
-    return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(builder
+    return ResponseEntity.status(HttpStatus.UNPROCESSABLE_CONTENT).body(builder
       .message(message)
-      .status(HttpStatus.UNPROCESSABLE_ENTITY.value())
-      .error(HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase()).build());
+      .status(HttpStatus.UNPROCESSABLE_CONTENT.value())
+      .error(HttpStatus.UNPROCESSABLE_CONTENT.getReasonPhrase()).build());
   }
 
   @ExceptionHandler

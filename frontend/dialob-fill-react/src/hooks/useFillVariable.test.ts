@@ -1,3 +1,5 @@
+/// <reference types="jest" />
+
 import { renderHook, act } from '@testing-library/react';
 import { useFillVariable } from './useFillVariable';
 import { useFillSession } from './useFillSession';

@@ -34,7 +34,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
-import org.mockito.Mockito;
 
 import java.math.BigInteger;
 import java.util.*;
@@ -44,7 +43,7 @@ import static org.mockito.Mockito.*;
 
 class ProgramBuilderTest extends AbstractDialobProgramTest {
 
-  FunctionRegistry functionRegistry = Mockito.mock(FunctionRegistry.class);
+  FunctionRegistry functionRegistry = mock(FunctionRegistry.class);
 
   DialobSessionEvalContextFactory sessionContextFactory = new DialobSessionEvalContextFactory(functionRegistry, null);
 
@@ -83,8 +82,8 @@ class ProgramBuilderTest extends AbstractDialobProgramTest {
   }
 
   @BeforeEach
-  public void resetMocks() {
-    Mockito.reset(functionRegistry);
+  void resetMocks() {
+    reset(functionRegistry);
   }
 
   @Test
@@ -426,10 +425,10 @@ class ProgramBuilderTest extends AbstractDialobProgramTest {
     assertNotNull(session);
     DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session, false);
 
-    final EvalResult.UpdatedItemsVisitor visitor = Mockito.mock(EvalResult.UpdatedItemsVisitor.class);
-    final EvalResult.UpdatedItemsVisitor.UpdatedErrorStateVisitor errorVisitor = Mockito.mock(EvalResult.UpdatedItemsVisitor.UpdatedErrorStateVisitor.class);
-    final EvalResult.UpdatedItemsVisitor.UpdatedItemStateVisitor itemVisitor = Mockito.mock(EvalResult.UpdatedItemsVisitor.UpdatedItemStateVisitor.class);
-    final EvalResult.UpdatedItemsVisitor.UpdatedValueSetVisitor valueSetVisitor = Mockito.mock(EvalResult.UpdatedItemsVisitor.UpdatedValueSetVisitor.class);
+    final EvalResult.UpdatedItemsVisitor visitor = mock(EvalResult.UpdatedItemsVisitor.class);
+    final EvalResult.UpdatedItemsVisitor.UpdatedErrorStateVisitor errorVisitor = mock(EvalResult.UpdatedItemsVisitor.UpdatedErrorStateVisitor.class);
+    final EvalResult.UpdatedItemsVisitor.UpdatedItemStateVisitor itemVisitor = mock(EvalResult.UpdatedItemsVisitor.UpdatedItemStateVisitor.class);
+    final EvalResult.UpdatedItemsVisitor.UpdatedValueSetVisitor valueSetVisitor = mock(EvalResult.UpdatedItemsVisitor.UpdatedValueSetVisitor.class);
 
     when(visitor.visitUpdatedItems()).thenReturn(Optional.of(itemVisitor));
     when(visitor.visitUpdatedErrorStates()).thenReturn(Optional.of(errorVisitor));
@@ -478,10 +477,10 @@ class ProgramBuilderTest extends AbstractDialobProgramTest {
     assertNotNull(session);
     DialobSessionUpdater dialobSessionUpdater = sessionContextFactory.createSessionUpdater(dialobProgram, session, false);
 
-    final EvalResult.UpdatedItemsVisitor visitor = Mockito.mock(EvalResult.UpdatedItemsVisitor.class);
-    final EvalResult.UpdatedItemsVisitor.UpdatedErrorStateVisitor errorVisitor = Mockito.mock(EvalResult.UpdatedItemsVisitor.UpdatedErrorStateVisitor.class);
-    final EvalResult.UpdatedItemsVisitor.UpdatedItemStateVisitor itemVisitor = Mockito.mock(EvalResult.UpdatedItemsVisitor.UpdatedItemStateVisitor.class);
-    final EvalResult.UpdatedItemsVisitor.UpdatedValueSetVisitor valueSetVisitor = Mockito.mock(EvalResult.UpdatedItemsVisitor.UpdatedValueSetVisitor.class);
+    final EvalResult.UpdatedItemsVisitor visitor = mock(EvalResult.UpdatedItemsVisitor.class);
+    final EvalResult.UpdatedItemsVisitor.UpdatedErrorStateVisitor errorVisitor = mock(EvalResult.UpdatedItemsVisitor.UpdatedErrorStateVisitor.class);
+    final EvalResult.UpdatedItemsVisitor.UpdatedItemStateVisitor itemVisitor = mock(EvalResult.UpdatedItemsVisitor.UpdatedItemStateVisitor.class);
+    final EvalResult.UpdatedItemsVisitor.UpdatedValueSetVisitor valueSetVisitor = mock(EvalResult.UpdatedItemsVisitor.UpdatedValueSetVisitor.class);
 
     when(visitor.visitUpdatedItems()).thenReturn(Optional.of(itemVisitor));
     when(visitor.visitUpdatedErrorStates()).thenReturn(Optional.of(errorVisitor));
@@ -1084,6 +1083,31 @@ class ProgramBuilderTest extends AbstractDialobProgramTest {
     Assertions.assertEquals(1, errors.size());
     FormValidationError ve = errors.getFirst();
     Assertions.assertEquals("UNKNOWN_VARIABLE", ve.getMessage());
+  }
+
+  @Test
+  void shouldDetectBooleanItems() {
+    final ProgramBuilder programBuilder = newProgramBuilder();
+    programBuilder.startProgram()
+      .setId("boolean-detection")
+      .addRoot()
+      .addItem("page1")
+      .build()
+      .addPage("page1")
+      .addItem("question1")
+      .addItem("question2")
+      .build()
+      .addQuestion("question1")
+      .setType("boolean")
+      .build()
+      .addQuestion("question2")
+      .setType("text")
+      .build()
+      .build();
+
+    assertTrue(programBuilder.isBooleanItem(IdUtils.toId("question1")));
+    assertFalse(programBuilder.isBooleanItem(IdUtils.toId("question2")));
+    assertFalse(programBuilder.isBooleanItem(IdUtils.toId("missing")));
   }
 
 

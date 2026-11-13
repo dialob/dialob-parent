@@ -45,35 +45,30 @@ public class AsyncFunctionInvoker {
   }
 
 
-  private static class AsyncFunctionCallback implements FunctionRegistry.FunctionCallback {
-    private final QuestionnaireSessionService service;
-    private final String sessionId;
-    private final String targetId;
-
-    public AsyncFunctionCallback(QuestionnaireSessionService service, String sessionId, String targetId) {
-      this.service = service;
-      this.sessionId = sessionId;
-      this.targetId = targetId;
-    }
+  private record AsyncFunctionCallback(
+    QuestionnaireSessionService service,
+    String sessionId,
+    String targetId
+  ) implements FunctionRegistry.FunctionCallback {
 
     @Override
-    public void succeeded(Object result) {
-      QuestionnaireSession questionnaireSession = service.findOne(sessionId, true);
-      questionnaireSession.dispatchActions(Collections.singletonList(ActionsFactory.setValue(
-        targetId,
-        result
-      )));
-    }
+      public void succeeded(Object result) {
+        QuestionnaireSession questionnaireSession = service.findOne(sessionId, true);
+        questionnaireSession.dispatchActions(Collections.singletonList(ActionsFactory.setValue(
+          targetId,
+          result
+        )));
+      }
 
-    @Override
-    public void failed(@NonNull String error) {
-      QuestionnaireSession questionnaireSession = service.findOne(sessionId, true);
-      questionnaireSession.dispatchActions(Collections.singletonList(ActionsFactory.setFailed(
+      @Override
+      public void failed(@NonNull String error) {
+        QuestionnaireSession questionnaireSession = service.findOne(sessionId, true);
+        questionnaireSession.dispatchActions(Collections.singletonList(ActionsFactory.setFailed(
           targetId,
           error
         )));
+      }
     }
-  }
 
 
 }

@@ -44,7 +44,7 @@ export const scrollToItem = (itemId: string, items: DialobItem[], activePage: Di
 export const scrollToTreeItem = (itemId: string) => {
   const tree = document.querySelector('#tree-scroll-container') as HTMLElement;
   const item = document.querySelector(`#tree-item-${itemId}`) as HTMLElement;
-  
+
   if (tree && item) {
     setTimeout(() => {
       const itemTop = item.offsetTop - tree.offsetTop;
@@ -67,20 +67,21 @@ export const scrollToAddedItem = (item: DialobItem) => {
   }), 500);
 }
 
-export const scrollToChoiceItem = () => {
+// Scrolls a table row (matched by data-attribute selector) into view inside the open dialog.
+// When index is omitted or out of range, the last row is targeted (used after appending).
+const scrollToDialogRow = (rowSelector: string, index?: number) => {
   const dialogContent = document.querySelector('.MuiDialogContent-root');
   if (dialogContent) {
-    // Use requestAnimationFrame to ensure DOM updates are complete,
-    // with a small delay to allow complex table layouts to finish rendering
+    // Double requestAnimationFrame + small delay lets complex table layouts finish rendering the new row first
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         setTimeout(() => {
-          // Find all choice item tables and get the last one
-          const choiceTables = dialogContent.querySelectorAll('table table');
-          const lastChoiceItem = choiceTables[choiceTables.length - 1];
+          const rows = dialogContent.querySelectorAll(rowSelector);
+          const target = index !== undefined && index >= 0 && index < rows.length
+            ? rows[index]
+            : rows[rows.length - 1];
 
-          // Scroll the last item into view
-          lastChoiceItem.scrollIntoView({
+          target?.scrollIntoView({
             behavior: 'smooth',
             block: 'nearest',
             inline: 'nearest'
@@ -90,3 +91,7 @@ export const scrollToChoiceItem = () => {
     });
   }
 }
+
+export const scrollToChoiceItem = (index?: number) => scrollToDialogRow('[data-choice-item-row]', index);
+
+export const scrollToVariableRow = (index?: number) => scrollToDialogRow('[data-variable-row]', index);

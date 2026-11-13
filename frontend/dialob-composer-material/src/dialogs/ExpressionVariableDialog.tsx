@@ -16,6 +16,11 @@ import { ChangeIdResult } from '../backend/types';
 import { getErrorSeverity, parseVariableItemId } from '../utils/ErrorUtils';
 import { ErrorMessage } from '../components/ErrorComponents';
 import { MAX_VARIABLE_DESCRIPTION_LENGTH } from '../defaults';
+import { ExpressionVariableBaselineContext, ExpressionVariableBaseline } from './contexts/saving/ExpressionVariableBaselineContext';
+import {
+  mergeAllItemsAfterRename,
+  mergeVariablesAfterRename,
+} from '../utils/RenameMergeUtils';
 
 const StyledButtonContainer = styled(Box)(({ theme }) => ({
   '& .MuiButton-root': {
@@ -64,24 +69,38 @@ const SaveIdButton: React.FC<{
 }> = ({ id, originalId, setIdError, setEditMode }) => {
   const { form, setForm, setRevision } = useComposer();
   const { changeItemId } = useBackend();
-  const { changeVariableId } = useSave();
+  const { savingState, applyIdRenameMerge } = useSave();
   const { setErrors, setActiveVariable } = useEditor();
+  const baseline = React.useContext(ExpressionVariableBaselineContext);
 
   const handleChangeId = () => {
-    if (id !== originalId) {
+    if (id !== originalId && baseline) {
       if (validateId(id, form.data, form.variables)) {
         changeItemId(form, originalId, id).then((response) => {
           const result = response.result as ChangeIdResult;
           if (response.success) {
+            const mergedVariables = mergeVariablesAfterRename(
+              savingState.variables,
+              baseline.variables,
+              result.form.variables,
+              originalId,
+              id
+            );
+            const mergedItems = mergeAllItemsAfterRename(
+              savingState.items,
+              baseline.items,
+              result.form.data,
+              originalId,
+              id
+            );
+
             setForm(result.form);
             setErrors(result.errors);
             setIdError(false);
             setRevision(result.rev);
             setEditMode(false);
-            if (result.form.variables) {
-              changeVariableId(result.form.variables);
-            }
             setActiveVariable(id);
+            applyIdRenameMerge({ mergedVariables, mergedItems });
           } else if (response.apiError) {
             setErrors([{ level: 'FATAL', message: response.apiError.message }]);
             setEditMode(false);
@@ -160,12 +179,9 @@ const ExpressionVariableDialogContent: React.FC = () => {
     return savingState.variables.find(v => !isContextVariable(v) && v.name === editor.activeVariable) as Variable | undefined;
   }, [editor.activeVariable, savingState.variables]);
 
-  // Filter errors by matching either direct itemId or parsed variable name from rowgroup-scoped format
   const itemErrors = editor.errors?.filter(e => {
     if (!e.itemId || !variable) return false;
-    // Direct match
     if (e.itemId === variable.name) return true;
-    // Parse rowgroup-scoped variable format (e.g., "rg2.*.product") and match the variable name
     const parsedVariableName = parseVariableItemId(e.itemId);
     return parsedVariableName === variable.name;
   });
@@ -203,6 +219,16 @@ const ExpressionVariableDialog: React.FC = () => {
   const [id, setId] = React.useState<string>(editor.activeVariable || '');
   const [idError, setIdError] = React.useState<boolean>(false);
 
+  const baseline = React.useMemo<ExpressionVariableBaseline | null>(() => {
+    if (!dialogOpen) {
+      return null;
+    }
+    return {
+      variables: structuredClone(form.variables ?? []),
+      items: structuredClone(form.data),
+    };
+  }, [dialogOpen, editor.activeVariable]);
+
   React.useEffect(() => {
     setId(editor.activeVariable || '');
     setEditMode(editor.activeVariableIdEditMode ?? false);
@@ -228,47 +254,49 @@ const ExpressionVariableDialog: React.FC = () => {
     setId(editor.activeVariable || '');
   }
 
-  if (!dialogOpen) {
+  if (!dialogOpen || !baseline) {
     return null;
   }
 
   return (
-    <SavingProvider savingState={{ variables: form.variables, items: structuredClone(form.data) }}>
-      <Dialog open={dialogOpen} onClose={handleClose} fullWidth maxWidth='md' PaperProps={{ sx: { maxHeight: '70vh' } }}>
-        <DialogTitle sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-          {editMode ? <TextField value={id} autoFocus={editMode} onChange={(e) => setId(e.target.value)} error={idError}
-            helperText={<FormattedMessage id='dialogs.change.id.tip' />} InputProps={{
-              endAdornment: (
-                <>
-                  <SaveIdButton id={id} originalId={editor.activeVariable || ''} setIdError={setIdError} setEditMode={setEditMode} />
-                  <IconButton onClick={handleCloseChange}><Close color='error' /></IconButton>
-                </>
-              )
-            }} /> :
-            <Button variant='text' sx={{ color: 'inherit', textTransform: 'none', fontWeight: 'bold', fontSize: 'h5.fontSize' }}
-              endIcon={<Edit color='primary' />} onClick={() => setEditMode(true)}>
-              {id}
-            </Button>}
-          <Box flexGrow={1} />
-          <StyledButtonContainer>
-            <Button variant='outlined' endIcon={<Help />}
-              onClick={() => window.open(docsUrl, "_blank")}>
-              <FormattedMessage id='buttons.help' />
-            </Button>
-            <Button color='error' endIcon={<Delete />} onClick={handleDelete}>
-              <FormattedMessage id='buttons.delete' />
-            </Button>
-          </StyledButtonContainer>
-        </DialogTitle>
-        <DialogContent sx={{ borderTop: 1, borderBottom: 1, borderColor: 'divider', p: 3 }}>
-          <ExpressionVariableDialogContent />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} endIcon={<Close />}><FormattedMessage id='buttons.close' /></Button>
-          <SaveButton />
-        </DialogActions>
-      </Dialog>
-    </SavingProvider>
+    <ExpressionVariableBaselineContext.Provider value={baseline}>
+      <SavingProvider savingState={{ variables: form.variables, items: structuredClone(form.data) }}>
+        <Dialog open={dialogOpen} onClose={handleClose} fullWidth maxWidth='md' PaperProps={{ sx: { maxHeight: '70vh' } }}>
+          <DialogTitle sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+            {editMode ? <TextField value={id} autoFocus={editMode} onChange={(e) => setId(e.target.value)} error={idError}
+              helperText={<FormattedMessage id='dialogs.change.id.tip' />} InputProps={{
+                endAdornment: (
+                  <>
+                    <SaveIdButton id={id} originalId={editor.activeVariable || ''} setIdError={setIdError} setEditMode={setEditMode} />
+                    <IconButton onClick={handleCloseChange}><Close color='error' /></IconButton>
+                  </>
+                )
+              }} /> :
+              <Button variant='text' sx={{ color: 'inherit', textTransform: 'none', fontWeight: 'bold', fontSize: 'h5.fontSize' }}
+                endIcon={<Edit color='primary' />} onClick={() => setEditMode(true)}>
+                {id}
+              </Button>}
+            <Box flexGrow={1} />
+            <StyledButtonContainer>
+              <Button variant='outlined' endIcon={<Help />}
+                onClick={() => window.open(docsUrl, "_blank")}>
+                <FormattedMessage id='buttons.help' />
+              </Button>
+              <Button color='error' endIcon={<Delete />} onClick={handleDelete}>
+                <FormattedMessage id='buttons.delete' />
+              </Button>
+            </StyledButtonContainer>
+          </DialogTitle>
+          <DialogContent sx={{ borderTop: 1, borderBottom: 1, borderColor: 'divider', p: 3 }}>
+            <ExpressionVariableDialogContent />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose} endIcon={<Close />}><FormattedMessage id='buttons.close' /></Button>
+            <SaveButton />
+          </DialogActions>
+        </Dialog>
+      </SavingProvider>
+    </ExpressionVariableBaselineContext.Provider>
   )
 }
 

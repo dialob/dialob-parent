@@ -15,7 +15,7 @@
  */
 package io.dialob.api.questionnaire;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import io.dialob.api.proto.ActionItem;
 import org.junit.jupiter.api.Test;
 

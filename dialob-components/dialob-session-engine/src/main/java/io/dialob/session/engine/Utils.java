@@ -191,43 +191,47 @@ public final class Utils {
 
 
   public static Object validateDefaultValue(String id, ValueType valueType, Object value, Consumer<FormValidationError> errorListener) {
-    if (value == null) {
-      return null;
-    }
-    if (value instanceof String s) {
-      try {
-        return valueType.parseFromString(s);
-      } catch (Exception e) {
-        errorListener.accept(createError(id, INVALID_DEFAULT_VALUE));
+    switch (value) {
+      case null -> {
         return null;
       }
-    }
-    if (value instanceof Boolean && valueType == ValueType.BOOLEAN) {
-      return value;
-    }
-    if (value instanceof LocalDate && valueType == ValueType.DATE) {
-      return value;
-    }
-    if (value instanceof LocalTime && valueType == ValueType.TIME) {
-      return value;
-    }
-    if (value instanceof Period && valueType == ValueType.PERIOD) {
-      return value;
-    }
-    if (value instanceof Duration && valueType == ValueType.DURATION) {
-      return value;
-    }
-    if (value instanceof BigDecimal && valueType == ValueType.DECIMAL) {
-      return value;
-    }
-    if (value instanceof Integer i && valueType == ValueType.INTEGER) {
-      return BigInteger.valueOf(i);
-    }
-    if (value instanceof Long l && valueType == ValueType.INTEGER) {
-      return BigInteger.valueOf(l);
-    }
-    if (value instanceof Double aDouble && valueType == ValueType.DECIMAL) {
-      return BigDecimal.valueOf(aDouble);
+      case String s -> {
+        try {
+          return valueType.parseFromString(s);
+        } catch (Exception e) {
+          errorListener.accept(createError(id, INVALID_DEFAULT_VALUE));
+          return null;
+        }
+      }
+      case Boolean b when valueType == ValueType.BOOLEAN -> {
+        return value;
+      }
+      case LocalDate localDate when valueType == ValueType.DATE -> {
+        return value;
+      }
+      case LocalTime localTime when valueType == ValueType.TIME -> {
+        return value;
+      }
+      case Period period when valueType == ValueType.PERIOD -> {
+        return value;
+      }
+      case Duration duration when valueType == ValueType.DURATION -> {
+        return value;
+      }
+      case BigDecimal bigDecimal when valueType == ValueType.DECIMAL -> {
+        return value;
+      }
+      case Integer i when valueType == ValueType.INTEGER -> {
+        return BigInteger.valueOf(i);
+      }
+      case Long l when valueType == ValueType.INTEGER -> {
+        return BigInteger.valueOf(l);
+      }
+      case Double aDouble when valueType == ValueType.DECIMAL -> {
+        return BigDecimal.valueOf(aDouble);
+      }
+      default -> {
+      }
     }
     errorListener.accept(createError(id, INVALID_DEFAULT_VALUE));
     return null;
