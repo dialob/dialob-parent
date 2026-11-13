@@ -3,14 +3,14 @@
   "version": "2.2.8",
   "private": true,
   "scripts": {
-    "ci:publish": "pnpm publish -r --no-git-checks --access=public && pnpm changeset tag",
+    "ci:publish": "pnpm publish -r --no-git-checks --access=public && pnpm changeset git-tag",
     "ci:version": "pnpm changeset version && pnpm install --lockfile-only"
   },
   "dependencies": {
     "@types/node": "^26.1.1"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.31.1"
+    "@changesets/cli": "^3.0.3"
   },
   "packageManager": "pnpm@11.17.0"
 }
