@@ -13,10 +13,10 @@ jobs:
       pull-requests: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
 
       - name: Checkout wiki
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
         with:
           repository: ${{ github.repository }}.wiki
           path: wiki
@@ -26,7 +26,7 @@ jobs:
         run: bash scripts/sync-wiki.sh
 
       - name: Create or update sync pull request
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@3ffccacd46053766916f087ce41d627c0b8cf2d1
         with:
           branch: wiki-sync
           base: dev
