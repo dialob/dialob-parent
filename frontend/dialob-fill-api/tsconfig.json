@@ -15,6 +15,7 @@
     "sourceMap": true,
     "allowSyntheticDefaultImports": true,
     "jsx": "react",
+    "types": ["node", "jest"],
     "typeRoots": [
       "index.d.ts",
       "node_modules/@types"
