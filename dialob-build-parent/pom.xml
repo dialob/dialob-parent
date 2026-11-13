@@ -94,6 +94,7 @@
 
     <!-- docker image -->
     <image.base.name>amazoncorretto:${java.version}</image.base.name>
+    <jackson.version>3.3.0</jackson.version>
   </properties>
 
 
@@ -419,12 +420,12 @@
       <dependency>
         <groupId>tools.jackson.core</groupId>
         <artifactId>jackson-databind</artifactId>
-        <version>3.1.6</version>
+        <version>${jackson.version}</version>
       </dependency>
       <dependency>
         <groupId>tools.jackson.dataformat</groupId>
         <artifactId>jackson-dataformat-xml</artifactId>
-        <version>3.0.4</version>
+        <version>${jackson.version}</version>
       </dependency>
       
     </dependencies>
