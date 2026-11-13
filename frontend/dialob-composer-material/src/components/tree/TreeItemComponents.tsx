@@ -10,6 +10,7 @@ export const StyledListItem = styled(ListItem, {
   shouldForwardProp: (prop) => !['clone', 'ghost', 'disableInteraction'].includes(prop.toString()),
 })<StyledProps>(({ theme, ghost, disableInteraction }) => ({
   marginBottom: theme.spacing(-0.125),
+  paddingRight: 0,
   pointerEvents: disableInteraction ? 'none' : 'auto',
   opacity: ghost ? 0.5 : 1,
 }));

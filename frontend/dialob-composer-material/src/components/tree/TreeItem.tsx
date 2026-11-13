@@ -9,6 +9,7 @@ import { useComposer } from '../../dialob';
 import { useErrorColorSx } from '../../utils/ErrorUtils';
 import { useBackend } from '../../backend/useBackend';
 import { DialobItem } from '../../types';
+import { resolveLabelWithFallback } from './utilities';
 
 
 export interface TreeItemProps {
@@ -50,6 +51,19 @@ export const TreeItem = React.forwardRef<HTMLDivElement, TreeItemProps>((props, 
   const truncatedTitle = title.length > maxTextLength
     ? title.substring(0, maxTextLength) + '...'
     : title;
+
+  const tooltipTitle = React.useMemo(() => {
+    if (editor.treeItemDisplay === 'id') {
+      const formItem = form.data[id];
+      if (isVariable || !formItem) {
+        return '';
+      }
+      const languages = form.metadata.languages || [editor.activeFormLanguage];
+      const label = resolveLabelWithFallback(formItem, editor.activeFormLanguage, languages);
+      return label.text !== id ? label.text : '';
+    }
+    return `ID: ${id}`;
+  }, [editor.treeItemDisplay, editor.activeFormLanguage, form.data, form.metadata.languages, id, isVariable]);
 
   React.useEffect(() => {
     if (editor?.highlightedItem?.id === id) {
@@ -109,7 +123,7 @@ export const TreeItem = React.forwardRef<HTMLDivElement, TreeItemProps>((props, 
             <KeyboardArrowDown />
           </IconButton>
         )}
-        <Tooltip title={`ID: ${id}`} placement="right" arrow>
+        <Tooltip title={tooltipTitle} placement="right" arrow disableHoverListener={!tooltipTitle}>
           <Typography
             variant="body2"
             noWrap={clone ? false : true}

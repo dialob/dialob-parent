@@ -37,6 +37,8 @@ const en = {
 
   'tree.expand': 'Expand all',
   'tree.collapse': 'Collapse all',
+  'tree.display.label': 'Label',
+  'tree.display.id': 'ID',
 
   'buttons.visibility': 'Visibility',
   'buttons.cancel': 'Cancel',

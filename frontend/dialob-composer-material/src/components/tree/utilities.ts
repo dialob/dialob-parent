@@ -3,6 +3,7 @@ import { arrayMove } from '@dnd-kit/sortable';
 import { FlattenedItem, TreeItem, TreeItems } from './types';
 import { Variable, ContextVariable, DialobItem } from '../../types';
 import { ItemConfig } from '../../defaults/types';
+import { TreeItemDisplay } from '../../editor/types';
 
 export const iOS = /iPad|iPhone|iPod/.test(navigator.platform);
 
@@ -11,7 +12,7 @@ interface LabelResult {
   isFallback: boolean;
 }
 
-function resolveLabelWithFallback(
+export function resolveLabelWithFallback(
   item: DialobItem,
   activeLanguage: string,
   availableLanguages: string[]
@@ -150,7 +151,8 @@ export const buildTreeFromForm = (
   config: ItemConfig, 
   collapsedItems?: Record<string, boolean>, 
   availableLanguages?: string[],
-  variables?: (Variable | ContextVariable)[] | undefined
+  variables?: (Variable | ContextVariable)[] | undefined,
+  treeItemDisplay: TreeItemDisplay = 'label'
 ): TreeItems => {
   const createdNodes = new Map<string, TreeItem>();
   const languages = availableLanguages || [language];
@@ -175,7 +177,9 @@ export const buildTreeFromForm = (
     const treeCollapsible = config.items.find(c => c.matcher(item))?.props.treeCollapsible ?? false;
     const isCollapsed = collapsedItems?.[item.id] ?? !treeCollapsible;
 
-    const labelResult = resolveLabelWithFallback(item, language, languages);
+    const labelResult = treeItemDisplay === 'id'
+      ? { text: item.id, isFallback: false }
+      : resolveLabelWithFallback(item, language, languages);
 
     const newNode: TreeItem = {
       id: item.id,

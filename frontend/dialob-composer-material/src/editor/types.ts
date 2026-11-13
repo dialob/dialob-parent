@@ -5,6 +5,7 @@ export type ComposerStatus = 'ERROR' | 'WARNING' | 'INFO' | 'FATAL' | 'OK';
 export type ConfirmationDialogType = 'duplicate' | 'delete' | 'deleteVariable';
 export type OptionsTabType = 'id' | 'label' | 'description' | 'rules' | 'validations' | 'choices' | 'properties';
 export type VariableTabType = 'context' | 'expression';
+export type TreeItemDisplay = 'label' | 'id';
 
 export type EditorError = {
   level: ErrorSeverity;
@@ -32,4 +33,5 @@ export type EditorState = {
   activeVariableIdEditMode?: boolean;
   collapsedItems: Record<string, boolean>;
   markdownHelpDialogOpen?: boolean;
+  treeItemDisplay: TreeItemDisplay;
 };
