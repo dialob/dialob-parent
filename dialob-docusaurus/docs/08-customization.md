@@ -19,7 +19,7 @@ TODO:: provide documentation for specific properties and what each does
 
 ### Composer-side customization
 
-While setting up a client-specific Dialob application, modifications can be made to adjust which types of items (structures, inputs, outputs) will be available and, if needed, which types can be added to the base list. Additionally, the theme and the color-scheme of the Composer can be adjusted to match the client needs. 
+While setting up a client-specific Dialob application, modifications can be made to adjust which types of items (structures, inputs, outputs) will be available and, if needed, which types can be added to the base list. Item types can also be organized into subcategories, which are shown as nested menus in the "Add item" menu - for example, the default configuration groups the inputs into "Text fields", "Numbers", "Date & Time" and "Selections". Additionally, the theme and the color-scheme of the Composer can be adjusted to match the client needs. 
 
 Read more: [Developer guidelines for customization](https://github.com/dialob/dialob-parent/tree/dev/frontend/dialob-composer-material-custom-app#dialob-composer-custom-configuration-demo-app)
 

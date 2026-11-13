@@ -261,6 +261,12 @@ The behaviour of these two operators can be seen in how questions are displayed 
 
   Example expression variable value: `format('Hello {firstName}, your total is {total:#,##0} euros')`. The variable automatically recomputes whenever any referenced item value changes. Note that placeholders reference items by ID only; to interpolate a calculated value, define an expression variable for it and reference that variable's ID (for example `{sum}`, not `{q1 + q2}`).
 
+  `format()` calls are checked the same way as any other expression, and problems are shown in the error list. If the argument is not a string literal (for example `format(text1)`), the error "format() argument must be a string literal" is shown, and if the template references an ID that does not exist in the form, the error "Unknown item in format() template" is shown.
+
+* **`calculateTimeDiff(a, b, unit)`**: Returns the whole number of units from `b` to `a`, in the same direction as `a - b`. The arguments are two dates or two times, and a unit. Return type is *Number*. See [Turning a date or time difference into a number](#turning-a-date-or-time-difference-into-a-number).
+
+* **`convertTimeDiff(difference, unit)`**: Converts a difference that is already stored, such as the result of `endDate - startDate` or `endTime - startTime`, into a whole number of units. Return type is *Number*. See [Turning a date or time difference into a number](#turning-a-date-or-time-difference-into-a-number).
+
 **NOTE**: Although the list of inbuilt functions can be extended via Java or Groovy, users should consider using service requests instead as an alternative to functions. This especially true in cases where the scope of functions is growing larger and more complex.  
 
 ---
@@ -285,8 +291,12 @@ Language specification follows ISO-639-1 two-character abbreviations. [See list 
 | `or`              |  `today()`          |                 |
 | `true`            |  `week`             |                 |
 | `valid`           |  `weeks`            |                 |
-| `format`        |  `year`             |                 |
+| `format`          |  `month`            |                 |
+|                   |  `months`           |                 |
+|                   |  `year`             |                 |
 |                   |  `years`            |                 |
+|                   |  `calculateTimeDiff()` |              |
+|                   |  `convertTimeDiff()`   |              |
 
 ---
 
@@ -401,6 +411,9 @@ When using validations, the logic works opposite to visibility and required logi
   * Validation rules
   * Visibility rules
   * Requirement rules
+* In addition, there are rules for more specific purposes:
+  * Read only rules
+  * Add row and remove row rules (multi-row groups only)
 * Different types of rules are written in different places in Composer
 
 ---
@@ -422,6 +435,12 @@ The current state of Required and Validations is also "monitored" across all vis
   * As a basic example, validation logic can be used to require a user to answer a question about his/her age with numbers only. If the user enters a short text or series of letters in the "age" field, the validation logic will catch this mistake and require the user to enter input in the specified correct format: Integer.  Validations are highly-customizable and can be written in a rich and complex manner.
   * Validation logic can also be written with Java Regular Expressions
 
+In addition to these three, there are rules which serve more specific purposes:
+
+* **Read only logic**: Defines if the answer to a given Request is locked, so that it is shown to the user but cannot be changed. Read more in [Read Only Rules](#read-only-rules).
+
+* **Add row and remove row logic**: Defines if the user is allowed to add new rows to, or remove rows from, a multi-row group. Read more in [Multi-row Group Rules](#multi-row-group-rules).
+
 **Important notes**:
 
 * When logic rules perform their evaluations, the only outcome that counts is `true`. This means that if expressions do not validate to `true`, then the Visibility, Required, and Validation form control elements will not do anything, as they only operate based on evaluations of `true`. These rule elements will not exist in the context of the form.
@@ -432,7 +451,9 @@ The current state of Required and Validations is also "monitored" across all vis
 
 Rules can be edited when opening the item edit dialog, by clicking on the hamburger icon in the corner of the item, and selecting "Options". Different tabs are used for different rules.
 
-* **Visibility and Requirement Rules**: In the "Rules" tab.
+* **Visibility, Requirement and Read only Rules**: In the "Rules" tab.
+
+* **Add row and Remove row Rules**: In the "Rules" tab of a multi-row group.
 
 * **Validation Rule**: In the "Validations" tab. 
 
@@ -484,6 +505,7 @@ Language specification is written into the visibility or required fields as an e
   * Returning the difference between different times in hours and minutes
   * Checking that one time is earlier or later than another time
   * Calculating a date period in years, months, days
+  * Turning a date or time difference into a whole number of units with `calculateTimeDiff` and `convertTimeDiff`
   * Building logic to add or subtract years, months, or days
   * Validating that one date has occurred before or after another date
 
@@ -512,9 +534,11 @@ The `now()` function returns the system time in 12-hour format (hh:mm AM/PM): Fo
 | `days`                                |  `hours`                          |
 | `week`                                |  `minute`                         |
 | `weeks`                               |  `minutes`                        |
-| `year`                                |  `second`                         |
-| `years`                               |  `seconds`                        |
-| `today()`                             |  `now()`                          |
+| `month`                               |  `second`                         |
+| `months`                              |  `seconds`                        |
+| `year`                                |  `now()`                          |
+| `years`                               |                                   |
+| `today()`                             |                                   |
 
 
 ---
@@ -551,6 +575,8 @@ For example, we will calculate the duration of a workday. The following will ret
 **Return**: `Your workday is PT9H15M long.`
 
 *In other words, this return value says that the time difference between time1 and time2 is a **Period** of **Time** of 9 **H**ours, 15 **M**inutes.*
+
+This value is a duration, not a number. To use the difference as a number of hours, minutes, or seconds, use `calculateTimeDiff` or `convertTimeDiff`, described in [Turning a date or time difference into a number](#turning-a-date-or-time-difference-into-a-number).
 
 **Time duration** can be used also to build logic with the following notation:  
 `8 hours + 30 minutes + 22 seconds`
@@ -601,6 +627,8 @@ For example, the following will return the difference between two dates, `date1`
 **Return**: `The time difference between date1 and date2 is P15Y5M13D`
 
 *In other words, this return value says that the time difference between these two dates is a **Period** of 15 **Y**ears, 5 **M**onths, and 13 **D**ays.*
+
+This value is a period, not a number. To use the difference as a number, use `calculateTimeDiff` or `convertTimeDiff`, described in [Turning a date or time difference into a number](#turning-a-date-or-time-difference-into-a-number).
 
 ### Building logic to add or subtract years, months, or days 
 
@@ -665,6 +693,65 @@ Filling side preview
 
 ---
 
+## Turning a date or time difference into a number
+
+Subtracting two dates or two times stores a period or a duration. `calculateTimeDiff` and `convertTimeDiff` turn that difference into a whole number, so it can be used anywhere a number is accepted. Both names are offered in the expression editor.
+
+When the cursor is inside the unit quotes, the editor suggests the units that call accepts, including the singular form and `hr` and `min`. The list follows the arguments already written:
+
+* Two dates, or a period, suggests years, months, weeks, days, hours, minutes, and seconds.
+* Two times suggests hours, minutes, and seconds.
+* A duration suggests weeks, days, hours, minutes, and seconds.
+
+The editor treats an argument as a date, a time, a period, or a duration when it is a date or time item, a context variable of type date or time, a variable whose expression is one date or time minus another, or that same subtraction written directly in the call. If it cannot tell, it still lists the units and marks which values each one applies to, such as `dates` or `dates, times`.
+
+Incomplete units are dropped: 90 minutes is 1 hour. The sign is preserved, so a difference that runs backwards is negative. If either value is missing, the function returns no number. Any unit that is not accepted for that call fails the expression.
+
+Unit matching is case-insensitive. Each unit also accepts its singular form. `"hr"` means hours and `"min"` means minutes.
+
+| Call | Accepted units |
+|---|---|
+| `calculateTimeDiff` with two dates | years, months, weeks, days, hours, minutes, seconds |
+| `calculateTimeDiff` with two times | hours, minutes, seconds |
+| `convertTimeDiff` with a period (the result of subtracting two dates) | years, months, weeks, days, hours, minutes, seconds |
+| `convertTimeDiff` with a duration (the result of subtracting two times) | weeks, days, hours, minutes, seconds |
+
+### `calculateTimeDiff(a, b, unit)`
+
+Returns the whole number of units from `b` to `a`, the same direction as `a - b`. Dates are treated as midnight, so the count is exact, including across months and years.
+
+With `startDate = 2020-01-01`, `endDate = 2020-02-01`, `startTime = 08:00`, and `endTime = 09:30`:
+
+| Call | Result |
+|---|---|
+| `calculateTimeDiff(endDate, startDate, "days")` | 31 |
+| `calculateTimeDiff(endDate, startDate, "hours")` | 744 |
+| `calculateTimeDiff(endDate, startDate, "months")` | 1 |
+| `calculateTimeDiff(endTime, startTime, "minutes")` | 90 |
+| `calculateTimeDiff(endTime, startTime, "hours")` | 1 |
+
+### `convertTimeDiff(difference, unit)`
+
+Converts a difference that is already stored.
+
+A time difference (a duration, such as `PT1H30M`) converts exactly.
+
+A date difference (a period, such as `P1M`) converts years and months as calendar counts. Smaller units keep the day part of the period and treat each month as 30 days, so a period that contains months or years is approximate.
+
+Using the same values, `dateSpan = endDate - startDate` stores `P1M`, and `timeSpan = endTime - startTime` stores `PT1H30M`:
+
+| Call | Result |
+|---|---|
+| `convertTimeDiff(dateSpan, "days")` | 30 |
+| `convertTimeDiff(dateSpan, "hours")` | 720 |
+| `convertTimeDiff(dateSpan, "months")` | 1 |
+| `convertTimeDiff(timeSpan, "minutes")` | 90 |
+| `convertTimeDiff(timeSpan, "hours")` | 1 |
+
+`calculateTimeDiff(endDate, startDate, "days")` is 31 because January 2020 has 31 days. `convertTimeDiff(dateSpan, "days")` is 30 because the stored period is one month, and a month is counted as 30 days. Use `calculateTimeDiff` when the number of days must match the calendar.
+
+---
+
 # Validation Rules
 
 ## Quick Summary
@@ -716,7 +803,7 @@ To make a validation message appear to the user on the filling side, the DEL rul
 * Visibility rules determine when and if a particular question is shown on the filling side.
 * Requirement rules determine whether a question must be answered before proceeding to the next page or completing the form.
 * Visibility and Requirement rules should be written in the "Rules" tab of the item edit dialog.
-* Visibility rules can be written for local list items using when expanding the list item and typing the rule in the "Visibility" field. The highlighted eye icon indicates that a visibility rule is present.
+* Visibility rules can be written for local list items by clicking the edit icon in the visibility column of the list item and typing the rule in the editor that opens below the row. The highlighted eye icon indicates that a visibility rule is present.
 
 <img width="890" alt="05-13" src="https://github.com/user-attachments/assets/5b59ec38-89c6-4d2b-8a15-d32a52eb3091" />
 
@@ -743,6 +830,56 @@ When considering how to write visibility and requirement rules to be triggered a
 <img width="894" alt="05-15" src="https://github.com/user-attachments/assets/2140199a-f223-4a28-af5a-c256205ed560" />
 
 In this case, text2 will only be a required field if the response to boolean1 in the previous field is `true`. 
+
+---
+
+# Read Only Rules
+
+## Quick Summary
+
+* Read only rules determine when the answer to a question is locked on the filling side, so that it is visible but cannot be changed.
+* Read only rules should be written in the "Read only" field of the "Rules" tab of the item edit dialog.
+* Items inside a group inherit the read only state of the group, unless they have a read only rule of their own.
+* Items with a read only rule show a read only indicator icon, which opens the "Rules" tab when clicked.
+
+---
+
+## Overview
+
+**Read only rules** determine when a question is shown to the user without letting them change its answer. This is useful, for example, when an answer has been pre-filled from a context variable or a default value and should only be confirmed by the user, or when answers should be locked once a certain condition is met.
+
+Like visibility and requirement rules, read only rules must evaluate to a Boolean value. When the rule evaluates to `true`, the question is read only, and the filling side will not accept new answers to it. Simply writing `true` in the Read only field is enough to make the question always read only.
+
+A read only rule can also be written for a group. In that case, all items inside the group become read only when the rule evaluates to `true`, unless an item has a read only rule of its own, which then takes precedence.
+
+Example: To lock `text2` after the user has confirmed their answers with the boolean question `confirmed`, write the following read only rule for `text2`:
+
+`confirmed = true`
+
+---
+
+# Multi-row Group Rules
+
+## Quick Summary
+
+* Multi-row groups have two additional rules: "Add row when" and "Remove row when".
+* These rules control whether the user is allowed to add new rows to, or remove existing rows from, a multi-row group.
+* Both rules are written in the "Rules" tab of the multi-row group's edit dialog, and are only shown for multi-row groups.
+* If a rule is not defined, adding and removing rows is always allowed.
+
+---
+
+## Overview
+
+By default, the user can add as many rows to a multi-row group as they want, and remove any of them. The **Add row when** and **Remove row when** rules make it possible to limit this.
+
+* **Add row when**: When this rule evaluates to `true`, new rows can be added to the group. When it evaluates to `false`, adding rows is disabled.
+* **Remove row when**: When this rule evaluates to `true`, rows can be removed from the group. When it evaluates to `false`, removing rows is disabled.
+
+The `count(rowgroupId)` function is especially useful here, as it gives the number of rows currently in the group. For example, to allow at most 5 rows and to always keep at least one row in the multi-row group `rowgroup1`:
+
+* Add row when: `count(rowgroup1) < 5`
+* Remove row when: `count(rowgroup1) > 1`
 
 ---
 

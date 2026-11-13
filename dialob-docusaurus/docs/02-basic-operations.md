@@ -58,6 +58,7 @@ Note that page logic can contain only visibility rules.
 * Groups can be nested
 * Inputs can exist outside groups
 * Groups are created with the 'Add Item / Structure' buttons
+* Groups can be converted to other group types by clicking on the type shown in the group header
 * Groups are deleted via the hamburger icon in the top right corner of the group
 
 ---
@@ -97,7 +98,7 @@ A vertical survey group is used to create survey-style questions.  A vertical su
 
 This type of group is used when multiple inputs are required, for example, when collecting a client's first, middle, and last names as separate inputs. On the filling side, a multi-row group will be rendered as a row containing a group of input fields. The number of fields rendered within the group is determined by the number of input fields created within that group on the Composer side.
 
-A multi-row group can contain any combination of different inputs.  
+A multi-row group can contain any combination of different inputs. It can also contain expression variables, which are calculated separately for each row. Read more in [Expression variables in multi-row groups](03-advanced-operations#expression-variables-in-multi-row-groups).
 
 ---
 
@@ -107,6 +108,19 @@ To create a group, click 'Add item / Structure' buttons at the bottom left corne
 
 <img width="1920" alt="create-group" src="https://github.com/user-attachments/assets/1ac8f0ed-0190-4341-8222-14f71db45598" />
 
+
+---
+
+## Converting a group
+
+A group can be converted to another group type without having to recreate it and its contents. To convert a group, click on the group's current type shown in the group header, next to the hamburger icon, and select the desired type from the "Convert to" list.
+
+The following conversions are available by default:
+
+* Group to Multi-row Group, and Multi-row Group to Group
+* Survey Group to Survey Group (vertical), and Survey Group (vertical) to Survey Group
+
+The same conversion menu is also available for questions, for example to convert between Text and Text box.
 
 ---
 
@@ -210,6 +224,14 @@ As an example, if a question requires that a user enter a first name, the type c
 
 * **Address**: Enables autocomplete of addresses (disabled by default)
 
+* **Personal identity code (HETU)**: Return type will be a string. Comes with a built-in validation rule that checks the answer is a valid Finnish personal identity code
+
+* **Company business ID (y-tunnus)**: Return type will be a string. Comes with a built-in validation rule that checks the answer is a valid Finnish business ID
+
+* **Account number in IBAN format**: Return type will be a string. Comes with a built-in validation rule that checks the answer is a valid IBAN account number
+
+The Text, Text box, HETU, y-tunnus and IBAN types are all text-based, and can be converted to one another by clicking on the type shown in the item header.
+
 * **Decimal**: Return type will be a decimal number
 
 * **Number**: Return type will be an Integer number (whole number, positive, negative, or zero, no decimals)
@@ -258,17 +280,20 @@ Note text can be styled with Markdown. [Markdown Syntax Guide](https://www.markd
 
 * To edit an item, click on the hamburger menu and select "Options", this will open the item editing dialog, which is the central place for any edits.
 * The item editing dialog is where you can edit the localized labels, descriptions, rules, and other item-specific settings.
+* Changes made in the item editing dialog are applied by clicking "Save".
+* Labels and descriptions are written in Markdown, with a formatting toolbar, keyboard shortcuts, and a live preview.
+* Fields which have a value show a clear button, which removes the value completely.
 
 ---
 
 ## Overview
 
 The dialog is organized into tabs, each of which contains a different set of settings for the item. The tabs are as follows:
- - **Label**: This is where you can edit the localized labels for the item. The labels are written in Markdown, which allows for simple text formatting. You can preview the formatted text by clicking the "Preview" button.
+ - **Label**: This is where you can edit the localized labels for the item. The labels are written in Markdown, which allows for simple text formatting. See [Markdown editor](#markdown-editor) below.
   - **Description**: This is where you can add a description to the item. The description is also written in Markdown.
-  - **Rules**: This is where you can add visibility and/or requirements rules to the item. Visibility rules determine when the item is shown to the user and requirement rules determine when the item is required to be filled out. The rules are written in Dialob Expression Language (DEL). Default value for the item can also be set here.
+  - **Rules**: This is where you can add visibility, requirement and read only rules to the item. Visibility rules determine when the item is shown to the user, requirement rules determine when the item is required to be filled out, and read only rules determine when the answer to the item cannot be changed. For multi-row groups, this tab also contains the "Add row when" and "Remove row when" rules, which control whether the user can add or remove rows. The rules are written in Dialob Expression Language (DEL). Default value for the item can also be set here. Read more about rules in [Introduction to DEL logic rules](05-dialob-expression-language-del#introduction-to-del-logic-rules).
   - **Validations**: This is where you can add validation rules to items. Validation rules determine whether the user's input is valid. The rules are written in DEL, and can have a custom validation message (also localized as labels and descriptions). Only available for input types.
-  - **Choices**: This is where you can add a local list or link a global list to the item. The list is used to populate the item with choices for the user to select from. Choices are localized, and can be reordered by dragging and dropping them. Only available for choice and survey group types.
+  - **Choices**: This is where you can add a local list or link a global list to the item. The list is used to populate the item with choices for the user to select from. Choices are localized, and can be reordered by dragging and dropping them. Only available for choice and survey group types. Read more in [Editing lists](03-advanced-operations#editing-lists).
   - **Properties**: This is where you can set the properties of the item, that are used to customize the filling side behaviour.
 
 The header of the dialog shows the item ID, which can be modified by clicking the "Edit" icon. The header also shows the type of the item and, where applicable, a dropdown menu to switch between different types.
@@ -276,6 +301,39 @@ The header of the dialog shows the item ID, which can be modified by clicking th
 
 <img width="1400" alt="item-edit-dialog" src="https://github.com/user-attachments/assets/f2357789-31aa-4dac-9b33-6f266964021e" />
 
+Changes made in the dialog are not applied to the form until you click "Save". Changing the item ID will update all references to the item in rules and expression variables automatically.
+
+Items that have rules, validations, a default value, a description, or a list attached show indicator icons in the item header. Clicking an indicator icon opens the item editing dialog directly in the corresponding tab. Items with a read only rule show a read only indicator icon, which opens the "Rules" tab.
+
+---
+
+## Markdown editor
+
+Labels and descriptions are edited with a Markdown editor, with a separate editor for each language of the form. Above the editors, you can choose between three view modes:
+
+* **Edit**: Shows only the Markdown editor.
+* **Preview**: Shows how the formatted text will look on the filling side.
+* **Side by side**: Shows the editor and the preview next to each other, so that changes can be seen in the preview while typing.
+
+Each editor has a toolbar with the most common formatting options:
+
+* **Format**: Bold, italic, and inline code
+* **Paragraph**: Headings of different levels, or normal body text
+* **List**: Bullet and numbered lists
+* **Insert**: Links, code blocks, horizontal dividers, and tables
+* **Callouts**: Highlighted note, tip, warning, and error blocks
+
+The same formatting can also be applied with keyboard shortcuts, for example `Ctrl+B` for bold, `Ctrl+I` for italic, `Ctrl+K` for a link, `Ctrl+T` for a table, and `Ctrl+1` to `Ctrl+6` for headings.
+
+Clicking the "Help" button while in the "Label" or "Description" tab opens the Markdown help dialog, which describes the supported Markdown syntax.
+
+---
+
+## Clearing values
+
+Fields which have a value - such as labels, descriptions, rules, validation rules, default values and variable expressions - show a clear button (X icon). Clicking it removes the value completely, which is different from leaving the field empty. For localized fields, such as labels and descriptions, each language has its own clear button, which removes the text only for that language.
+
+Note that empty texts are considered missing translations, in the same way as texts that have been cleared.
 
 ---
 
@@ -285,6 +343,7 @@ The header of the dialog shows the item ID, which can be modified by clicking th
 ## Quick Summary
 
 * The tree view on the left side of the Composer window shows you the current order of present form items
+* A **Label** / **ID** control at the top of the navigation pane switches between item labels and item IDs
 * To rearrange items, drag and drop them within the tree
 
 ---
@@ -294,6 +353,39 @@ The header of the dialog shows the item ID, which can be modified by clicking th
 Tree view shows you the current hierarchy of items as they appear both on the Composer side and on the filling side.  
 
 To rearrange your form items, simply click on them in the tree view, and then drag and drop them in the desired location.
+
+Expression variables scoped to a multi-row group are shown in the tree as children of that multi-row group. They cannot be dragged to other locations, but as with other items in the tree, they can be used to navigate to the variable in the form or to open its editing dialog.
+
+### Showing labels or IDs
+
+At the top of the navigation pane, a **Label** / **ID** control chooses what each row shows. **Label** is selected by default. The choice applies to the navigation tree only. It does not change labels on the form or on the filling side.
+
+* **Label**: each item shows its label in the active form language. If the item has no label, its ID is shown instead. Hovering an item shows its ID.
+* **ID**: each item shows its ID. Hovering an item shows its label when that label is different from the ID.
+
+<img width="319" alt="navigation-tree-labels" src="https://github.com/user-attachments/assets/c01232c0-c529-43d9-8fcc-3047e302a3a0" />
+
+<img width="296" alt="navigation-tree-ids" src="https://github.com/user-attachments/assets/2a862693-663a-4eb5-ae29-13b0667addc4" />
+
+---
+
+# Searching the form
+
+## Quick Summary
+
+* The search field is located in the Composer upper menu
+* Search finds items and variables by ID, label, description, rules, and expressions
+* Clicking a search result navigates to the matching item, or opens the matching variable in the variables window
+
+---
+
+## Overview
+
+The search field in the Composer upper menu can be used to quickly find items and variables in large forms. Start typing a keyword, and a list of matches will appear below the search field.
+
+Each match shows whether it is an item or a variable, and where the keyword was found, for example "Matches label", "Matches visibility rule" or "Matches read only rule", together with a snippet of the matching text. Search looks through item IDs, labels, descriptions, visibility, requirement, read only and validation rules, add/remove row rules, default values, and variable expressions.
+
+Clicking on an item match navigates to the item in the form and highlights it. Clicking on a variable match opens the variables window in the corresponding tab.
 
 ---
 
