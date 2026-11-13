@@ -66,11 +66,11 @@ Now that you have a group, you can give the group a _label_. The label is the na
 
 <img width="1468" alt="07-03" src="https://github.com/user-attachments/assets/592fee89-234e-465b-bddf-f90ff27cb535" />
 
-Click on the group label field, which will open up the label editor.  Write your label in the text field and close the dialog. The changes will be automatically saved.
+Click on the group label field, which will open up the label editor.  Write your label in the text field and click "Save" to apply the changes. Closing the dialog without saving will discard the changes.
 
 <img width="1468" alt="07-04" src="https://github.com/user-attachments/assets/d2f04b6b-8632-431a-8448-38fb7a020751" />
 
-Note that labels are written in Markdown, and clicking the "Preview" button will show you how the label will appear on the filling side.  Markdown is a simple way to format text, and you can find more information on how to use it [here](https://www.markdownguide.org/basic-syntax/).
+Note that labels are written in Markdown, and selecting the "Preview" or "Side by side" view will show you how the label will appear on the filling side. The toolbar above the editor can be used to apply the most common formatting.  Markdown is a simple way to format text, and you can find more information on how to use it [here](https://www.markdownguide.org/basic-syntax/).
 
 Next, let's create our first response (question). Click the `Add item` button in the bottom left corner of the Group window. Add a question of type Text.
 
@@ -146,7 +146,7 @@ In this example, we are creating a Global List. Global Lists can be applied to a
 
 To add a new list item, click the `add` button (plus sign) and enter a key and text.  **NOTE**: When creating lists, the key (ID) is not auto-generated, and it must be set manually by the form creator. Any changes to the ID will be auto-updated globally, however.
 
-Let's fill in our list and name it Favourite Foods. Each list item can be expanded to edit its properties. 
+Let's fill in our list and name it Favourite Foods. Each property of a list item can be edited by clicking the edit icon next to it, and new items can also be inserted directly below an existing item. Remember to click "Save" when you are done.
 
 <img width="1468" alt="07-16" src="https://github.com/user-attachments/assets/c92884af-1d89-447b-844c-e3077060f676" />
 
