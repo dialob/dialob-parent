@@ -75,7 +75,7 @@
     <jetbrains-annotations.version>26.1.0</jetbrains-annotations.version>
     <jsoup.version>1.23.1</jsoup.version>
     <lombok.version>1.18.46</lombok.version>
-    <protobuf-java.version>4.34.1</protobuf-java.version>
+    <protobuf-java.version>4.36.2</protobuf-java.version>
     <spotbugs-annotations.version>4.9.8</spotbugs-annotations.version>
     <spring-cloud-gcp.version>7.4.6</spring-cloud-gcp.version>
     <springdoc.version>3.1.0</springdoc.version>
