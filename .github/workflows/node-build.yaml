@@ -91,7 +91,8 @@ jobs:
       id: distribution-packages
       run: ./distribution-packages.sh -o $ARTIFACT_OUTPUT
       env:
-        PUBLISHED_PACKAGES: "${{ steps.changesets.outputs.publishedPackages }}"
+        # Manual runs package every project, not only the ones changesets just published
+        PUBLISHED_PACKAGES: "${{ github.event_name != 'workflow_dispatch' && steps.changesets.outputs.publishedPackages || '' }}"
         ARTIFACT_OUTPUT: ${{ github.workspace }}/artifacts
         CDN_DOMAIN: cdn.resys.io
 
