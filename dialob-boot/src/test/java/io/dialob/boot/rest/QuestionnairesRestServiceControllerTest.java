@@ -84,7 +84,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     "spring.security.oauth2.client.registration[0].clientName=test",
     "spring.security.oauth2.client.provider[own].authorizationUri=http://localhost:880",
     "spring.security.oauth2.client.provider[own].tokenUri=http://localhost:880",
-    "spring.security.oauth2.client.provider[own].jwkSetUri=http://localhost:880"
+    "spring.security.oauth2.client.provider[own].jwkSetUri=http://localhost:880",
+    "spring.flyway.enabled=false"
   },
   classes = {
     AbstractSecuredRestTests.TestConfiguration.class,

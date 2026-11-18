@@ -83,6 +83,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
   "spring.autoconfigure.exclude[1]=org.springframework.boot.data.redis.autoconfigure.DataRedisAutoConfiguration",
   "dialob.security.authenticationMethod=NONE",
   "dialob.security.enabled=true",
+  "spring.flyway.enabled=false",
   "dialob.db.database-type=none"
 })
 @ContextConfiguration(classes = {

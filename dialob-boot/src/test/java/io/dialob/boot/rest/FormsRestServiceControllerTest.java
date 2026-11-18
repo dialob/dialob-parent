@@ -86,6 +86,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
   "spring.autoconfigure.exclude[0]=org.springframework.boot.data.redis.autoconfigure.DataRedisAutoConfiguration",
   "spring.autoconfigure.exclude[1]=org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration",
   "spring.data.redis.repositories.enabled=false",
+  "spring.flyway.enabled=false",
   "management.health.db.enabled=false"
 })
 @ContextConfiguration(classes = {
