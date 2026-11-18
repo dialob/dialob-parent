@@ -90,7 +90,7 @@
     <testcontainers-redis.version>3.0.1</testcontainers-redis.version>
     <equalsverifier.version>4.2.5</equalsverifier.version>
     <json-unit.version>5.1.0</json-unit.version>
-    <s3mock-junit5.version>4.11.0</s3mock-junit5.version>
+    <s3mock-junit5.version>5.2.3</s3mock-junit5.version>
 
     <!-- docker image -->
     <image.base.name>amazoncorretto:${java.version}</image.base.name>
