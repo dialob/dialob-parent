@@ -81,6 +81,7 @@
     <springdoc.version>3.1.0</springdoc.version>
     <swagger.version>2.2.41</swagger.version>
     <tomcat-embed-el.version>11.0.27</tomcat-embed-el.version>
+    <swagger.version>2.2.56</swagger.version>
     <tomcat-embed-el.version>11.0.29</tomcat-embed-el.version>
 
     <!-- test dependencies -->
