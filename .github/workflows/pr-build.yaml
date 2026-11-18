@@ -19,6 +19,8 @@ jobs:
   build:
     name: Build - pull request
     runs-on: ubuntu-latest
+    env:
+      TZ: UTC
     strategy:
       matrix:
         platform:

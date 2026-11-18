@@ -22,6 +22,8 @@ jobs:
   build:
     name: Releasing branch - main
     runs-on: ubuntu-latest
+    env:
+      TZ: UTC
     strategy:
       matrix:
         platform:
