@@ -45,11 +45,11 @@ jobs:
       uses: actions/checkout@v7
 
     - name: Setup pnpm
-      uses: pnpm/action-setup@v4
+      uses: pnpm/action-setup@v6
 
-    - uses: actions/setup-node@v5
+    - uses: actions/setup-node@v7
       with:
-        node-version: '24'
+        node-version: '26'
         registry-url: 'https://registry.npmjs.org'
         scope: '@dialob'
         cache: 'pnpm'
@@ -91,12 +91,13 @@ jobs:
       id: distribution-packages
       run: ./distribution-packages.sh -o $ARTIFACT_OUTPUT
       env:
-        PUBLISHED_PACKAGES: "${{ steps.changesets.outputs.publishedPackages }}"
+        # Manual runs package every project, not only the ones changesets just published
+        PUBLISHED_PACKAGES: "${{ github.event_name != 'workflow_dispatch' && steps.changesets.outputs.publishedPackages || '' }}"
         ARTIFACT_OUTPUT: ${{ github.workspace }}/artifacts
         CDN_DOMAIN: cdn.resys.io
 
     - name: Upload distributions
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: 'artifacts'
         path: ${{ github.workspace }}/artifacts
@@ -110,7 +111,7 @@ jobs:
     if: ${{ needs.build.outputs.artifacts != null && needs.build.outputs.artifacts != '[]' }}
     steps:
     - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v4
+      uses: aws-actions/configure-aws-credentials@v6
       with:
         aws-region: ${{ secrets.AWS_REGION }}
         role-to-assume: ${{ secrets.ASSUME_ROLE }}
@@ -118,7 +119,7 @@ jobs:
 
     - name: Download distributions
       id: download
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8
       with:
         name: 'artifacts'
         path: ${{ github.workspace }}/artifacts
