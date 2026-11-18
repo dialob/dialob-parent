@@ -35,6 +35,8 @@ jobs:
       pull-requests: write
     name: Build Frontend
     runs-on: ubuntu-latest
+    env:
+      TZ: UTC
     outputs:
       artifacts: ${{ steps.distribution-packages.outputs.artifacts }}
     defaults:

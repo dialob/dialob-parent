@@ -16,6 +16,8 @@ jobs:
   build:
     name: Build - dev
     runs-on: ubuntu-latest
+    env:
+      TZ: UTC
     strategy:
       matrix:
         platform:
@@ -46,5 +48,4 @@ jobs:
         env:
           CI: false
           DOCKER_REGISTRY: ${{ vars.DOCKER_SNAPSHOT_REGISTRY }}
-
 
