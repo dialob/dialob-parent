@@ -1,8 +1,7 @@
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { Alert, AlertColor, Box, Button, Paper, Typography } from '@mui/material';
 import { useComposer } from '../../dialob';
-import FileDownloadIcon from '@mui/icons-material/FileDownload';
-import FileUploadIcon from '@mui/icons-material/FileUpload';
+import { FileDownload as FileDownloadIcon, FileUpload as FileUploadIcon } from '@mui/icons-material';
 import { FormattedMessage } from 'react-intl';
 import { ParsedImportData, downloadFormData, overwiewTextFormatter, parse, parseEntryId, validateParsedFileData, validateParsedFileHeaders } from '../../utils/TranslationUtils';
 
