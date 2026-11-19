@@ -1,5 +1,12 @@
 # @dialob/dialob-composer-material
 
+## 0.0.22
+
+### Patch Changes
+
+- fixed the composer crashing on load in apps built with Vite 8 (`Calling require for "react"`)
+- fixed the Translations dialog crashing in apps built with Vite 8
+
 ## 0.0.21
 
 ### Patch Changes
