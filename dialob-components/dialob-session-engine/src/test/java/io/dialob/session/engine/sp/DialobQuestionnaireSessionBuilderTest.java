@@ -17,6 +17,10 @@ package io.dialob.session.engine.sp;
 
 import io.dialob.api.form.Form;
 import io.dialob.api.form.FormItem;
+import io.dialob.api.form.FormValueSet;
+import io.dialob.api.form.FormValueSetEntry;
+import io.dialob.api.proto.ValueSet;
+import io.dialob.api.questionnaire.Answer;
 import io.dialob.questionnaire.service.api.event.QuestionnaireEventPublisher;
 import io.dialob.questionnaire.service.api.session.FormFinder;
 import io.dialob.questionnaire.service.api.session.QuestionnaireSession;
@@ -37,6 +41,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoSettings;
 
+import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -142,6 +148,34 @@ class DialobQuestionnaireSessionBuilderTest {
 
     assertNotNull(session);
     assertEquals("page3", session.getQuestionnaire().getActiveItem());
+  }
+  
+  @Test
+  void shouldHandleEmptyValuesetEntry_issue620() {
+    final Form form = new Form.Builder()
+        .id("123")
+        .putData("questionnaire", new FormItem.Builder().id("questionnaire").type("questionnaire").build())
+        .putData("q1", new FormItem.Builder().id("q1").type("").valueSetId("vs_q1").build())
+        .putData("q2", new FormItem.Builder().id("q2").type("").valueSetId("vs_q2").build())
+        .metadata(new Form.Metadata.Builder().label("test form")
+            .putAdditionalProperties("showDisabled", true)
+            .build())
+        .addValueSets(new FormValueSet.Builder().id("vs_q1").entries(List.of(new FormValueSetEntry.Builder().id("s1v1").label(Map.of("fi", "Set 1 Value 1")).build())).build())
+        .addValueSets(new FormValueSet.Builder().id("vs_q2").entries(List.of(new FormValueSetEntry.Builder().id("s2v1").label(Map.of("fi", "Set 2 Value 1")).build())).build())
+        .build();
+    
+    DialobQuestionnaireSessionBuilder builder = createSessionBuilder(form);
+    ValueSet vs = new ValueSet("vs_q1", null);
+    ValueSet vs2 = new ValueSet("vs_q2", List.of());
+    QuestionnaireSession session = builder.formId("123")
+        .answers(List.of(new Answer.Builder().id("q1").value("s1v1").build()))
+        .answers(List.of(new Answer.Builder().id("q2").value("s2v1").build()))
+        .valueSets(List.of(vs, vs2))
+        .activeItem("page3")
+        .createOnly(true)
+        .build();
+    
+    assertNotNull(session);
   }
 
 

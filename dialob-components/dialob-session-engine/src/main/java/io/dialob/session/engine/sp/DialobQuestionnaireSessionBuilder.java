@@ -101,6 +101,9 @@ public class DialobQuestionnaireSessionBuilder extends BaseQuestionnaireSessionB
         return Optional.empty();
       }, valueSetId -> questionnaire.getValueSets().stream()
         .filter(valueSet -> valueSet.getId().equals(valueSetId.getValueSetId()))
+        // filter out value sets without entries, questionnaires from older version stored only id
+        // issue #620
+        .filter(valueSet -> valueSet.getEntries() != null)
         .findFirst()
         .map(valueSet -> valueSet.getEntries().stream().map(entry -> ValueSetState.Entry.of(entry.getKey(), entry.getValue(), true)).toList())
         .orElse(Collections.emptyList()),
