@@ -53,6 +53,7 @@ class BaseQuestionnaireSessionBuilderTest {
     when(form.getId()).thenReturn("form1");
     when(form.getRev()).thenReturn("rev1");
     when(form.getMetadata()).thenReturn(metadata);
+    when(form.getName()).thenReturn("formName");
     when(metadata.getLabel()).thenReturn("Form Label");
 
     TestQuestionnaireSessionBuilder builder = new TestQuestionnaireSessionBuilder(formFinder);
@@ -65,6 +66,7 @@ class BaseQuestionnaireSessionBuilderTest {
     assertEquals("form1", builder.getQuestionnaire().getMetadata().getFormId());
     assertEquals("rev1", builder.getQuestionnaire().getMetadata().getFormRev());
     assertEquals("Form Label", builder.getQuestionnaire().getMetadata().getLabel());
+    assertEquals("formName", builder.getQuestionnaire().getMetadata().getFormName());
     assertEquals(Questionnaire.Metadata.Status.NEW, builder.getQuestionnaire().getMetadata().getStatus());
   }
 
@@ -78,6 +80,7 @@ class BaseQuestionnaireSessionBuilderTest {
     when(questionnaire.getMetadata()).thenReturn(metadata);
     when(metadata.getFormId()).thenReturn("form1");
     when(metadata.getFormRev()).thenReturn("rev1");
+    when(form.getName()).thenReturn("formName");
     when(formFinder.findForm("form1", "rev1")).thenReturn(form);
 
     TestQuestionnaireSessionBuilder builder = new TestQuestionnaireSessionBuilder(formFinder);
@@ -109,6 +112,7 @@ class BaseQuestionnaireSessionBuilderTest {
     when(formFinder.findForm("form1", null)).thenReturn(form);
     when(form.getId()).thenReturn("form1");
     when(form.getRev()).thenReturn("rev1");
+    when(form.getName()).thenReturn("formName");
     when(form.getMetadata()).thenReturn(metadata);
 
     TestQuestionnaireSessionBuilder builder = new TestQuestionnaireSessionBuilder(formFinder);
@@ -117,6 +121,7 @@ class BaseQuestionnaireSessionBuilderTest {
     builder.build();
 
     assertEquals(BaseQuestionnaireSessionBuilder.LATEST_REV, builder.getQuestionnaire().getMetadata().getFormRev());
+    assertEquals("formName", builder.getQuestionnaire().getMetadata().getFormName());
     verify(formFinder).findForm("form1", null);
   }
 

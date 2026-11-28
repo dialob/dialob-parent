@@ -245,7 +245,7 @@ public abstract class BaseQuestionnaireSessionBuilder implements QuestionnaireSe
     if (newSession) {
       Form.Metadata metadata = formDocument.getMetadata();
       final String formId = formDocument.getId();
-      String formName = null;
+      String formName = formDocument.getName();
       if (!formId.equals(this.formId)) {
         formName = this.formId;
       }
